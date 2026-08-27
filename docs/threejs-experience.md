@@ -62,50 +62,78 @@ Use a stylised circuit representation rather than attempting a photorealistic di
 Preferred characteristics:
 
 - recognizable Sepang track geometry
-- elevated or slightly extruded asphalt
-- red/white kerb cues where useful
+- slightly elevated/extruded asphalt or similarly legible track form
+- restrained kerb/edge cues where useful
 - subtle ground plane / terrain abstraction
-- glowing or high-contrast racing line accents used sparingly
-- labelled hotspots
-- premium dark presentation
+- neutral dark/gray track treatment
+- Race Red `#E10600` only for selected hotspot/segment emphasis
+- clear labels where they improve orientation
+- premium dark presentation consistent with `DESIGN.md`
+
+Do not use neon/cyan glowing track lines or a sci-fi telemetry aesthetic.
+
+### Approved MVP hotspots
+
+The Explorer hotspot set is fixed for MVP unless the product owner changes it:
+
+- `T1`
+- `T4`
+- `T9`
+- `T15`
+- `MAIN STRAIGHT`
+
+Do not invent additional hotspot categories during implementation.
 
 ### Interaction
 
-The user can select predetermined hotspots such as:
-
-- Turn 1 / opening complex
-- main straight
-- another important corner/sector chosen during content finalisation
-- weather / heat context represented as a circuit-wide concept rather than fake live weather
-
 When a hotspot is selected:
 
-1. Camera smoothly reframes toward the relevant circuit area.
-2. Selected track segment receives clear focus/highlight.
-3. A readable information panel appears.
-4. Explanation remains beginner-friendly: what it is, why it matters, what to watch for.
+1. Product/UI state updates the selected hotspot.
+2. Camera smoothly reframes toward the relevant circuit area.
+3. Selected track segment receives a restrained `#E10600` focus/highlight.
+4. `CircuitInfoPanel` updates with beginner-friendly content.
+5. Explanation answers: what happens here, why should I care while watching?
+
+The 3D scene receives the selected hotspot as state; it does not own the product/content state.
 
 ### Desktop
 
-- Circuit may occupy the majority of the viewport.
-- Information panel can live beside the scene.
-- Mouse hover may preview hotspots, but click/tap is authoritative.
-- Camera movement can be more spatial and cinematic.
+- Circuit uses the 8-column primary scene region defined in `docs/ui-standardization.md`.
+- `CircuitInfoPanel` uses the adjacent 4-column region.
+- `CircuitHotspotTabs` sit beneath the primary scene.
+- Mouse hover may preview a hotspot, but click/tap is authoritative.
+- Camera movement can be spatial but should remain controlled and quick.
 
 ### Mobile
 
-- Circuit occupies the upper or central portion of the viewport.
+- Circuit occupies the upper/primary portion of the page.
 - Hotspots must be large enough to tap.
-- Detail content should appear in a bottom sheet / stacked panel rather than competing horizontally with the 3D scene.
+- Detail appears in stacked content or a shadcn Sheet/Drawer.
 - Camera transitions should be shorter and less disorienting.
 - Pinch/drag exploration is optional; required information must not depend on precision gestures.
+
+### Controls
+
+The user must have a clear reset/recenter action if camera navigation changes the composed view.
+
+Zoom/pan/rotate controls are optional, not required. Only add them if they materially improve understanding and remain simple on touch devices.
+
+Do not add Stitch-generated pseudo-controls such as:
+
+- `LIVE TRACK STATUS`
+- fake lap time
+- fake track temperature
+- coordinates
+- sector timing
+- fake telemetry dashboards
 
 ### Rules
 
 - Do not build a driving simulator.
 - Do not build real-time cars or GPS telemetry.
-- Any decorative cars moving on circuit are ambient only and must be lightweight.
-- The user must always have a clear way to reset/recenter the circuit view.
+- Do not build fake live status to make the scene look technical.
+- Any decorative car motion is ambient only and must be lightweight.
+- Content remains understandable through a static 2D circuit fallback.
 
 ---
 
