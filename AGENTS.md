@@ -6,6 +6,7 @@ Read these before changing product behavior or UI:
 
 - `README.md`
 - `DESIGN.md`
+- `docs/ui-standardization.md`
 - `docs/product-blueprint.md`
 - `docs/user-flow.md`
 - `docs/wireframes.md`
@@ -41,6 +42,46 @@ Do not implement:
 - Admin CMS
 - Native mobile app
 
+Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, telemetry, `ALL SYSTEMS NOMINAL`, or technical-spec links are real features. They are not.
+
+## Design authority and Stitch outputs
+
+Codex/OpenCode are implementers, not product designers for this project.
+
+`DESIGN.md` and `docs/ui-standardization.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+
+Approved Stitch screenshots/HTML are visual baseline references for composition only. Do not copy their generated design tokens, substitute fonts, invented navigation, fake data, copy, or inconsistent components literally.
+
+When two Stitch screens differ, standardize them according to the repo design contract rather than preserving the inconsistency.
+
+## shadcn/ui contract
+
+Use shadcn/Radix where it gives us reliable accessible interaction behavior.
+
+**shadcn gives us the behavior. SEPANG 56 gives it the F1 skin.**
+
+Good candidates include Dialog, AlertDialog, Sheet/Drawer, Tooltip, Tabs, DropdownMenu, Form primitives, Progress, Toast/Sonner, and Select when appropriate.
+
+Do not use the default shadcn visual theme as the application identity.
+
+All shadcn components must inherit/map to the exact SEPANG 56 design tokens in `DESIGN.md`, including:
+
+- colors
+- Barlow Condensed / Titillium Web / IBM Plex Mono roles
+- 4px geometry
+- restrained borders
+- racing-red active/primary states
+
+Identity-heavy components should be custom instead of stock-looking shadcn cards/tables:
+
+- RaceHeader
+- DriverCard
+- PredictionStep
+- CircuitInfoPanel
+- TimingLeaderboard
+- StartingLights
+- SepangCircuitScene
+
 ## Three.js is approved, but NOT open-ended
 
 Three.js/WebGL is part of the MVP presentation layer. Its use is predetermined in `docs/threejs-experience.md`.
@@ -61,19 +102,13 @@ Core product actions must remain usable if 3D fails to load, the device is const
 
 ## Visual principles
 
-The UI must feel unmistakably motorsport/F1-inspired even without the project logo.
+The UI must feel unmistakably current premium motorsport even without the project logo.
 
-Use racing/timing/grid/circuit visual language. Avoid generic SaaS styling, excessive pill UI, and endless rounded cards.
+It must **not** become futuristic, cyberpunk, neon, HUD-heavy, or generic SaaS.
+
+Use the exact tokens in `DESIGN.md`. Do not substitute generated fonts/colors because a design export contains them.
 
 Do not copy protected Formula 1 logos, exact brand assets, or proprietary fonts.
-
-## Design authority
-
-Codex/OpenCode are implementers, not product designers for this project.
-
-When design behavior is specified in `DESIGN.md`, `docs/design-direction.md`, `docs/threejs-experience.md`, `docs/wireframes.md`, or an approved Stitch output, follow it. Do not replace specified interaction patterns with a different design because it is easier to code.
-
-If specifications conflict, prefer the most recently approved product documentation and flag the conflict rather than inventing a new direction.
 
 ## Engineering principles
 
@@ -85,4 +120,5 @@ If specifications conflict, prefer the most recently approved product documentat
 - Do not introduce a CMS for MVP.
 - Keep 3D isolated from product/business state through clean component boundaries.
 - Lazy-load heavy 3D assets.
+- Centralize tokens and shared shell/components instead of restyling per page.
 - Make small, reviewable changes.
