@@ -8,6 +8,7 @@ Read these before changing product behavior or UI:
 - `DESIGN.md`
 - `docs/ui-standardization.md`
 - `docs/mobile-landing-standard.md`
+- `docs/mobile-prediction-standard.md`
 - `docs/product-blueprint.md`
 - `docs/user-flow.md`
 - `docs/wireframes.md`
@@ -49,9 +50,9 @@ Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN
 
 Codex/OpenCode are implementers, not product designers for this project.
 
-`DESIGN.md`, `docs/ui-standardization.md`, and approved responsive standards such as `docs/mobile-landing-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+`DESIGN.md`, `docs/ui-standardization.md`, and approved responsive standards such as `docs/mobile-landing-standard.md` and `docs/mobile-prediction-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
 
-Approved Stitch screenshots/HTML are visual baseline references for composition only. Do not copy their generated design tokens, substitute fonts, invented navigation, fake data, copy, or inconsistent components literally.
+Approved Stitch screenshots/HTML are visual baseline references for composition only. Preserve strong approved composition patterns, but do not copy generated design tokens, substitute fonts, invented navigation, fake data, copy, inline prototype JavaScript, or inconsistent components literally.
 
 When two Stitch screens differ, standardize them according to the repo design contract rather than preserving the inconsistency.
 
@@ -76,6 +77,7 @@ All shadcn components must inherit/map to the exact SEPANG 56 design tokens in `
 Identity-heavy components should be custom instead of stock-looking shadcn cards/tables:
 
 - RaceHeader
+- RaceFlowHeader
 - DriverCard
 - PredictionStep
 - CircuitInfoPanel
