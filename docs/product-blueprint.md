@@ -14,77 +14,93 @@ The goal is not to turn beginners into experts. The goal is to move them from:
 
 into:
 
-> “I understand what I’m watching, I know why Sepang matters, and I have picks I can compare with my friends.”
+> “I understand what I’m watching, I know the key places at Sepang, and I have picks I can compare with my friends.”
 
 ---
 
 ## MVP pillars
 
-### 1. Learn
+### 1. Learn — finalized flow
 
-Teach only the fundamentals needed to enjoy a race:
+Source of truth: `docs/learn-flow-standard.md`.
 
-- What Formula 1 is
-- Drivers vs teams
-- How an F1 weekend works
-- Practice
-- Qualifying
-- Starting grid
-- Race basics
-- Pit stops
-- Tyres
-- Overtaking
-- DRS
-- Flags
-- Safety Car
-- Points / winning
+Users first self-select their familiarity level:
 
-Lessons should be short, visual, and beginner-first — roughly 30–90 seconds per concept.
+- **I'm completely new**
+- **I know some basics**
+- **I already follow F1**
 
-### 2. Understand Sepang
+The app deterministically recommends the appropriate path. No AI or scored knowledge quiz is involved.
 
-Apply the newly learned F1 concepts specifically to Sepang:
+Approved lesson set:
 
-- What Sepang is
-- Where it is
-- Circuit layout
-- Race distance / lap count
-- Key corners and braking zones
-- Main straight
-- Overtaking areas
-- Heat and humidity
-- Sudden tropical rain
-- F1 history at Sepang
-- Why the return matters
+1. Race Weekend
+2. How the Race Works
+3. Overtaking
+4. Tyres & Pit Stops
+5. Flags & Safety Car
+6. How to Watch
 
-The Sepang experience is the main differentiator from a generic F1 learning app.
+Beginner users are recommended all six lessons. Users who know some basics are recommended lessons 3–6. Existing F1 fans may continue directly to Sepang.
 
-### 3. Make predictions
+Lessons are short, visual, and beginner-first. Completing the recommended path produces a **Race Ready** milestone, but Learn is not a hard gate.
 
-MVP prediction categories:
+### 2. Understand Sepang — finalized flow
 
-1. Race winner
-2. Second place
-3. Third place
-4. Pole position
-5. Fastest lap
-6. Rain during the race? Yes / No
-7. Safety Car? Yes / No
-8. First retirement
+Source of truth: `docs/sepang-flow-standard.md`.
 
-Every F1 term used in prediction screens should have a short beginner explanation.
+The Sepang experience is a guided-but-free circuit explorer built around exactly five MVP hotspots:
 
-### 4. Compete with friends
+1. Main Straight
+2. T1
+3. T4
+4. T9
+5. T15
 
-Users can:
+First-time users receive a short introduction and a recommended guided order:
 
-- View their score
-- View a global leaderboard
-- Create a private league
-- Join a league via code/link
-- Compare ranking with friends
+**Main Straight → T1 → T4 → T9 → T15**
 
-No chat, feed, reactions, messaging, or complex social system in MVP.
+Users may switch to free exploration or select any hotspot at any time.
+
+Each hotspot teaches two things:
+
+- **What happens here?**
+- **Why it matters when watching the race**
+
+Three.js focuses/highlights the selected circuit section while normal application UI presents the educational content. Three.js does not own application state.
+
+Visiting all five hotspots may produce a **You Know Sepang** milestone, but Predictions remain accessible earlier.
+
+Final hotspot educational copy must be fact-checked before being locked.
+
+### 3. Make predictions — mechanics still to finalize
+
+Predictions remain a core MVP pillar.
+
+The approved interaction principle is:
+
+- one question per screen
+- beginner explanations for F1-specific terms
+- temporary picks allowed before auth
+- review/summary before persistence
+
+The exact eight-question set, scoring formula, edit behavior, and locking deadline rules still require product finalization. Do not infer those rules from old drafts or Stitch exports.
+
+### 4. Compete with friends — mechanics still to finalize
+
+The core concept is approved:
+
+- create a private league
+- join by code/link
+- compare prediction scores with friends
+- leaderboard ranking
+
+A global leaderboard may also exist, but private/friends competition is the primary social use case.
+
+No chat, feed, reactions, messaging, or complex social system belongs in MVP.
+
+Exact scoring/ranking mechanics still require product finalization.
 
 ---
 
@@ -93,16 +109,19 @@ No chat, feed, reactions, messaging, or complex social system in MVP.
 1. User hears that F1 is returning to Sepang.
 2. User likes the idea but knows little or nothing about F1.
 3. User opens SEPANG 56.
-4. Landing page explains the product in one sentence and offers **Get Race Ready**.
-5. User selects their knowledge level: Nothing / Basics / Fan.
-6. Beginner moves through short Race School lessons.
-7. User completes the fundamentals and enters the Sepang guide.
-8. User explores the circuit and key Sepang characteristics.
-9. User makes eight predictions one question at a time.
-10. User reviews and locks their picks.
-11. Authentication is requested at the point of saving/locking predictions, not at first launch.
-12. User creates or joins a private league.
-13. User sees their position on a leaderboard and returns when results are scored.
+4. Landing explains the product and offers **Get Race Ready**.
+5. User selects their F1 familiarity level.
+6. The app recommends the appropriate Learn path.
+7. User completes as much Learn content as they need and may reach **Race Ready**.
+8. User enters **Meet Sepang**.
+9. On first visit, the app introduces the circuit and recommends the guided explorer.
+10. User explores Main Straight, T1, T4, T9, and T15, or explores freely.
+11. User learns what happens at each selected location and why it matters.
+12. User continues to Predictions when ready.
+13. User makes predictions one question at a time and reviews their picks.
+14. Authentication is requested only when saving/locking or using social features requires persistence.
+15. User creates or joins a private league.
+16. User compares results with friends once predictions are scored.
 
 ---
 
@@ -112,16 +131,18 @@ No chat, feed, reactions, messaging, or complex social system in MVP.
 
 Nothing should interrupt or dilute this loop in MVP.
 
+The first two pillars use soft progression rather than hard gating.
+
 ---
 
 ## MVP acceptance test
 
 Give SEPANG 56 to someone who has never watched F1. After using it, they should be able to answer:
 
-- What is qualifying?
-- What is a pit stop?
-- What is interesting about Sepang?
-- Who do you think will win?
+- What happens across an F1 race weekend?
+- Why do tyres, pit stops, overtaking, flags, and the Safety Car matter?
+- What are the key places to watch at Sepang?
+- Who do you think will win or perform well?
 - Can I compare my picks with friends?
 
-If those five outcomes work cleanly, the MVP is doing its job.
+If those outcomes work cleanly, the MVP is doing its job.
