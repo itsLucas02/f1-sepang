@@ -7,6 +7,8 @@ Read these before changing product behavior or UI:
 - `README.md`
 - `DESIGN.md`
 - `docs/ui-standardization.md`
+- `docs/learn-flow-standard.md`
+- `docs/sepang-flow-standard.md`
 - `docs/mobile-landing-standard.md`
 - `docs/mobile-prediction-standard.md`
 - `docs/mobile-circuit-standard.md`
@@ -24,6 +26,15 @@ The MVP is exactly:
 **Learn → Understand Sepang → Make Predictions → Compete With Friends**
 
 Do not add speculative product features without explicit instruction.
+
+The Learn and Understand Sepang product flows are finalized in:
+
+- `docs/learn-flow-standard.md`
+- `docs/sepang-flow-standard.md`
+
+Those dedicated flow standards override older/broader flow descriptions if any conflict remains elsewhere in the repo.
+
+Prediction mechanics, scoring, league mechanics, and final auth/persistence rules are not yet fully finalized. Do not invent missing product rules during implementation.
 
 ## Explicitly out of scope
 
@@ -51,7 +62,7 @@ Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN
 
 Codex/OpenCode are implementers, not product designers for this project.
 
-`DESIGN.md`, `docs/ui-standardization.md`, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+`DESIGN.md`, `docs/ui-standardization.md`, finalized flow standards, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
 
 Approved Stitch screenshots/HTML are visual baseline references for composition only. Preserve strong approved composition patterns, but do not copy generated design tokens, substitute fonts, invented navigation, fake data, copy, inline prototype JavaScript, or inconsistent components literally.
 
@@ -95,6 +106,8 @@ Do not decide independently where to add 3D. Implement only the approved scenes 
 
 Core product actions must remain usable if 3D fails to load, the device is constrained, or reduced motion is enabled.
 
+Three.js must display application state rather than own navigation/business state. This is especially important in the Sepang circuit explorer.
+
 ## UX principles
 
 - Design for people who know zero F1.
@@ -104,6 +117,7 @@ Core product actions must remain usable if 3D fails to load, the device is const
 - Delay auth until persistence/social actions require it.
 - Mobile must be first-class, not a scaled-down desktop afterthought.
 - Prefer simple, inspectable implementation over clever architecture.
+- Learn and Sepang milestones are encouragement, not hard gates.
 
 ## Visual principles
 
