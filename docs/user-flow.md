@@ -10,6 +10,24 @@ This is a guided path, not a hard lock. Users may skip ahead, but beginners shou
 
 ---
 
+## Product-flow status
+
+The following flows are now finalized:
+
+- Learn routing and progression → `docs/learn-flow-standard.md`
+- Understand Sepang explorer flow → `docs/sepang-flow-standard.md`
+
+The following still require product finalization before implementation rules are considered locked:
+
+- exact Prediction question set and scoring
+- prediction edit/lock rules
+- league scoring and ranking rules
+- final auth behavior and persistence details
+
+Do not infer missing rules.
+
+---
+
 ## Full application flowchart
 
 ```text
@@ -21,15 +39,15 @@ This is a guided path, not a hard lock. Users may skip ahead, but beginners shou
                                 │
                                 ▼
                     ┌──────────────────────┐
-                    │ KNOWLEDGE CHECK      │
+                    │ F1 FAMILIARITY CHECK │
                     └──────────┬───────────┘
                                │
                  ┌─────────────┼──────────────┐
                  │             │              │
-              NOTHING        BASICS          FAN
+             BEGINNER        BASICS           FAN
                  │             │              │
                  ▼             ▼              │
-          FULL LEARNING    SHORT REFRESH      │
+          LESSONS 01–06    LESSONS 03–06      │
                  │             │              │
                  └──────┬──────┘              │
                         │                     │
@@ -38,6 +56,8 @@ This is a guided path, not a hard lock. Users may skip ahead, but beginners shou
                         ┌────────────────────┐
                         │  UNDERSTAND SEPANG │
                         └─────────┬──────────┘
+                                  │
+                         Guided / Free Explore
                                   │
                                   ▼
                         ┌────────────────────┐
@@ -79,115 +99,159 @@ This is a guided path, not a hard lock. Users may skip ahead, but beginners shou
 
 ---
 
-## Knowledge check mechanism
+## Learn flow — finalized
 
-### Important: this does **not** use AI
+Source of truth: `docs/learn-flow-standard.md`.
 
-The knowledge check is simple deterministic application logic.
+### Familiarity check
 
-The user selects one of three predefined options:
+Prompt:
 
-1. **Nothing at all**
-2. **I know the basics**
-3. **I watch F1 / I already know F1**
+**How familiar are you with F1?**
 
-The selected value is stored as a small state value, for example:
+Options:
 
-```ts
-knowledgeLevel = "new" | "basic" | "fan"
-```
+1. **I'm completely new**
+2. **I know some basics**
+3. **I already follow F1**
 
-The app then uses normal conditional logic to choose the recommended next screen.
+This is deterministic self-selection. It is not an AI system and not a scored quiz.
 
-Example:
+Suggested state:
 
 ```ts
-if (knowledgeLevel === "new") {
-  nextPath = "/learn?track=full"
-}
-
-if (knowledgeLevel === "basic") {
-  nextPath = "/learn?track=refresher"
-}
-
-if (knowledgeLevel === "fan") {
-  nextPath = "/sepang"
-}
+knowledgeLevel = "beginner" | "basics" | "fan"
 ```
 
-No model inference, chatbot, recommendation engine, or AI reasoning is required.
-
-### Branch behaviour
-
-#### Nothing at all
-
-Recommended path:
+### Recommended paths
 
 ```text
-Knowledge Check
-      ↓
-Nothing at all
-      ↓
-Full beginner learning track
-      ↓
-Understand Sepang
+BEGINNER
+  ↓
+01 Race Weekend
+02 How the Race Works
+03 Overtaking
+04 Tyres & Pit Stops
+05 Flags & Safety Car
+06 How to Watch
+  ↓
+RACE READY
 ```
-
-Show all core beginner lessons.
-
-#### I know the basics
-
-Recommended path:
 
 ```text
-Knowledge Check
-      ↓
-I know the basics
-      ↓
-Short refresher
-      ↓
-Understand Sepang
+BASICS
+  ↓
+03 Overtaking
+04 Tyres & Pit Stops
+05 Flags & Safety Car
+06 How to Watch
+  ↓
+RACE READY
 ```
 
-The refresher should contain only the concepts most relevant to enjoying and predicting the Sepang race, such as:
-
-- race weekend structure
-- qualifying / starting grid
-- pit stops and tyres
-- flags / Safety Car
-- overtaking basics
-
-The user can still open any skipped beginner lesson manually.
-
-#### I watch F1 / I know F1
-
-Recommended path:
+Lessons 01–02 remain accessible.
 
 ```text
-Knowledge Check
-      ↓
-I know F1
-      ↓
-Skip beginner learning
-      ↓
-Understand Sepang
+FAN
+  ↓
+MEET SEPANG
 ```
 
-The user is taken directly to the Sepang section, with Learn still available in navigation.
+All Learn content remains accessible.
 
-### Soft progression, not hard gates
+### Soft progression
 
-The knowledge branch is only a recommended route.
+`Race Ready` is a milestone, not a permission gate.
 
-Do **not** prevent users from visiting Learn, Sepang, Predict, or Leaderboard because they skipped lessons.
+Users may navigate to Sepang or Predict without completing Learn.
 
-Example:
+No XP, badges, streaks, achievements, mandatory quizzes, or AI tutoring are part of MVP.
 
-A beginner who goes directly to Predict may see a lightweight prompt such as:
+---
 
-> New to F1? Race School can help you make more informed picks.
+## Understand Sepang flow — finalized
 
-But the app must not block them.
+Source of truth: `docs/sepang-flow-standard.md`.
+
+### First visit
+
+```text
+MEET SEPANG
+  ↓
+Short circuit introduction
+  ↓
+START GUIDED TOUR
+  ↓
+CIRCUIT EXPLORER
+```
+
+The user may switch immediately to **Explore Freely**.
+
+### Returning visit
+
+```text
+SEPANG
+  ↓
+CIRCUIT EXPLORER
+  ↓
+FREE EXPLORE
+```
+
+Do not force the introduction again.
+
+### Approved hotspots
+
+The MVP contains exactly:
+
+1. Main Straight
+2. T1
+3. T4
+4. T9
+5. T15
+
+Recommended first-time tour order:
+
+```text
+MAIN STRAIGHT → T1 → T4 → T9 → T15
+```
+
+The user may select any hotspot at any time.
+
+### Interaction loop
+
+```text
+SELECT HOTSPOT
+  ↓
+Update React/application state
+  ↓
+Three.js focuses and highlights the selected track section
+  ↓
+WHAT HAPPENS HERE?
+  ↓
+WHY IT MATTERS
+  ↓
+Mark hotspot visited
+  ↓
+Explore another OR Make Your Picks
+```
+
+Three.js is a presentation layer. It must not own business/navigation state.
+
+### Sepang Ready
+
+Visiting all five recommended hotspots may produce:
+
+```text
+YOU KNOW SEPANG
+
+You know the key places to watch.
+
+[ MAKE YOUR PICKS → ]
+```
+
+This is not a hard gate. Predictions remain reachable earlier.
+
+Final educational copy for the five hotspots must be fact-checked before it is locked. Stitch placeholder copy is not factual authority.
 
 ---
 
@@ -198,11 +262,15 @@ LANDING
   ↓
 GET RACE READY
   ↓
-KNOWLEDGE CHECK
+F1 FAMILIARITY CHECK
   ↓
-RECOMMENDED LEARNING PATH
+RECOMMENDED LEARN PATH
   ↓
-UNDERSTAND SEPANG
+RACE READY / CONTINUE
+  ↓
+MEET SEPANG
+  ↓
+GUIDED OR FREE CIRCUIT EXPLORER
   ↓
 MAKE PREDICTIONS
   ↓
@@ -217,204 +285,91 @@ CREATE / JOIN LEAGUE
 LEADERBOARD
 ```
 
-Auth should happen late, after the user has already experienced value and created predictions.
+Auth should happen late, after the user has already received value and created predictions.
 
-Users may browse lessons and make temporary predictions before signing in.
-
----
-
-## Learn flow
-
-For a full beginner track:
-
-```text
-What is F1?
-  ↓
-Drivers & Teams
-  ↓
-How a Race Weekend Works
-  ↓
-Qualifying & Starting Grid
-  ↓
-Tyres & Pit Stops
-  ↓
-Flags & Safety Car
-  ↓
-Overtaking Basics
-  ↓
-F1 BASICS COMPLETE
-```
-
-Guidelines:
-
-- one main concept per screen
-- short, visual explanations
-- avoid long article-style pages
-- simple progress indicator
-- primary CTA: **Got it →**
+Users may browse Learn and Sepang and create temporary predictions before signing in.
 
 ---
 
-## Sepang flow
-
-```text
-MEET SEPANG
-  ↓
-Circuit Overview
-  ↓
-Why Sepang Is Special
-  ↓
-Key Corners / Hotspots
-  ↓
-Main Straight & Overtaking Areas
-  ↓
-Heat & Tropical Rain
-  ↓
-Sepang F1 History
-  ↓
-SEPANG COMPLETE
-  ↓
-MAKE YOUR PICKS
-```
-
-This section should be more exploratory than the Learn section. A circuit SVG with clickable hotspots is preferred for MVP.
-
----
-
-## Prediction flow
+## Prediction flow — draft, not yet finalized
 
 Use one question per screen.
 
+The current working concept is eight prediction steps followed by a summary, but the exact question set, scoring, and lock/edit rules must be finalized separately before implementation.
+
+Do not treat old placeholder questions in design exports as source of truth.
+
+High-level flow:
+
 ```text
-1 / 8 — Race Winner
+PREDICTION 01
   ↓
-2 / 8 — Second Place
+PREDICTION 02
   ↓
-3 / 8 — Third Place
+...
   ↓
-4 / 8 — Pole Position
-  ↓
-5 / 8 — Fastest Lap
-  ↓
-6 / 8 — Rain During Race?
-  ↓
-7 / 8 — Safety Car?
-  ↓
-8 / 8 — First Retirement
+PREDICTION 08
   ↓
 PREDICTION SUMMARY
 ```
 
-Every F1-specific term should have a short beginner-friendly explanation where needed.
-
-### Prediction deadline logic
-
-```text
-Has prediction deadline passed?
-        ↓
-    ┌───┴───┐
-   NO      YES
-   ↓         ↓
-Editable   Read-only
-picks      locked picks
-```
-
-Whether "locked" picks may still be edited before the deadline is a product decision to finalize later. Do not invent a rule during implementation without explicit direction.
+Every F1-specific term must have a short beginner-friendly explanation where needed.
 
 ---
 
-## League mechanism
+## League mechanism — concept approved, mechanics not yet finalized
 
-A **league** is a private prediction leaderboard for a group of friends or community members.
+A **league** is a private prediction leaderboard for friends or community members.
 
 It is not an F1 racing league and does not simulate races.
 
-Example:
-
-A KrackedDevs member creates a league called **KrackedDevs**. SEPANG 56 generates a join code or shareable link. Friends join the same league, submit their own race predictions, and are ranked by prediction score once results are entered.
-
-### Create league
+Core concept:
 
 ```text
-Picks Locked
+PICKS SAVED / LOCKED
   ↓
-Create League
+CREATE LEAGUE or JOIN LEAGUE
   ↓
-Enter League Name
+SHARE CODE / LINK
   ↓
-Create
+FRIENDS JOIN
   ↓
-Generate Join Code / Share Link
+PREDICTIONS ARE SCORED
   ↓
-League Leaderboard
+LEAGUE LEADERBOARD
 ```
 
-Example code:
+MVP should not contain chat, feed, messaging, team management, or social-network features.
 
-```text
-KD56-X7KQ
-```
-
-### Join league
-
-```text
-Join League
-  ↓
-Enter Code / Open Invite Link
-  ↓
-League exists?
-  ↓
-YES → Join → Leaderboard
-NO  → Show error → Retry
-```
-
-A user may join multiple leagues.
-
-For MVP, a league needs only:
-
-- name
-- owner
-- join code
-- members
-- member scores
-- leaderboard ranking
-
-No chat, feed, messaging, team management, or social network features.
+Exact scoring and ranking rules still require finalization.
 
 ---
 
-## Returning-user flow
+## Returning-user direction
 
-After the first visit, the user's main experience should focus on their progress and competition rather than replaying onboarding.
+Returning users should not be forced through onboarding again.
 
-Suggested returning-user dashboard:
+The app may surface progress such as:
 
-```text
-WELCOME BACK
+- Learn status
+- Sepang hotspot progress
+- Prediction status
+- league ranking
 
-Your Sepang Readiness
-██████████░░ 80%
-
-F1 Basics        ✓
-Sepang Guide      ✓
-Predictions       LOCKED
-KrackedDevs       #4
-
-[ VIEW PICKS ]
-[ VIEW LEAGUE ]
-```
-
-This dashboard concept is not yet a mandatory MVP screen until explicitly finalized, but implementation should leave room for it.
+A dedicated returning-user dashboard is not yet a mandatory MVP screen unless explicitly finalized.
 
 ---
 
 ## Primary navigation
 
+Working top-level destinations:
+
 - Learn
 - Sepang
 - Predict
 - Leaderboard
-- Profile
+
+Profile/account access may exist where needed but must not displace the primary product loop.
 
 Suggested routes:
 
@@ -425,80 +380,51 @@ Suggested routes:
 /predict
 /leaderboard
 /league/[code]
-/profile
 ```
 
-Keep lesson progression inside `/learn` unless route-level deep linking later proves useful.
+Additional routes should be added only when implementation needs them.
 
 ---
 
 ## State model
 
-### Per-user
+### Learn
 
-- `knowledgeLevel`
-- `learningProgress`
-- `sepangProgress`
-- `predictions`
-- `score`
-- `leagues`
+```ts
+knowledgeLevel
+recommendedLessonIds
+completedLessonIds
+raceReady
+```
 
-### App/global
+### Sepang
 
-- `lessons`
-- `drivers`
-- `teams`
-- `sepangContent`
-- `predictionQuestions`
-- `raceResults`
-- `leagues`
+```ts
+hasVisitedSepang
+tourMode
+selectedHotspot
+visitedHotspots
+sepangReady
+```
+
+### Later product state
+
+```text
+predictions
+predictionStatus
+score
+leagues
+```
+
+Prediction/league persistence details are intentionally left open until those systems are finalized.
 
 ---
 
-## Minimal data model
+## Implementation principle
 
-```text
-users
-- id
-- username
-- avatar
-- knowledge_level
-- created_at
+When broad documentation and a finalized flow standard differ, use the dedicated finalized standard:
 
-learning_progress
-- user_id
-- lesson_id
-- completed
+- `docs/learn-flow-standard.md`
+- `docs/sepang-flow-standard.md`
 
-prediction_questions
-- id
-- type
-- title
-- description
-- points_available
-
-predictions
-- id
-- user_id
-- question_id
-- answer
-- points
-
-leagues
-- id
-- name
-- code
-- owner_id
-
-league_members
-- league_id
-- user_id
-
-race_results
-- question_id
-- correct_answer
-```
-
-Before authentication, `knowledgeLevel`, progress, and temporary prediction state may live in browser state/local storage. Once the user authenticates, relevant state can be persisted to the backend.
-
-Drivers, teams, lessons, and Sepang educational content may remain static in the codebase for MVP. Do not build a CMS unless scope changes explicitly.
+Do not redesign finalized product behavior during implementation. Update the product documentation first if the product owner changes the flow.
