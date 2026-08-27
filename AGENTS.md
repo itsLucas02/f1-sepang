@@ -9,6 +9,7 @@ Read these before changing product behavior or UI:
 - `docs/ui-standardization.md`
 - `docs/mobile-landing-standard.md`
 - `docs/mobile-prediction-standard.md`
+- `docs/mobile-circuit-standard.md`
 - `docs/product-blueprint.md`
 - `docs/user-flow.md`
 - `docs/wireframes.md`
@@ -44,13 +45,13 @@ Do not implement:
 - Admin CMS
 - Native mobile app
 
-Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, telemetry, `ALL SYSTEMS NOMINAL`, or technical-spec links are real features. They are not.
+Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, telemetry, `ALL SYSTEMS NOMINAL`, technical-spec links, `LIVE TELEMETRY ACTIVE`, fake entry speed/G-force, or telemetry CTAs are real features. They are not.
 
 ## Design authority and Stitch outputs
 
 Codex/OpenCode are implementers, not product designers for this project.
 
-`DESIGN.md`, `docs/ui-standardization.md`, and approved responsive standards such as `docs/mobile-landing-standard.md` and `docs/mobile-prediction-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+`DESIGN.md`, `docs/ui-standardization.md`, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
 
 Approved Stitch screenshots/HTML are visual baseline references for composition only. Preserve strong approved composition patterns, but do not copy generated design tokens, substitute fonts, invented navigation, fake data, copy, inline prototype JavaScript, or inconsistent components literally.
 
@@ -81,6 +82,7 @@ Identity-heavy components should be custom instead of stock-looking shadcn cards
 - DriverCard
 - PredictionStep
 - CircuitInfoPanel
+- CircuitHotspotTabs
 - TimingLeaderboard
 - StartingLights
 - SepangCircuitScene
