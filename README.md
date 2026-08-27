@@ -21,24 +21,45 @@ If a beginner encounters unexplained jargon, the interface has failed.
 
 The feature set is deliberately modest. The presentation is not.
 
-SEPANG 56 should feel like an interactive motorsport experience rather than a generic learning/prediction website. Three.js is part of the planned MVP experience layer, but its use is predetermined in `docs/threejs-experience.md`; coding agents should not invent additional 3D features.
+SEPANG 56 should feel like an interactive current-generation motorsport experience rather than a generic learning/prediction website. Three.js is part of the planned MVP experience layer, but its use is predetermined in `docs/threejs-experience.md`; coding agents should not invent additional 3D features.
 
 ## Planned web stack
 
-- React / Next.js-style component architecture
+- Next.js / React component architecture
 - TypeScript
 - Tailwind CSS
-- Three.js for the explicitly defined 3D scenes
-- Motion library such as Framer Motion and/or GSAP for non-3D UI transitions
+- **shadcn/ui + Radix primitives for accessible interaction behavior**
+- Three.js + React Three Fiber / Drei for explicitly approved 3D scenes
+- Motion/Framer Motion for ordinary non-3D UI transitions; add GSAP only if a specific approved cinematic interaction requires it
 - Supabase for auth, predictions, leagues, and leaderboard persistence
 - Static/local content for F1 lessons and Sepang educational content where practical
 
-Final implementation details may be refined before coding, but Three.js is an intentional part of the experience architecture.
+### UI engineering principle
+
+> **shadcn gives us the behavior. SEPANG 56 gives it the F1 skin.**
+
+Default shadcn visuals are not the product design. All primitives must use the exact SEPANG 56 tokens and component rules in `DESIGN.md` and `docs/ui-standardization.md`.
+
+Identity-heavy elements such as the race header, driver cards, prediction shell, timing leaderboard, circuit information panel, starting lights, and Three.js scenes are custom SEPANG components.
+
+## Design references
+
+Google Stitch outputs are used as **visual/composition baselines**, not production specifications.
+
+Generated Stitch HTML and generated design files can contain substituted fonts, inconsistent palettes, fake telemetry, invented navigation, and route-specific component styling. Codex/OpenCode must standardize those references against:
+
+1. `DESIGN.md`
+2. `docs/ui-standardization.md`
+3. product flows/wireframes
+
+Do not reproduce Stitch exports line-for-line.
 
 ## MVP exclusions
 
-The MVP does **not** include AI chat/tutoring, live race telemetry, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, or admin CMS work.
+The MVP does **not** include AI chat/tutoring, live race telemetry, live timing, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, or admin CMS work.
+
+Decorative Stitch labels such as live timing, circuit-open status, countdown timers, coordinates, and fake system telemetry are not product features.
 
 3D/WebGL is **not** generally open-ended. It is allowed only for the explicitly approved experiences in `docs/threejs-experience.md` unless product scope is changed by the owner.
 
-See `docs/` plus `DESIGN.md` for the current product blueprint, flows, wireframes, racing-first design system, Three.js experience map, and Stitch exploration brief.
+See `docs/` plus `DESIGN.md` for the current product blueprint, flows, wireframes, standardized design system, Three.js experience map, and Stitch exploration brief.
