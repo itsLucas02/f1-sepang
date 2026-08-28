@@ -7,6 +7,7 @@ Read these before changing product behavior or UI:
 - `README.md`
 - `DESIGN.md`
 - `docs/ui-standardization.md`
+- `docs/component-architecture.md`
 - `docs/learn-flow-standard.md`
 - `docs/sepang-flow-standard.md`
 - `docs/mobile-landing-standard.md`
@@ -62,7 +63,7 @@ Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN
 
 Codex/OpenCode are implementers, not product designers for this project.
 
-`DESIGN.md`, `docs/ui-standardization.md`, finalized flow standards, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+`DESIGN.md`, `docs/ui-standardization.md`, `docs/component-architecture.md`, finalized flow standards, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
 
 Approved Stitch screenshots/HTML are visual baseline references for composition only. Preserve strong approved composition patterns, but do not copy generated design tokens, substitute fonts, invented navigation, fake data, copy, inline prototype JavaScript, or inconsistent components literally.
 
@@ -70,11 +71,15 @@ When two Stitch screens differ, standardize them according to the repo design co
 
 ## shadcn/ui contract
 
+The detailed component ownership and primitive mapping is finalized in `docs/component-architecture.md`.
+
 Use shadcn/Radix where it gives us reliable accessible interaction behavior.
 
 **shadcn gives us the behavior. SEPANG 56 gives it the F1 skin.**
 
-Good candidates include Dialog, AlertDialog, Sheet/Drawer, Tooltip, Tabs, DropdownMenu, Form primitives, Progress, Toast/Sonner, and Select when appropriate.
+Never choose a shadcn component merely because its default appearance resembles the desired UI. Choose it only when its interaction primitive correctly models the required behavior.
+
+Good candidates include Dialog, AlertDialog, Sheet/Drawer, Tooltip, Tabs, DropdownMenu, Form primitives, RadioGroup, Progress, Toast/Sonner, and Select when appropriate.
 
 Do not use the default shadcn visual theme as the application identity.
 
@@ -86,10 +91,15 @@ All shadcn components must inherit/map to the exact SEPANG 56 design tokens in `
 - restrained borders
 - racing-red active/primary states
 
-Identity-heavy components should be custom instead of stock-looking shadcn cards/tables:
+Identity-heavy components should be custom instead of stock-looking shadcn cards/tables, even when Radix/shadcn behavior is used internally:
 
 - RaceHeader
 - RaceFlowHeader
+- RaceFooter
+- JourneyStepCard
+- FamiliarityCard
+- LessonStep
+- RaceReadyMoment
 - DriverCard
 - PredictionStep
 - CircuitInfoPanel
