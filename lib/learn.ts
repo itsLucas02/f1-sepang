@@ -1,4 +1,4 @@
-import { LESSON_IDS, type LessonId } from "@/content/lessons";
+import { LESSON_IDS, type LessonId } from "../content/lessons";
 
 export type KnowledgeLevel = "beginner" | "basics" | "fan";
 
