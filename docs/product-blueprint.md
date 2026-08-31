@@ -74,18 +74,42 @@ Visiting all five hotspots may produce a **You Know Sepang** milestone, but Pred
 
 Final hotspot educational copy must be fact-checked before being locked.
 
-### 3. Make predictions — mechanics still to finalize
+### 3. Make predictions — finalized core flow
 
-Predictions remain a core MVP pillar.
+Source of truth: `docs/prediction-flow-standard.md`.
 
-The approved interaction principle is:
+The Prediction experience uses exactly eight questions, one per screen:
 
+1. Race Winner
+2. Second Place
+3. Third Place
+4. Will the driver starting P1 win the race? — Yes / No
+5. Fastest Lap
+6. Rain during the race? — Yes / No
+7. Safety Car during the race? — Yes / No
+8. First Retirement
+
+`Pole Position` is not part of the finalized question set.
+
+Core behavior:
+
+- temporary anonymous draft allowed
 - one question per screen
-- beginner explanations for F1-specific terms
-- temporary picks allowed before auth
-- review/summary before persistence
+- users may go back and edit answers
+- podium picks cannot duplicate drivers
+- all eight picks are reviewed on Prediction Summary
+- auth occurs only when persistence is needed
+- auth handoff must preserve the completed draft
+- submitted picks remain editable before the race deadline
+- one common pre-race prediction deadline
+- picks lock automatically at the deadline
+- no irreversible user-operated lock button before the deadline
 
-The exact eight-question set, scoring formula, edit behavior, and locking deadline rules still require product finalization. Do not infer those rules from old drafts or Stitch exports.
+Prediction lifecycle:
+
+**Draft → Submitted / Editable → Locked**
+
+Scoring values and a few result-definition edge cases are finalized in the next product phase.
 
 ### 4. Compete with friends — mechanics still to finalize
 
@@ -100,7 +124,7 @@ A global leaderboard may also exist, but private/friends competition is the prim
 
 No chat, feed, reactions, messaging, or complex social system belongs in MVP.
 
-Exact scoring/ranking mechanics still require product finalization.
+Exact scoring/ranking/tie mechanics still require product finalization.
 
 ---
 
@@ -118,10 +142,13 @@ Exact scoring/ranking mechanics still require product finalization.
 10. User explores Main Straight, T1, T4, T9, and T15, or explores freely.
 11. User learns what happens at each selected location and why it matters.
 12. User continues to Predictions when ready.
-13. User makes predictions one question at a time and reviews their picks.
-14. Authentication is requested only when saving/locking or using social features requires persistence.
-15. User creates or joins a private league.
-16. User compares results with friends once predictions are scored.
+13. User completes eight predictions one question at a time.
+14. User reviews all picks and edits any they want to change.
+15. Authentication is requested only when saving/submitting requires persistence.
+16. Submitted picks remain editable until the common race deadline.
+17. Picks lock automatically when the deadline passes.
+18. User creates or joins a private league.
+19. User compares results with friends once predictions are scored.
 
 ---
 
@@ -131,7 +158,9 @@ Exact scoring/ranking mechanics still require product finalization.
 
 Nothing should interrupt or dilute this loop in MVP.
 
-The first two pillars use soft progression rather than hard gating.
+Learn and Sepang use soft progression rather than hard gating.
+
+Predictions use a real deadline because fair competition requires all picks to become immutable before the race.
 
 ---
 
