@@ -11,6 +11,22 @@ SEPANG 56 is a beginner-first Formula 1 web app built around Formula 1's return 
 
 This repository is the working source of truth for the Kracked Devs Formula 1 Sepang bounty project.
 
+## Implementation status
+
+**The MVP is implementation-ready.**
+
+Major product decisions are finalized for Learn, Sepang, Predictions, scoring, leagues/leaderboards, auth, and persistence.
+
+Start with:
+
+- `AGENTS.md`
+- `docs/implementation-blueprint.md`
+- `DESIGN.md`
+
+Then follow the dedicated flow/behavior standards under `docs/`.
+
+Do not reopen finalized product decisions during coding unless a real implementation constraint requires product-owner review.
+
 ## Product principle
 
 Every feature must make sense to someone who knows **zero F1**.
@@ -42,24 +58,44 @@ Default shadcn visuals are not the product design. All primitives must use the e
 
 Identity-heavy elements such as the race header, driver cards, prediction shell, timing leaderboard, circuit information panel, starting lights, and Three.js scenes are custom SEPANG components.
 
+## Finalized product standards
+
+- `docs/learn-flow-standard.md`
+- `docs/sepang-flow-standard.md`
+- `docs/prediction-flow-standard.md`
+- `docs/scoring-standard.md`
+- `docs/league-leaderboard-standard.md`
+- `docs/auth-persistence-standard.md`
+- `docs/component-architecture.md`
+- `docs/implementation-blueprint.md`
+
+Responsive/design standards remain in `DESIGN.md`, `docs/ui-standardization.md`, and the `docs/mobile-*.md` files.
+
+## KISS / YAGNI
+
+Build the MVP that exists, not a hypothetical platform.
+
+Prefer:
+
+- static content over CMS infrastructure
+- simple JSON prediction answers over generic question engines
+- one configured race deadline over scheduling systems
+- one deterministic scoring function over a rules engine
+- one membership table over a social platform
+- Google OAuth only over multi-provider auth
+
 ## Design references
 
 Google Stitch outputs are used as **visual/composition baselines**, not production specifications.
 
-Generated Stitch HTML and generated design files can contain substituted fonts, inconsistent palettes, fake telemetry, invented navigation, and route-specific component styling. Codex/OpenCode must standardize those references against:
-
-1. `DESIGN.md`
-2. `docs/ui-standardization.md`
-3. product flows/wireframes
+Generated Stitch HTML and generated design files can contain substituted fonts, inconsistent palettes, fake telemetry, invented navigation, and route-specific component styling. Codex/OpenCode must standardize those references against the repo source-of-truth documents.
 
 Do not reproduce Stitch exports line-for-line.
 
 ## MVP exclusions
 
-The MVP does **not** include AI chat/tutoring, live race telemetry, live timing, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, or admin CMS work.
+The MVP does **not** include AI chat/tutoring, live race telemetry, live timing, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, admin CMS work, automated race-result ingestion, or league social/moderation systems.
 
 Decorative Stitch labels such as live timing, circuit-open status, countdown timers, coordinates, and fake system telemetry are not product features.
 
 3D/WebGL is **not** generally open-ended. It is allowed only for the explicitly approved experiences in `docs/threejs-experience.md` unless product scope is changed by the owner.
-
-See `docs/` plus `DESIGN.md` for the current product blueprint, flows, wireframes, standardized design system, Three.js experience map, and Stitch exploration brief.
