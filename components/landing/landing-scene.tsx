@@ -1,8 +1,9 @@
 export function LandingScene() {
   return (
     <div
+      role="img"
+      aria-label="Sepang-inspired racing illustration"
       className="relative aspect-[4/3] w-full overflow-hidden rounded-[6px] border border-border bg-surface-01 lg:aspect-[5/4]"
-      aria-label="Sepang-inspired racing scene"
     >
       <div
         aria-hidden="true"
@@ -76,7 +77,7 @@ export function LandingScene() {
           Sepang
         </p>
         <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted sm:text-[11px]">
-          Race weekend ready
+          Learn / Predict / Compete
         </p>
       </div>
     </div>
