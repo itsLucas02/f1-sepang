@@ -7,6 +7,8 @@ import {
 } from "@/content/predictions";
 
 export const PREDICTION_STORAGE_KEY = "sepang56.predictions";
+export const PREDICTION_RETURN_TO_SUMMARY_KEY =
+  "sepang56.predictions.returnToSummary";
 export const PREDICTION_DEADLINE =
   process.env.NEXT_PUBLIC_PREDICTION_DEADLINE ?? null;
 
