@@ -20,19 +20,17 @@ into:
 
 ## MVP pillars
 
-### 1. Learn — finalized flow
+### 1. Learn — finalized
 
 Source of truth: `docs/learn-flow-standard.md`.
 
-Users first self-select their familiarity level:
+Users self-select:
 
 - **I'm completely new**
 - **I know some basics**
 - **I already follow F1**
 
-The app deterministically recommends the appropriate path. No AI or scored knowledge quiz is involved.
-
-Approved lesson set:
+Approved lessons:
 
 1. Race Weekend
 2. How the Race Works
@@ -41,15 +39,15 @@ Approved lesson set:
 5. Flags & Safety Car
 6. How to Watch
 
-Beginner users are recommended all six lessons. Users who know some basics are recommended lessons 3–6. Existing F1 fans may continue directly to Sepang.
+Beginner users are recommended all six lessons. Basics users are recommended lessons 3–6. Existing fans may continue directly to Sepang.
 
-Lessons are short, visual, and beginner-first. Completing the recommended path produces a **Race Ready** milestone, but Learn is not a hard gate.
+`Race Ready` is encouragement, not a hard gate.
 
-### 2. Understand Sepang — finalized flow
+### 2. Understand Sepang — finalized
 
 Source of truth: `docs/sepang-flow-standard.md`.
 
-The Sepang experience is a guided-but-free circuit explorer built around exactly five MVP hotspots:
+Exactly five MVP hotspots:
 
 1. Main Straight
 2. T1
@@ -57,28 +55,24 @@ The Sepang experience is a guided-but-free circuit explorer built around exactly
 4. T9
 5. T15
 
-First-time users receive a short introduction and a recommended guided order:
+First-time recommended order:
 
 **Main Straight → T1 → T4 → T9 → T15**
 
-Users may switch to free exploration or select any hotspot at any time.
-
-Each hotspot teaches two things:
+Each hotspot answers:
 
 - **What happens here?**
 - **Why it matters when watching the race**
 
-Three.js focuses/highlights the selected circuit section while normal application UI presents the educational content. Three.js does not own application state.
+Three.js focuses/highlights the selected circuit section while normal application UI owns state and educational content.
 
-Visiting all five hotspots may produce a **You Know Sepang** milestone, but Predictions remain accessible earlier.
+`You Know Sepang` is a milestone, not a hard gate.
 
-Final hotspot educational copy must be fact-checked before being locked.
-
-### 3. Make predictions — finalized core flow
+### 3. Make predictions — finalized
 
 Source of truth: `docs/prediction-flow-standard.md`.
 
-The Prediction experience uses exactly eight questions, one per screen:
+Exactly eight questions, one per screen:
 
 1. Race Winner
 2. Second Place
@@ -89,66 +83,109 @@ The Prediction experience uses exactly eight questions, one per screen:
 7. Safety Car during the race? — Yes / No
 8. First Retirement
 
-`Pole Position` is not part of the finalized question set.
-
 Core behavior:
 
-- temporary anonymous draft allowed
-- one question per screen
-- users may go back and edit answers
-- podium picks cannot duplicate drivers
-- all eight picks are reviewed on Prediction Summary
-- auth occurs only when persistence is needed
-- auth handoff must preserve the completed draft
-- submitted picks remain editable before the race deadline
-- one common pre-race prediction deadline
-- picks lock automatically at the deadline
-- no irreversible user-operated lock button before the deadline
+- anonymous draft allowed
+- users may go back and edit
+- podium drivers cannot duplicate
+- summary before persistence
+- auth only when saving/submitting requires it
+- draft survives auth handoff
+- one common pre-race deadline
+- submitted picks remain editable before the deadline
+- picks become read-only automatically at/after the deadline
+- no manual irreversible lock button
 
-Prediction lifecycle:
+Lifecycle:
 
 **Draft → Submitted / Editable → Locked**
 
-Scoring values and a few result-definition edge cases are finalized in the next product phase.
+### 4. Score predictions — finalized
 
-### 4. Compete with friends — mechanics still to finalize
+Source of truth: `docs/scoring-standard.md`.
 
-The core concept is approved:
+Maximum score: **25 points**.
 
-- create a private league
-- join by code/link
-- compare prediction scores with friends
-- leaderboard ranking
+```text
+Winner             5
+P2                 4
+P3                 3
+P1 starter wins?   2
+Fastest Lap        3
+Rain?              2
+Safety Car?        2
+First Retirement   4
+```
 
-A global leaderboard may also exist, but private/friends competition is the primary social use case.
+Correct = full points. Wrong = 0. No partial credit.
 
-No chat, feed, reactions, messaging, or complex social system belongs in MVP.
+Race answers are entered once after the race and submissions are scored deterministically.
 
-Exact scoring/ranking/tie mechanics still require product finalization.
+Ties remain ties.
+
+### 5. Compete with friends — finalized
+
+Source of truth: `docs/league-leaderboard-standard.md`.
+
+Users can:
+
+- create a private league by entering a name
+- receive a unique join code/share link
+- join a league by code/link
+- belong to multiple leagues
+- compare the same prediction score across private leagues
+- view a global leaderboard
+
+Private/friends competition remains the primary social use case.
+
+No chat, feed, reactions, roles, seasons, custom scoring, moderation system, or social-network features belong in MVP.
+
+### 6. Auth & persistence — finalized
+
+Source of truth: `docs/auth-persistence-standard.md`.
+
+Users can browse Learn, Sepang, make all eight predictions, and reach Prediction Summary without signing in.
+
+Auth is required only for:
+
+- saving/submitting picks
+- creating a league
+- joining a league
+
+MVP auth:
+
+**Supabase Auth + Google OAuth only.**
+
+Minimal persisted tables:
+
+```text
+profiles
+prediction_submissions
+leagues
+league_members
+race_results
+```
 
 ---
 
 ## Primary user scenario
 
-1. User hears that F1 is returning to Sepang.
-2. User likes the idea but knows little or nothing about F1.
-3. User opens SEPANG 56.
-4. Landing explains the product and offers **Get Race Ready**.
-5. User selects their F1 familiarity level.
-6. The app recommends the appropriate Learn path.
-7. User completes as much Learn content as they need and may reach **Race Ready**.
-8. User enters **Meet Sepang**.
-9. On first visit, the app introduces the circuit and recommends the guided explorer.
-10. User explores Main Straight, T1, T4, T9, and T15, or explores freely.
-11. User learns what happens at each selected location and why it matters.
-12. User continues to Predictions when ready.
-13. User completes eight predictions one question at a time.
-14. User reviews all picks and edits any they want to change.
-15. Authentication is requested only when saving/submitting requires persistence.
-16. Submitted picks remain editable until the common race deadline.
-17. Picks lock automatically when the deadline passes.
-18. User creates or joins a private league.
-19. User compares results with friends once predictions are scored.
+1. User opens SEPANG 56.
+2. Landing offers **Get Race Ready**.
+3. User selects their F1 familiarity level.
+4. The app recommends the appropriate Learn path.
+5. User completes as much Learn content as they want.
+6. User enters Sepang and explores the five key locations.
+7. User makes eight predictions one question at a time.
+8. User reviews and edits picks.
+9. User chooses to save/submit.
+10. If needed, Google authentication occurs and returns them to their picks.
+11. Submitted picks remain editable until the common race deadline.
+12. Picks become read-only at the deadline.
+13. User creates or joins private leagues.
+14. After the race, the eight official result answers are entered once.
+15. Predictions are scored out of 25.
+16. Global and private league leaderboards show the final rankings.
 
 ---
 
@@ -158,20 +195,31 @@ Exact scoring/ranking/tie mechanics still require product finalization.
 
 Nothing should interrupt or dilute this loop in MVP.
 
-Learn and Sepang use soft progression rather than hard gating.
+---
 
-Predictions use a real deadline because fair competition requires all picks to become immutable before the race.
+## Implementation status
+
+The major MVP product decisions are now finalized.
+
+Implementation should follow:
+
+- `docs/implementation-blueprint.md`
+- `docs/component-architecture.md`
+- `DESIGN.md`
+- the dedicated finalized flow/behavior standards
+
+Apply KISS and YAGNI aggressively. Do not build future-platform infrastructure that the current MVP does not require.
 
 ---
 
 ## MVP acceptance test
 
-Give SEPANG 56 to someone who has never watched F1. After using it, they should be able to answer:
+Give SEPANG 56 to someone who has never watched F1. They should be able to:
 
-- What happens across an F1 race weekend?
-- Why do tyres, pit stops, overtaking, flags, and the Safety Car matter?
-- What are the key places to watch at Sepang?
-- Who do you think will win or perform well?
-- Can I compare my picks with friends?
+- understand the core race concepts needed to follow the event
+- identify the key places to watch at Sepang
+- make eight understandable predictions
+- save/edit those predictions before the deadline
+- compare a scored result with friends in a private league
 
-If those outcomes work cleanly, the MVP is doing its job.
+If those outcomes work cleanly on desktop and mobile, the MVP is doing its job.
