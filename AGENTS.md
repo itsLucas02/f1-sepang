@@ -11,6 +11,10 @@ Read these before changing product behavior or UI:
 - `docs/learn-flow-standard.md`
 - `docs/sepang-flow-standard.md`
 - `docs/prediction-flow-standard.md`
+- `docs/scoring-standard.md`
+- `docs/league-leaderboard-standard.md`
+- `docs/auth-persistence-standard.md`
+- `docs/implementation-blueprint.md`
 - `docs/mobile-landing-standard.md`
 - `docs/mobile-prediction-standard.md`
 - `docs/mobile-circuit-standard.md`
@@ -21,25 +25,30 @@ Read these before changing product behavior or UI:
 - `docs/threejs-experience.md`
 - `docs/stitch-design-brief.md`
 
-## Scope lock
+## Implementation phase
+
+The MVP is now **implementation-ready**.
+
+Build according to `docs/implementation-blueprint.md` and the dedicated finalized product standards. Do not reopen settled product decisions during coding unless an actual implementation constraint requires product-owner review.
 
 The MVP is exactly:
 
 **Learn → Understand Sepang → Make Predictions → Compete With Friends**
 
-Do not add speculative product features without explicit instruction.
+Do not add speculative product features.
 
-The following core flows are finalized:
+Finalized product standards:
 
 - Learn → `docs/learn-flow-standard.md`
 - Understand Sepang → `docs/sepang-flow-standard.md`
 - Predictions → `docs/prediction-flow-standard.md`
+- Scoring → `docs/scoring-standard.md`
+- Leagues / Leaderboards → `docs/league-leaderboard-standard.md`
+- Auth / Persistence → `docs/auth-persistence-standard.md`
 
-Those dedicated flow standards override older/broader flow descriptions if any conflict remains elsewhere in the repo.
+Dedicated standards override older/broader descriptions if a conflict remains elsewhere in the repo.
 
-Scoring values/edge cases, league ranking/tie mechanics, and final auth/provider persistence details are not yet fully finalized. Do not invent missing product rules during implementation.
-
-### Prediction rules that are already locked
+## Locked prediction / competition rules
 
 Do not reinterpret these:
 
@@ -52,9 +61,34 @@ Do not reinterpret these:
 - auth handoff must preserve the draft
 - one common pre-race deadline
 - submitted picks remain editable before the deadline
-- picks lock automatically at the deadline
-- `draft`, `submitted`, and `locked` are distinct states
-- no manual irreversible `LOCK PICKS` action before the deadline
+- picks become read-only automatically at/after the deadline
+- no manual irreversible `LOCK PICKS` action
+- scoring maximum is 25 points
+- exact-match scoring only; no partial credit
+- ties remain ties using competition ranking (`1, 2, 2, 4`)
+- one user score is reused across every league
+- users may belong to multiple leagues
+- creating/joining leagues requires auth
+- MVP auth is Supabase Auth + Google OAuth only
+
+## KISS / YAGNI rule
+
+Prefer the smallest direct implementation that satisfies the finalized MVP.
+
+Do not build generalized infrastructure for hypothetical future requirements.
+
+Examples:
+
+- static lesson/Sepang content instead of CMS
+- one JSON prediction answer object instead of generic question tables
+- one configured race deadline instead of scheduling infrastructure
+- one deterministic scoring function instead of a rules engine
+- one league membership table instead of a social platform
+- local storage for anonymous progress instead of offline-sync infrastructure
+- Google OAuth only instead of multi-provider auth
+- no admin CMS for entering eight race-result answers
+
+If a direct implementation is clear and testable, prefer it over abstraction.
 
 ## Explicitly out of scope
 
@@ -77,6 +111,9 @@ Do not implement:
 - Payments
 - Admin CMS
 - Native mobile app
+- league roles/moderation/seasons/custom scoring
+- generic prediction-question engine
+- automated race-result ingestion
 
 Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, telemetry, `ALL SYSTEMS NOMINAL`, technical-spec links, `LIVE TELEMETRY ACTIVE`, fake entry speed/G-force, or telemetry CTAs are real features. They are not.
 
@@ -84,7 +121,7 @@ Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN
 
 Codex/OpenCode are implementers, not product designers for this project.
 
-`DESIGN.md`, `docs/ui-standardization.md`, `docs/component-architecture.md`, finalized flow standards, and approved responsive standards such as `docs/mobile-landing-standard.md`, `docs/mobile-prediction-standard.md`, and `docs/mobile-circuit-standard.md` override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
+`DESIGN.md`, `docs/ui-standardization.md`, `docs/component-architecture.md`, finalized product standards, and approved responsive standards override generated Stitch HTML/`DESIGN.md` exports whenever they conflict.
 
 Approved Stitch screenshots/HTML are visual baseline references for composition only. Preserve strong approved composition patterns, but do not copy generated design tokens, substitute fonts, invented navigation, fake data, copy, inline prototype JavaScript, or inconsistent components literally.
 
@@ -112,7 +149,7 @@ All shadcn components must inherit/map to the exact SEPANG 56 design tokens in `
 - restrained borders
 - racing-red active/primary states
 
-Identity-heavy components should be custom instead of stock-looking shadcn cards/tables, even when Radix/shadcn behavior is used internally:
+Identity-heavy components should be custom even when Radix/shadcn behavior is used internally:
 
 - RaceHeader
 - RaceFlowHeader
@@ -137,7 +174,7 @@ Do not decide independently where to add 3D. Implement only the approved scenes 
 
 Core product actions must remain usable if 3D fails to load, the device is constrained, or reduced motion is enabled.
 
-Three.js must display application state rather than own navigation/business state. This is especially important in the Sepang circuit explorer.
+Three.js must display application state rather than own navigation/business state.
 
 ## UX principles
 
@@ -147,8 +184,8 @@ Three.js must display application state rather than own navigation/business stat
 - Use one prediction question per screen.
 - Delay auth until persistence/social actions require it.
 - Mobile must be first-class, not a scaled-down desktop afterthought.
-- Prefer simple, inspectable implementation over clever architecture.
 - Learn and Sepang milestones are encouragement, not hard gates.
+- Preserve anonymous work through auth.
 
 ## Visual principles
 
@@ -162,13 +199,17 @@ Do not copy protected Formula 1 logos, exact brand assets, or proprietary fonts.
 
 ## Engineering principles
 
+- Follow the build order in `docs/implementation-blueprint.md`.
 - Keep scope minimal.
 - Prefer established libraries.
 - Favor composable modules.
 - Avoid premature abstractions.
-- Keep content/data static when a database is not yet needed.
-- Do not introduce a CMS for MVP.
+- Keep content/data static when a database is not needed.
+- Do not introduce a CMS.
 - Keep 3D isolated from product/business state through clean component boundaries.
 - Lazy-load heavy 3D assets.
 - Centralize tokens and shared shell/components instead of restyling per page.
+- Enforce prediction deadlines on the write path, not only in client UI.
+- Use small explicit Supabase RLS policies.
+- Unit test deterministic scoring and other competition-critical rules.
 - Make small, reviewable changes.
