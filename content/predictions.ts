@@ -44,7 +44,7 @@ export const PREDICTION_QUESTIONS = [
     index: 6,
     kind: "boolean",
     heading: "Rain during the race?",
-    helper: "Predict whether rain will affect the race at any point.",
+    helper: "Predict whether it will rain at any point during the race.",
     summaryLabel: "Rain",
   },
   {
