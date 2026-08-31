@@ -114,6 +114,17 @@ export function setPredictionAnswer(
   questionId: PredictionQuestionId,
   answer: PredictionAnswer,
 ): PredictionAnswers {
+  if (!isValidAnswer(questionId, answer)) {
+    return answers;
+  }
+
+  if (
+    isDriverId(answer) &&
+    getUnavailablePodiumDriverIds(questionId, answers).includes(answer)
+  ) {
+    return answers;
+  }
+
   const next = { ...answers, [questionId]: answer };
 
   if (questionId === "winner" && isDriverId(answer)) {
