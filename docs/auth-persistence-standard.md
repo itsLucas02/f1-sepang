@@ -108,7 +108,7 @@ Predictions, league membership, and scores must be persisted because they affect
 
 ```text
 id              uuid / auth user id
- display_name
+display_name
 avatar_url
 knowledge_level
 completed_lessons
