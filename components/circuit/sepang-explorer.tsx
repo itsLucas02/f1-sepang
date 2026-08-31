@@ -73,6 +73,28 @@ export function SepangExplorer() {
     }));
   }
 
+  function toggleTourMode() {
+    setState((current) => {
+      if (current.tourMode === "guided") {
+        return { ...current, tourMode: "free" };
+      }
+
+      const nextHotspot = getNextGuidedHotspot(
+        current.selectedHotspot,
+        current.visitedHotspots,
+      );
+
+      return {
+        ...current,
+        tourMode: "guided",
+        selectedHotspot: nextHotspot ?? current.selectedHotspot,
+        visitedHotspots: nextHotspot
+          ? addVisitedHotspot(current.visitedHotspots, nextHotspot)
+          : current.visitedHotspots,
+      };
+    });
+  }
+
   if (!hydrated) {
     return (
       <section className="border border-border bg-surface-01 p-6 sm:p-8">
@@ -113,9 +135,7 @@ export function SepangExplorer() {
         </div>
 
         <div className="lg:col-span-7">
-          <div className="relative min-h-[300px] overflow-hidden rounded-lg border border-border bg-surface-01 sm:min-h-[420px]">
-            <SepangCircuitStage selectedHotspot="main-straight" />
-          </div>
+          <SepangCircuitStage selectedHotspot="main-straight" />
         </div>
       </section>
     );
@@ -137,16 +157,7 @@ export function SepangExplorer() {
           <span className="font-mono text-xs uppercase tracking-[0.1em] text-text-muted">
             {state.visitedHotspots.length} / {HOTSPOT_ORDER.length} visited
           </span>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() =>
-              setState((current) => ({
-                ...current,
-                tourMode: current.tourMode === "guided" ? "free" : "guided",
-              }))
-            }
-          >
+          <Button type="button" variant="secondary" onClick={toggleTourMode}>
             {state.tourMode === "guided" ? "Explore Freely" : "Guided Tour"}
           </Button>
         </div>
