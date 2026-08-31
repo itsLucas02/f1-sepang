@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Check, LockKeyhole, Pencil } from "lucide-react";
 
-import { RETURN_TO_SUMMARY_KEY } from "@/components/prediction/prediction-experience";
 import { RaceFlowHeader } from "@/components/shared/race-flow-header";
 import { Button } from "@/components/ui/button";
 import { getDriver, isDriverId } from "@/content/drivers";
@@ -13,6 +12,7 @@ import { PREDICTION_QUESTIONS } from "@/content/predictions";
 import {
   DEFAULT_PREDICTION_DRAFT,
   PREDICTION_DEADLINE,
+  PREDICTION_RETURN_TO_SUMMARY_KEY,
   PREDICTION_STORAGE_KEY,
   isPredictionComplete,
   isPredictionLocked,
@@ -93,7 +93,7 @@ export function PredictionSummary() {
       PREDICTION_STORAGE_KEY,
       JSON.stringify(nextDraft),
     );
-    window.sessionStorage.setItem(RETURN_TO_SUMMARY_KEY, "1");
+    window.sessionStorage.setItem(PREDICTION_RETURN_TO_SUMMARY_KEY, "1");
     router.push("/predict");
   }
 
