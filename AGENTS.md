@@ -10,6 +10,7 @@ Read these before changing product behavior or UI:
 - `docs/component-architecture.md`
 - `docs/learn-flow-standard.md`
 - `docs/sepang-flow-standard.md`
+- `docs/prediction-flow-standard.md`
 - `docs/mobile-landing-standard.md`
 - `docs/mobile-prediction-standard.md`
 - `docs/mobile-circuit-standard.md`
@@ -28,20 +29,40 @@ The MVP is exactly:
 
 Do not add speculative product features without explicit instruction.
 
-The Learn and Understand Sepang product flows are finalized in:
+The following core flows are finalized:
 
-- `docs/learn-flow-standard.md`
-- `docs/sepang-flow-standard.md`
+- Learn → `docs/learn-flow-standard.md`
+- Understand Sepang → `docs/sepang-flow-standard.md`
+- Predictions → `docs/prediction-flow-standard.md`
 
 Those dedicated flow standards override older/broader flow descriptions if any conflict remains elsewhere in the repo.
 
-Prediction mechanics, scoring, league mechanics, and final auth/persistence rules are not yet fully finalized. Do not invent missing product rules during implementation.
+Scoring values/edge cases, league ranking/tie mechanics, and final auth/provider persistence details are not yet fully finalized. Do not invent missing product rules during implementation.
+
+### Prediction rules that are already locked
+
+Do not reinterpret these:
+
+- exactly eight prediction questions
+- no Pole Position question
+- one question per screen
+- podium choices cannot duplicate drivers
+- anonymous draft allowed before auth
+- summary before persistence
+- auth handoff must preserve the draft
+- one common pre-race deadline
+- submitted picks remain editable before the deadline
+- picks lock automatically at the deadline
+- `draft`, `submitted`, and `locked` are distinct states
+- no manual irreversible `LOCK PICKS` action before the deadline
 
 ## Explicitly out of scope
 
 Do not implement:
 
 - AI chatbot or AI tutor
+- AI prediction advice
+- betting / wagering / prediction markets
 - Weather API
 - Live race telemetry
 - Live timing
