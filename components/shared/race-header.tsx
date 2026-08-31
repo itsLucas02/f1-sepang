@@ -24,7 +24,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
         <div className="h-full w-24 bg-stripe-light" />
       </div>
 
-      <SiteContainer className="flex h-[72px] items-center justify-between gap-6">
+      <SiteContainer className="flex h-14 items-center justify-between gap-6 md:h-[72px]">
         <Link
           href="/"
           className="font-display text-xl font-extrabold tracking-[0.04em] text-white"
@@ -42,7 +42,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative flex h-[72px] items-center px-4 text-sm font-semibold text-text-secondary transition-colors duration-200 hover:text-white",
+                  "relative flex h-[72px] items-center px-4 text-sm font-semibold text-text-secondary transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
                   isActive &&
                     "text-white after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:bg-race-red",
                 )}
@@ -59,7 +59,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
               <button
                 type="button"
                 aria-label="Open navigation"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-surface-01 text-white"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-surface-01 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <Menu aria-hidden="true" className="size-5" />
               </button>
@@ -76,7 +76,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                       href={item.href}
                       aria-current={item.href === activeHref ? "page" : undefined}
                       className={cn(
-                        "block min-h-11 border-b border-border px-1 py-4 text-base font-semibold text-text-secondary transition-colors hover:text-white",
+                        "block min-h-11 border-b border-border px-1 py-4 text-base font-semibold text-text-secondary transition-colors hover:text-white focus-visible:outline-none focus-visible:text-white",
                         item.href === activeHref && "text-white",
                       )}
                     >
