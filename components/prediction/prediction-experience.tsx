@@ -10,11 +10,12 @@ import { PredictionStep } from "@/components/prediction/prediction-step";
 import { YesNoChoice } from "@/components/prediction/yes-no-choice";
 import { RaceFlowHeader } from "@/components/shared/race-flow-header";
 import { Button } from "@/components/ui/button";
-import { DRIVERS, isDriverId } from "@/content/drivers";
+import { DRIVERS, getDriver, isDriverId } from "@/content/drivers";
 import { PREDICTION_QUESTIONS } from "@/content/predictions";
 import {
   DEFAULT_PREDICTION_DRAFT,
   PREDICTION_DEADLINE,
+  PREDICTION_RETURN_TO_SUMMARY_KEY,
   PREDICTION_STORAGE_KEY,
   getUnavailablePodiumDriverIds,
   isPredictionLocked,
@@ -24,8 +25,6 @@ import {
   type PersistedPredictionDraft,
   type PredictionAnswer,
 } from "@/lib/predictions";
-
-export const RETURN_TO_SUMMARY_KEY = "sepang56.predictions.returnToSummary";
 
 export function PredictionExperience() {
   const router = useRouter();
@@ -42,7 +41,7 @@ export function PredictionExperience() {
       window.localStorage.getItem(PREDICTION_STORAGE_KEY),
     );
     const shouldReturnToSummary =
-      window.sessionStorage.getItem(RETURN_TO_SUMMARY_KEY) === "1";
+      window.sessionStorage.getItem(PREDICTION_RETURN_TO_SUMMARY_KEY) === "1";
 
     setDraft(stored);
     setShowIntro(!stored.hasSeenIntro && !shouldReturnToSummary);
@@ -77,6 +76,7 @@ export function PredictionExperience() {
     [draft.answers, question.id],
   );
   const answer = draft.answers[question.id];
+  const selectedDriver = isDriverId(answer) ? getDriver(answer) : null;
   const canContinue = isQuestionAnswered(question.id, draft.answers);
 
   function updateAnswer(nextAnswer: PredictionAnswer) {
@@ -92,7 +92,7 @@ export function PredictionExperience() {
 
   function goBack() {
     if (returnToSummary) {
-      window.sessionStorage.removeItem(RETURN_TO_SUMMARY_KEY);
+      window.sessionStorage.removeItem(PREDICTION_RETURN_TO_SUMMARY_KEY);
       router.push("/predict/summary");
       return;
     }
@@ -119,7 +119,7 @@ export function PredictionExperience() {
     }
 
     if (returnToSummary) {
-      window.sessionStorage.removeItem(RETURN_TO_SUMMARY_KEY);
+      window.sessionStorage.removeItem(PREDICTION_RETURN_TO_SUMMARY_KEY);
       router.push("/predict/summary");
       return;
     }
@@ -193,20 +193,16 @@ export function PredictionExperience() {
           </p>
 
           <div className="mt-10 grid gap-px border border-border bg-border sm:grid-cols-2">
-            {[
-              ["01", "Race winner"],
-              ["02", "Second place"],
-              ["03", "Third place"],
-              ["04", "P1 starter wins?"],
-              ["05", "Fastest lap"],
-              ["06", "Rain?"],
-              ["07", "Safety Car?"],
-              ["08", "First retirement"],
-            ].map(([number, label]) => (
-              <div key={number} className="flex items-center gap-4 bg-surface-01 p-4 sm:p-5">
-                <span className="font-mono text-xs text-race-red">{number}</span>
+            {PREDICTION_QUESTIONS.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center gap-4 bg-surface-01 p-4 sm:p-5"
+              >
+                <span className="font-mono text-xs text-race-red">
+                  {String(item.index).padStart(2, "0")}
+                </span>
                 <span className="font-display text-xl font-bold uppercase text-white">
-                  {label}
+                  {item.summaryLabel}
                 </span>
               </div>
             ))}
@@ -285,10 +281,9 @@ export function PredictionExperience() {
           </fieldset>
         )}
 
-        {question.kind === "driver" && isDriverId(answer) ? (
+        {selectedDriver ? (
           <p className="mt-5 font-mono text-xs uppercase tracking-[0.08em] text-text-muted">
-            Selected: {DRIVERS.find((driver) => driver.id === answer)?.firstName}{" "}
-            {DRIVERS.find((driver) => driver.id === answer)?.surname}
+            Selected: {selectedDriver.firstName} {selectedDriver.surname}
           </p>
         ) : null}
       </PredictionStep>
