@@ -13,6 +13,10 @@ describe("podium validation", () => {
     expect(
       getUnavailablePodiumDriverIds("second", { winner: "norris" }),
     ).toEqual(["norris"]);
+
+    expect(
+      setPredictionAnswer({ winner: "norris" }, "second", "norris"),
+    ).toEqual({ winner: "norris" });
   });
 
   it("prevents winner and second place from being reused for third", () => {
@@ -22,6 +26,14 @@ describe("podium validation", () => {
         second: "verstappen",
       }),
     ).toEqual(["norris", "verstappen"]);
+
+    expect(
+      setPredictionAnswer(
+        { winner: "norris", second: "verstappen" },
+        "third",
+        "verstappen",
+      ),
+    ).toEqual({ winner: "norris", second: "verstappen" });
   });
 
   it("clears a later podium answer when an earlier pick changes to that driver", () => {
@@ -85,11 +97,17 @@ describe("prediction deadline", () => {
   it("locks at or after the configured deadline", () => {
     const deadline = "2026-10-01T08:00:00.000Z";
 
-    expect(isPredictionLocked(deadline, new Date("2026-10-01T07:59:59.000Z"))).toBe(false);
-    expect(isPredictionLocked(deadline, new Date("2026-10-01T08:00:00.000Z"))).toBe(true);
+    expect(
+      isPredictionLocked(deadline, new Date("2026-10-01T07:59:59.000Z")),
+    ).toBe(false);
+    expect(
+      isPredictionLocked(deadline, new Date("2026-10-01T08:00:00.000Z")),
+    ).toBe(true);
   });
 
   it("stays editable when no deployment deadline is configured", () => {
-    expect(isPredictionLocked(null, new Date("2030-01-01T00:00:00.000Z"))).toBe(false);
+    expect(
+      isPredictionLocked(null, new Date("2030-01-01T00:00:00.000Z")),
+    ).toBe(false);
   });
 });
