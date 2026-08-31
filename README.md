@@ -13,7 +13,9 @@ This repository is the working source of truth for the Kracked Devs Formula 1 Se
 
 ## Implementation status
 
-**The MVP is implementation-ready.**
+**Implementation is underway. Phase 0 (project foundation) has started.**
+
+The repository now contains the Next.js/TypeScript/Tailwind foundation, shadcn/Radix configuration, canonical SEPANG 56 design tokens/fonts, shared shell primitives, and CI quality commands.
 
 Major product decisions are finalized for Learn, Sepang, Predictions, scoring, leagues/leaderboards, auth, and persistence.
 
@@ -26,6 +28,29 @@ Start with:
 Then follow the dedicated flow/behavior standards under `docs/`.
 
 Do not reopen finalized product decisions during coding unless a real implementation constraint requires product-owner review.
+
+## Development
+
+Requirements:
+
+- Node.js 20.9 or newer
+- npm
+
+Run locally:
+
+```bash
+npm install
+npm run dev
+```
+
+Quality checks:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
+```
 
 ## Product principle
 
