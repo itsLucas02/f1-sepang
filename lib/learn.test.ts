@@ -5,7 +5,7 @@ import {
   getRecommendedLessonIds,
   isRaceReady,
   parsePersistedLearnState,
-} from "@/lib/learn";
+} from "./learn";
 
 describe("learn recommendations", () => {
   it("recommends all six lessons to beginners", () => {
