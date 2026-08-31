@@ -6,117 +6,78 @@ SEPANG 56 guides users through:
 
 **Learn → Understand Sepang → Make Predictions → Compete With Friends**
 
-This is a guided path, not a hard lock. Beginners should be gently encouraged to follow the sequence, but Learn and Sepang milestones do not block navigation.
+This is a guided path, not a hard lock. Beginners should be encouraged to follow the sequence, but Learn and Sepang milestones do not block navigation.
 
 ---
 
 ## Product-flow status
 
-The following product flows are finalized:
+The major MVP product flows are finalized:
 
-- Learn routing and progression → `docs/learn-flow-standard.md`
-- Understand Sepang explorer flow → `docs/sepang-flow-standard.md`
-- Prediction flow, question set, editing, and deadline model → `docs/prediction-flow-standard.md`
+- Learn → `docs/learn-flow-standard.md`
+- Understand Sepang → `docs/sepang-flow-standard.md`
+- Predictions → `docs/prediction-flow-standard.md`
+- Scoring → `docs/scoring-standard.md`
+- Leagues & Leaderboards → `docs/league-leaderboard-standard.md`
+- Auth & Persistence → `docs/auth-persistence-standard.md`
+- Implementation build order → `docs/implementation-blueprint.md`
 
-The following still require product finalization:
+Dedicated finalized standards override older/broader descriptions if a conflict remains elsewhere in the repo.
 
-- scoring values and edge-case definitions
-- league ranking/tie rules
-- final auth/provider and persistence details
-
-Dedicated finalized standards override older/broader descriptions if any conflict remains elsewhere in the repo.
-
-Do not infer missing rules.
+Implementation may now begin. Do not invent or reopen settled product rules during coding.
 
 ---
 
 ## Full application flowchart
 
 ```text
-                         ┌──────────────┐
-                         │   LANDING    │
-                         └──────┬───────┘
-                                │
-                         Get Race Ready
-                                │
-                                ▼
-                    ┌──────────────────────┐
-                    │ F1 FAMILIARITY CHECK │
-                    └──────────┬───────────┘
-                               │
-                 ┌─────────────┼──────────────┐
-                 │             │              │
-             BEGINNER        BASICS           FAN
-                 │             │              │
-                 ▼             ▼              │
-          LESSONS 01–06    LESSONS 03–06      │
-                 │             │              │
-                 └──────┬──────┘              │
-                        │                     │
-                        └──────────┬──────────┘
-                                   ▼
-                        ┌────────────────────┐
-                        │  UNDERSTAND SEPANG │
-                        └─────────┬──────────┘
-                                  │
-                         Guided / Free Explore
-                                  │
-                                  ▼
-                        ┌────────────────────┐
-                        │    PREDICTIONS     │
-                        └─────────┬──────────┘
-                                  │
-                           8 questions
-                                  │
-                                  ▼
-                        ┌────────────────────┐
-                        │ PREDICTION SUMMARY │
-                        └─────────┬──────────┘
-                                  │
-                              Save / Submit
-                                  │
-                                  ▼
-                            ┌──────────┐
-                            │ AUTH IF  │
-                            │ REQUIRED │
-                            └────┬─────┘
-                                 │
-                                 ▼
-                    ┌─────────────────────────┐
-                    │ SUBMITTED / EDITABLE    │
-                    │ until race deadline     │
-                    └───────────┬─────────────┘
-                                │
-                         Race deadline
-                                │
-                                ▼
-                         ┌──────────────┐
-                         │ PICKS LOCKED │
-                         └──────┬───────┘
-                                │
-                     ┌──────────┼──────────┐
-                     │                     │
-                     ▼                     ▼
-                  CREATE                  JOIN
-                  LEAGUE                  LEAGUE
-                     │                     │
-                     └──────────┬──────────┘
-                                ▼
-                         ┌──────────────┐
-                         │ LEADERBOARD  │
-                         └──────┬───────┘
-                                │
-                                ▼
-                         RETURN / RESULTS
+LANDING
+   ↓
+GET RACE READY
+   ↓
+F1 FAMILIARITY CHECK
+   ├── BEGINNER → Lessons 01–06
+   ├── BASICS   → Lessons 03–06 recommended
+   └── FAN      → Sepang recommended
+   ↓
+RACE READY / CONTINUE
+   ↓
+MEET SEPANG
+   ↓
+GUIDED OR FREE CIRCUIT EXPLORER
+   ↓
+MAKE YOUR PICKS
+   ↓
+8 PREDICTION QUESTIONS
+   ↓
+PREDICTION SUMMARY
+   ↓
+SAVE / SUBMIT
+   ↓
+AUTH IF NEEDED
+   ↓
+SUBMITTED / EDITABLE UNTIL DEADLINE
+   ↓
+RACE DEADLINE
+   ↓
+LOCKED
+   ↓
+CREATE LEAGUE / JOIN LEAGUE / GLOBAL BOARD
+   ↓
+RACE RESULTS ENTERED
+   ↓
+SCORE /25
+   ↓
+GLOBAL + PRIVATE LEADERBOARDS
 ```
+
+Auth happens late, after the user has already received value and created predictions.
 
 ---
 
 ## Learn flow — finalized
 
 Source of truth: `docs/learn-flow-standard.md`.
-
-### Familiarity check
 
 Prompt:
 
@@ -128,15 +89,9 @@ Options:
 2. **I know some basics**
 3. **I already follow F1**
 
-This is deterministic self-selection. It is not AI and not a scored quiz.
+This is deterministic self-selection, not AI and not a scored quiz.
 
-Suggested state:
-
-```ts
-knowledgeLevel = "beginner" | "basics" | "fan"
-```
-
-### Recommended paths
+Recommended paths:
 
 ```text
 BEGINNER
@@ -170,8 +125,6 @@ FAN
 MEET SEPANG
 ```
 
-All Learn content remains accessible.
-
 `Race Ready` is a milestone, not a permission gate.
 
 ---
@@ -180,7 +133,7 @@ All Learn content remains accessible.
 
 Source of truth: `docs/sepang-flow-standard.md`.
 
-### First visit
+First visit:
 
 ```text
 MEET SEPANG
@@ -194,19 +147,9 @@ CIRCUIT EXPLORER
 
 The user may switch immediately to **Explore Freely**.
 
-### Returning visit
+Returning users open the explorer directly.
 
-```text
-SEPANG
-  ↓
-CIRCUIT EXPLORER
-  ↓
-FREE EXPLORE
-```
-
-### Approved hotspots
-
-Exactly five MVP hotspots:
+Approved MVP hotspots:
 
 1. Main Straight
 2. T1
@@ -220,14 +163,14 @@ Recommended first-time order:
 MAIN STRAIGHT → T1 → T4 → T9 → T15
 ```
 
-### Interaction loop
+Interaction loop:
 
 ```text
 SELECT HOTSPOT
   ↓
 Update application state
   ↓
-Three.js focuses/highlights selected track section
+Three.js focuses/highlights selected section
   ↓
 WHAT HAPPENS HERE?
   ↓
@@ -238,9 +181,9 @@ Mark hotspot visited
 Explore another OR Make Your Picks
 ```
 
-Three.js is presentation only and must not own business/navigation state.
+Three.js is presentation only and does not own business/navigation state.
 
-Visiting all five may produce a **You Know Sepang** milestone, but Predictions remain reachable earlier.
+Visiting all five may produce **You Know Sepang**, but Predictions remain reachable earlier.
 
 ---
 
@@ -248,9 +191,9 @@ Visiting all five may produce a **You Know Sepang** milestone, but Predictions r
 
 Source of truth: `docs/prediction-flow-standard.md`.
 
-Use exactly one question per screen.
+Exactly one question per screen.
 
-### Final eight questions
+Final eight questions:
 
 1. Race Winner
 2. Second Place
@@ -263,7 +206,7 @@ Use exactly one question per screen.
 
 `Pole Position` is not part of the finalized question set.
 
-### Flow
+Flow:
 
 ```text
 MAKE YOUR PICKS
@@ -289,162 +232,167 @@ PREDICTION SUMMARY
 Edit any pick OR Save / Submit
 ```
 
-Users may move backward and change earlier answers.
+Rules:
 
-The same driver cannot occupy more than one predicted podium position.
+- anonymous users may complete the full draft
+- users may go backward and edit answers
+- podium picks cannot duplicate drivers
+- auth handoff must preserve completed picks
+- one common deadline before the race
+- submitted picks remain editable before the deadline
+- picks become read-only automatically at/after the deadline
+- no irreversible manual `LOCK PICKS` action
 
-### Auth handoff
-
-Anonymous users may complete the entire temporary draft and reach Prediction Summary.
-
-```text
-ANONYMOUS DRAFT
-  ↓
-SUMMARY
-  ↓
-SAVE / SUBMIT
-  ↓
-AUTH IF NEEDED
-  ↓
-RETURN WITH DRAFT INTACT
-  ↓
-PERSIST
-```
-
-Auth must not erase completed prediction work.
-
-### Final deadline model
-
-SEPANG 56 uses **one common deadline before the race**.
-
-There are no split qualifying/race deadlines in MVP.
-
-Prediction lifecycle:
+Lifecycle:
 
 ```text
-DRAFT
-  ↓
-SUBMITTED / EDITABLE
-  ↓
-RACE DEADLINE
-  ↓
-LOCKED
+DRAFT → SUBMITTED / EDITABLE → LOCKED
 ```
-
-Before the deadline, submitted picks remain editable.
-
-At or after the deadline, picks lock automatically and become read-only.
-
-There is no irreversible manual `LOCK PICKS` button before the deadline.
-
-Scoring values and edge-case result definitions are finalized separately.
 
 ---
 
-## First-time user flow
+## Scoring — finalized
+
+Source of truth: `docs/scoring-standard.md`.
 
 ```text
-LANDING
-  ↓
-GET RACE READY
-  ↓
-F1 FAMILIARITY CHECK
-  ↓
-RECOMMENDED LEARN PATH
-  ↓
-RACE READY / CONTINUE
-  ↓
-MEET SEPANG
-  ↓
-GUIDED OR FREE CIRCUIT EXPLORER
-  ↓
-MAKE PREDICTIONS
-  ↓
-REVIEW PICKS
-  ↓
-AUTH IF NEEDED TO SAVE
-  ↓
-SUBMITTED / EDITABLE
-  ↓
-AUTO-LOCK AT RACE DEADLINE
-  ↓
-CREATE / JOIN LEAGUE
-  ↓
-LEADERBOARD
+Race Winner             5
+Second Place            4
+Third Place             3
+P1 starter wins?        2
+Fastest Lap             3
+Rain?                    2
+Safety Car?              2
+First Retirement        4
+                       ───
+MAXIMUM                 25
 ```
 
-Auth happens late, after the user has already received value and created their picks.
+Correct answer = full points. Wrong answer = 0.
+
+No partial credit.
+
+After the race, enter one authoritative result object manually and score every submission deterministically.
+
+Ties remain ties and use competition ranking:
+
+```text
+1, 2, 2, 4
+```
 
 ---
 
-## League mechanism — concept approved, mechanics not yet finalized
+## League & leaderboard flow — finalized
 
-A **league** is a private prediction leaderboard for friends or community members.
+Source of truth: `docs/league-leaderboard-standard.md`.
 
-It is not an F1 racing league and does not simulate races.
-
-Core concept:
+### Create
 
 ```text
-PICKS SAVED
+CREATE LEAGUE
   ↓
-CREATE LEAGUE or JOIN LEAGUE
+Enter league name
   ↓
-SHARE CODE / LINK
+Generate unique code/link
   ↓
-FRIENDS JOIN
-  ↓
-PREDICTIONS LOCK AT DEADLINE
-  ↓
-RESULTS ARE SCORED
+Creator joins automatically
   ↓
 LEAGUE LEADERBOARD
 ```
 
-MVP should not contain chat, feed, messaging, team management, or social-network features.
+### Join
 
-Exact scoring, ranking, and tie-break rules still require finalization.
+```text
+ENTER CODE / OPEN INVITE
+  ↓
+Auth if needed
+  ↓
+Join once
+  ↓
+LEAGUE LEADERBOARD
+```
+
+A user may belong to multiple leagues.
+
+A league is only a membership filter over the same prediction score. Do not duplicate scores per league.
+
+Global leaderboard uses the same scores and may appear alongside **My Leagues**.
+
+No league chat, feed, custom scoring, moderation system, seasons, logos, roles, or social-network features.
 
 ---
 
-## Returning-user direction
+## Auth & persistence — finalized
 
-Returning users should not be forced through onboarding again.
+Source of truth: `docs/auth-persistence-standard.md`.
 
-The app may surface:
+No auth required for:
 
-- Learn status
-- Sepang hotspot progress
-- prediction status: Draft / Submitted / Locked
-- league ranking
-
-A dedicated returning-user dashboard is not yet a mandatory MVP screen unless explicitly finalized.
-
----
-
-## Primary navigation
-
-Working top-level destinations:
-
+- Landing
 - Learn
 - Sepang
-- Predict
-- Leaderboard
+- eight Prediction questions
+- Prediction Summary
 
-Profile/account access may exist where needed but must not displace the primary product loop.
+Auth required for:
 
-Suggested routes:
+- Save / Submit Picks
+- Create League
+- Join League
+
+MVP provider:
+
+```text
+Supabase Auth + Google OAuth only
+```
+
+Anonymous browser state may hold:
+
+```text
+knowledgeLevel
+completedLessonIds
+visitedHotspots
+predictionDraft
+```
+
+Minimal persisted model:
+
+```text
+profiles
+prediction_submissions
+leagues
+league_members
+race_results
+```
+
+Use normal small Supabase RLS policies. Prediction deadline enforcement must exist on the write path, not only in disabled client UI.
+
+---
+
+## Primary routes — finalized MVP direction
 
 ```text
 /
 /learn
 /sepang
 /predict
+/predict/summary
 /leaderboard
 /league/[code]
+/auth/callback
 ```
 
-Additional routes should be added only when implementation needs them.
+Do not add dashboard, admin, profile, settings, league-settings, or other routes unless implementation demonstrates a real need.
+
+---
+
+## Returning users
+
+Do not force onboarding again.
+
+Returning users may go directly to Learn, Sepang, Predict, Leaderboard, or a league.
+
+The app can surface existing progress/status inside those flows without requiring a dedicated dashboard.
 
 ---
 
@@ -474,17 +422,17 @@ sepangReady
 ```ts
 answers
 currentQuestion
-predictionStatus // draft | submitted | locked
+predictionStatus
 submittedAt
 updatedAt
 deadlineAt
 ```
 
-### Competition — still to finalize
+### Competition
 
-```text
+```ts
 score
-leagues
+leagueMemberships
 ranking
 ```
 
@@ -492,10 +440,6 @@ ranking
 
 ## Implementation principle
 
-When broad documentation and a finalized flow standard differ, use the dedicated finalized standard:
+Read `docs/implementation-blueprint.md` for build order.
 
-- `docs/learn-flow-standard.md`
-- `docs/sepang-flow-standard.md`
-- `docs/prediction-flow-standard.md`
-
-Do not redesign finalized product behavior during implementation. Update product documentation first if the product owner changes a flow.
+Do not redesign finalized product behavior while coding. If a product decision genuinely needs to change, update the relevant dedicated standard first.
