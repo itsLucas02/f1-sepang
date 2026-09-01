@@ -1,12 +1,10 @@
-import type { HotspotId } from "@/content/sepang";
-
-const MARKERS: Record<HotspotId, { x: number; y: number; label: string }> = {
-  "main-straight": { x: 487, y: 132, label: "MAIN" },
-  t1: { x: 575, y: 181, label: "T1" },
-  t4: { x: 408, y: 220, label: "T4" },
-  t9: { x: 349, y: 363, label: "T9" },
-  t15: { x: 117, y: 309, label: "T15" },
-};
+import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
+import {
+  SEPANG_HOTSPOT_PROGRESS,
+  SEPANG_HOTSPOT_SVG_POINTS,
+  SEPANG_TRACK_PATH,
+  SEPANG_TRACK_VIEWBOX,
+} from "@/lib/sepang-geometry";
 
 type SepangCircuitFallbackProps = {
   selectedHotspot: HotspotId;
@@ -15,58 +13,122 @@ type SepangCircuitFallbackProps = {
 export function SepangCircuitFallback({
   selectedHotspot,
 }: SepangCircuitFallbackProps) {
+  const selected = getHotspot(selectedHotspot);
+  const dashOffset = 1 - SEPANG_HOTSPOT_PROGRESS[selectedHotspot] + 0.035;
+
   return (
-    <div className="absolute inset-0 bg-surface-01">
+    <div className="absolute inset-0 overflow-hidden bg-[#0e0e14]">
       <svg
-        viewBox="0 0 640 480"
-        className="h-full w-full p-6 sm:p-10"
+        viewBox={SEPANG_TRACK_VIEWBOX}
+        className="h-full w-full p-5 sm:p-8"
         aria-hidden="true"
         fill="none"
+        preserveAspectRatio="xMidYMid meet"
       >
-        <path
-          d="M117 309C87 283 82 239 105 207C129 174 171 170 210 190L297 235C335 255 378 250 409 220C442 188 459 143 503 132C548 121 585 145 588 181C591 214 565 238 535 254L476 286C443 304 421 332 427 362C433 390 414 410 389 410C361 410 342 389 349 363L365 311C371 291 354 276 334 283L258 311C229 322 212 342 188 350C159 360 136 340 117 309Z"
-          stroke="currentColor"
-          strokeWidth="20"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-surface-03"
-        />
-        <path
-          d="M117 309C87 283 82 239 105 207C129 174 171 170 210 190L297 235C335 255 378 250 409 220C442 188 459 143 503 132C548 121 585 145 588 181C591 214 565 238 535 254L476 286C443 304 421 332 427 362C433 390 414 410 389 410C361 410 342 389 349 363L365 311C371 291 354 276 334 283L258 311C229 322 212 342 188 350C159 360 136 340 117 309Z"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-white/70"
-        />
+        <defs>
+          <pattern id="sepang-grid" width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#25252d" strokeWidth="0.7" />
+          </pattern>
+          <filter id="sepang-soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="5" />
+          </filter>
+        </defs>
 
-        {Object.entries(MARKERS).map(([id, marker]) => {
-          const selected = id === selectedHotspot;
+        <rect x="83" y="6" width="636" height="623" fill="url(#sepang-grid)" opacity="0.36" />
+
+        <g transform="translate(-99.972483,57.371556)">
+          <g transform="matrix(0.6831882,0,0,0.6831882,-1707.7889,-493.83516)">
+            <path
+              d={SEPANG_TRACK_PATH}
+              stroke="#000000"
+              strokeWidth="25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.42"
+              filter="url(#sepang-soft-shadow)"
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              stroke="#2a2a33"
+              strokeWidth="18"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              stroke="#666670"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#E10600"
+              strokeWidth="21"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="0.07 0.93"
+              strokeDashoffset={dashOffset}
+              style={{
+                transition:
+                  "stroke-dashoffset 700ms cubic-bezier(0.22, 1, 0.36, 1)",
+              }}
+            />
+          </g>
+        </g>
+
+        {HOTSPOT_ORDER.map((id) => {
+          const [x, y] = SEPANG_HOTSPOT_SVG_POINTS[id];
+          const hotspot = getHotspot(id);
+          const isSelected = id === selectedHotspot;
 
           return (
             <g key={id}>
+              {isSelected ? (
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="18"
+                  fill="none"
+                  stroke="#E10600"
+                  strokeWidth="2"
+                  className="sepang-marker-pulse"
+                />
+              ) : null}
               <circle
-                cx={marker.x}
-                cy={marker.y}
-                r={selected ? 11 : 8}
-                className={selected ? "fill-race-red" : "fill-surface-03"}
-                stroke="white"
-                strokeOpacity={selected ? 0.9 : 0.45}
-                strokeWidth="2"
+                cx={x}
+                cy={y}
+                r={isSelected ? 9 : 6.5}
+                fill={isSelected ? "#E10600" : "#d8d8dd"}
+                stroke="#0e0e14"
+                strokeWidth="3"
+                style={{ transition: "r 240ms ease, fill 240ms ease" }}
               />
               <text
-                x={marker.x + 14}
-                y={marker.y - 12}
-                className={selected ? "fill-white" : "fill-text-muted"}
+                x={x + 15}
+                y={y - 13}
+                fill={isSelected ? "#ffffff" : "#8e8e98"}
                 fontSize="12"
+                fontWeight="700"
                 fontFamily="monospace"
+                letterSpacing="0.08em"
               >
-                {marker.label}
+                {hotspot.shortLabel}
               </text>
             </g>
           );
         })}
       </svg>
+
+      <div className="pointer-events-none absolute bottom-5 left-5 border-l-2 border-race-red pl-3 sm:bottom-7 sm:left-7">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+          Selected
+        </p>
+        <p className="mt-1 font-display text-xl font-bold uppercase text-white sm:text-2xl">
+          {selected.title}
+        </p>
+      </div>
     </div>
   );
 }
