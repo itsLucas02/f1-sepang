@@ -17,6 +17,7 @@ import {
   isPredictionComplete,
   isPredictionLocked,
   parsePersistedPredictionDraft,
+  parsePredictionAnswers,
   type PersistedPredictionDraft,
   type PredictionAnswer,
   type PredictionAnswers,
@@ -67,6 +68,12 @@ async function persistPrediction(answers: PredictionAnswers) {
 }
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+
+type PersistedSubmissionPayload = {
+  submission?: {
+    answers?: unknown;
+  } | null;
+};
 
 export function PredictionSummary() {
   const router = useRouter();
@@ -122,11 +129,34 @@ export function PredictionSummary() {
         method: "GET",
         cache: "no-store",
       });
+
       if (existingResponse.ok) {
-        const existingPayload = (await existingResponse.json()) as {
-          submission?: unknown;
-        };
-        setHasSubmission(Boolean(existingPayload.submission));
+        const existingPayload =
+          (await existingResponse.json()) as PersistedSubmissionPayload;
+        const existingSubmission = existingPayload.submission ?? null;
+        setHasSubmission(Boolean(existingSubmission));
+
+        if (
+          existingSubmission &&
+          Object.keys(stored.answers).length === 0
+        ) {
+          const recoveredAnswers = parsePredictionAnswers(
+            existingSubmission.answers,
+          );
+
+          if (isPredictionComplete(recoveredAnswers)) {
+            const recoveredDraft: PersistedPredictionDraft = {
+              ...stored,
+              answers: recoveredAnswers,
+              hasSeenIntro: true,
+            };
+            setDraft(recoveredDraft);
+            window.localStorage.setItem(
+              PREDICTION_STORAGE_KEY,
+              JSON.stringify(recoveredDraft),
+            );
+          }
+        }
       }
 
       if (
