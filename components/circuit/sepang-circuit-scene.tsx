@@ -51,17 +51,22 @@ function buildTrackData(): TrackData {
 }
 
 function makeCameraPose(curve: THREE.CatmullRomCurve3, hotspot: HotspotId) {
+  if (hotspot === "main-straight") {
+    return {
+      position: new THREE.Vector3(0, 8.8, 7.4),
+      target: new THREE.Vector3(0, 0, 0),
+    };
+  }
+
   const t = SEPANG_HOTSPOT_PROGRESS[hotspot];
   const target = curve.getPointAt(t);
   const tangent = curve.getTangentAt(t).normalize();
   const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
-  const isStraight = hotspot === "main-straight";
-
   const position = target
     .clone()
-    .add(normal.multiplyScalar(isStraight ? 1.35 : 1.65))
-    .add(tangent.multiplyScalar(isStraight ? -0.65 : -0.35))
-    .add(new THREE.Vector3(0, isStraight ? 7.2 : 6.35, isStraight ? 3.1 : 2.15));
+    .add(normal.multiplyScalar(1.65))
+    .add(tangent.multiplyScalar(-0.35))
+    .add(new THREE.Vector3(0, 6.35, 2.15));
 
   return { position, target };
 }
@@ -210,7 +215,7 @@ function CircuitModel({
   const selectedPoint = curve.getPointAt(SEPANG_HOTSPOT_PROGRESS[selectedHotspot]);
 
   return (
-    <group rotation={[0, -0.08, 0]}>
+    <group>
       <mesh position={[0, -0.12, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[24, 24]} />
         <meshBasicMaterial color="#09090B" />
