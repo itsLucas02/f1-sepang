@@ -110,11 +110,13 @@ export function PredictionSummary() {
     );
   }
 
+  const summaryFinished = complete || locked;
+
   return (
-    <div className="min-h-screen bg-[#0e0e14]">
+    <div className="min-h-screen bg-canvas">
       <RaceFlowHeader
-        onBack={() => router.push(locked ? "/" : "/predict")}
-        backLabel={locked ? "Back home" : "Back to predictions"}
+        onBack={() => router.push(summaryFinished ? "/" : "/predict")}
+        backLabel={summaryFinished ? "Back home" : "Back to predictions"}
       />
 
       <main className="race-grid min-h-[calc(100vh-56px)]">
@@ -134,7 +136,9 @@ export function PredictionSummary() {
               <p className="mt-6 max-w-2xl text-lg leading-7 text-text-secondary">
                 {locked
                   ? "The race deadline has passed. Your calls are now read-only."
-                  : "Review the complete grid. Every row can still be changed before the race deadline."}
+                  : complete
+                    ? "Your eight demo picks are complete and saved on this device. Edit any row, or finish the demo without changing your selections."
+                    : "Review the grid. Every answered row can still be changed before you finish your picks."}
               </p>
             </div>
 
@@ -167,9 +171,9 @@ export function PredictionSummary() {
 
           <section
             aria-label="Your prediction answers"
-            className="mt-8 overflow-hidden border border-white/12 bg-[#131319]"
+            className="mt-8 overflow-hidden border border-white/12 bg-surface-01"
           >
-            <div className="grid grid-cols-[54px_1fr] border-b border-white/12 bg-[#1b1b22] px-4 py-3 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:px-6">
+            <div className="grid grid-cols-[54px_1fr] border-b border-white/12 bg-surface-02 px-4 py-3 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:px-6">
               <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted">No.</span>
               <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted">Race call</span>
               <span className="hidden font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted sm:block">Your pick</span>
@@ -215,17 +219,28 @@ export function PredictionSummary() {
                 {deadlineLabel ? `Deadline: ${deadlineLabel}` : "Demo mode / saved on this device"}
               </p>
               {!deadlineLabel ? (
-                <p className="mt-1 text-sm text-white/45">
-                  Your current calls persist in this browser while the server-backed competition layer is offline.
+                <p className="mt-1 max-w-xl text-sm text-white/45">
+                  Leaving this screen does not clear your picks. They remain in this browser until you change them.
                 </p>
               ) : null}
             </div>
 
-            {!complete && !locked ? (
-              <Button asChild>
-                <Link href="/predict">Continue Picks</Link>
-              </Button>
-            ) : null}
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              {!complete && !locked ? (
+                <Button asChild className="w-full sm:w-auto">
+                  <Link href="/predict">Continue Picks</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button asChild variant="secondary" className="w-full sm:w-auto">
+                    <Link href="/sepang">Explore Sepang</Link>
+                  </Button>
+                  <Button asChild className="w-full sm:w-auto">
+                    <Link href="/">Finish Demo</Link>
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </main>
