@@ -99,10 +99,10 @@ export function PredictionSummary() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen bg-canvas">
+      <div className="min-h-screen bg-[#f4f3ef]">
         <RaceFlowHeader onBack={() => router.push("/predict")} />
-        <main className="race-grid mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
-          <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+        <main className="mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
+          <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#77777d]">
             Loading your summary…
           </p>
         </main>
@@ -113,27 +113,27 @@ export function PredictionSummary() {
   const summaryFinished = complete || locked;
 
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="min-h-screen bg-[#f4f3ef] text-[#111113]">
       <RaceFlowHeader
         onBack={() => router.push(summaryFinished ? "/" : "/predict")}
         backLabel={summaryFinished ? "Back home" : "Back to predictions"}
       />
 
-      <main className="race-grid min-h-[calc(100vh-56px)]">
+      <main className="min-h-[calc(100vh-56px)]">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14 lg:py-16">
-          <div className="grid gap-7 border-b border-white/12 pb-9 lg:grid-cols-12 lg:items-end">
+          <div className="grid gap-7 border-b border-black/12 pb-9 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-8">
               <div className="flex items-center gap-3">
                 <span className="h-0.5 w-9 bg-race-red" />
-                <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+                <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6f6f75]">
                   Prediction board
                 </p>
               </div>
-              <h1 className="mt-5 font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-white sm:text-7xl lg:text-8xl">
+              <h1 className="mt-5 font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-[#111113] sm:text-7xl lg:text-8xl">
                 Your Sepang
                 <span className="block text-race-red">calls.</span>
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-7 text-text-secondary">
+              <p className="mt-6 max-w-2xl text-lg leading-7 text-[#55555b]">
                 {locked
                   ? "The race deadline has passed. Your calls are now read-only."
                   : complete
@@ -143,8 +143,8 @@ export function PredictionSummary() {
             </div>
 
             <div className="lg:col-span-3 lg:col-start-10">
-              <div className="border-t-2 border-white/70 pt-4">
-                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.13em] text-white/55">
+              <div className="border-t-2 border-[#111113] pt-4">
+                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.13em] text-[#6f6f75]">
                   {locked ? (
                     <>
                       <LockKeyhole aria-hidden="true" className="size-4 text-race-red" />
@@ -159,10 +159,10 @@ export function PredictionSummary() {
                     "Grid in progress"
                   )}
                 </div>
-                <p className="mt-2 font-display text-4xl font-extrabold text-white">
-                  {Object.keys(draft.answers).length}<span className="text-text-muted">/8</span>
+                <p className="mt-2 font-display text-4xl font-extrabold text-[#111113]">
+                  {Object.keys(draft.answers).length}<span className="text-[#8a8a90]">/8</span>
                 </p>
-                <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-text-muted">
+                <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#77777d]">
                   calls answered
                 </p>
               </div>
@@ -171,13 +171,13 @@ export function PredictionSummary() {
 
           <section
             aria-label="Your prediction answers"
-            className="mt-8 overflow-hidden border border-white/12 bg-surface-01"
+            className="mt-8 overflow-hidden border border-black/12 bg-white shadow-[0_18px_50px_rgba(0,0,0,0.06)]"
           >
-            <div className="grid grid-cols-[54px_1fr] border-b border-white/12 bg-surface-02 px-4 py-3 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:px-6">
-              <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted">No.</span>
-              <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted">Race call</span>
-              <span className="hidden font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted sm:block">Your pick</span>
-              <span className="hidden font-mono text-[9px] uppercase tracking-[0.13em] text-text-muted sm:block">Action</span>
+            <div className="grid grid-cols-[54px_1fr] border-b border-white/10 bg-[#111113] px-4 py-3 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:px-6">
+              <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-white/45">No.</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-white/45">Race call</span>
+              <span className="hidden font-mono text-[9px] uppercase tracking-[0.13em] text-white/45 sm:block">Your pick</span>
+              <span className="hidden font-mono text-[9px] uppercase tracking-[0.13em] text-white/45 sm:block">Action</span>
             </div>
 
             {PREDICTION_QUESTIONS.map((question, index) => {
@@ -186,15 +186,15 @@ export function PredictionSummary() {
               return (
                 <div
                   key={question.id}
-                  className="group grid grid-cols-[54px_1fr] gap-y-2 border-b border-white/10 px-4 py-5 last:border-b-0 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:items-center sm:px-6"
+                  className="group grid grid-cols-[54px_1fr] gap-y-2 border-b border-black/10 px-4 py-5 last:border-b-0 sm:grid-cols-[70px_1.2fr_1fr_80px] sm:items-center sm:px-6"
                 >
                   <span className="font-display text-2xl font-extrabold text-race-red">
                     {String(question.index).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-xl font-bold uppercase leading-none text-white sm:text-2xl">
+                  <span className="font-display text-xl font-bold uppercase leading-none text-[#111113] sm:text-2xl">
                     {question.summaryLabel}
                   </span>
-                  <span className="col-start-2 text-base font-semibold text-text-secondary sm:col-start-auto">
+                  <span className="col-start-2 text-base font-semibold text-[#55555b] sm:col-start-auto">
                     {formatAnswer(answer)}
                   </span>
                   {!locked ? (
@@ -202,7 +202,7 @@ export function PredictionSummary() {
                       type="button"
                       onClick={() => editQuestion(index)}
                       aria-label={`Edit ${question.summaryLabel}`}
-                      className="col-start-2 inline-flex min-h-10 items-center gap-2 justify-self-start text-xs font-bold uppercase tracking-[0.05em] text-white/65 transition-colors hover:text-race-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:col-start-auto sm:justify-self-end"
+                      className="col-start-2 inline-flex min-h-10 items-center gap-2 justify-self-start text-xs font-bold uppercase tracking-[0.05em] text-[#55555b] transition-colors hover:text-race-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black sm:col-start-auto sm:justify-self-end"
                     >
                       <Pencil aria-hidden="true" className="size-3.5" />
                       Edit
@@ -213,13 +213,13 @@ export function PredictionSummary() {
             })}
           </section>
 
-          <div className="mt-7 flex flex-col gap-5 border-t border-white/12 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 flex flex-col gap-5 border-t border-black/12 pt-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
                 {deadlineLabel ? `Deadline: ${deadlineLabel}` : "Demo mode / saved on this device"}
               </p>
               {!deadlineLabel ? (
-                <p className="mt-1 max-w-xl text-sm text-white/45">
+                <p className="mt-1 max-w-xl text-sm text-[#66666c]">
                   Leaving this screen does not clear your picks. They remain in this browser until you change them.
                 </p>
               ) : null}
