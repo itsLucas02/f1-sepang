@@ -2,39 +2,33 @@
 
 **Learn F1. Understand Sepang. Make your picks. Beat your friends.**
 
-SEPANG 56 is a beginner-first Formula 1 web app built around Formula 1's return to Sepang. The MVP is intentionally narrow in product scope but ambitious in presentation:
+SEPANG 56 is a beginner-first Formula 1 web experience built around the prospect of Formula 1 returning to Sepang. The MVP keeps the product scope deliberately focused while aiming for a polished motorsport presentation:
 
 1. **Learn** — understand the minimum F1 concepts needed to enjoy a race.
-2. **Understand Sepang** — explore what makes Sepang interesting and important.
-3. **Make predictions** — pick likely race outcomes using what you just learned.
-4. **Compete with friends** — join private leagues and compare scores.
+2. **Understand Sepang** — explore the circuit and the places that matter most.
+3. **Make predictions** — make eight race picks using what you just learned.
+4. **Compete with friends** — compare scores through global and private leaderboards.
 
 This repository is the working source of truth for the Kracked Devs Formula 1 Sepang bounty project.
 
-## Implementation status
+> SEPANG 56 is an independent fan-made project. It is not affiliated with or endorsed by Formula 1, the FIA, or Sepang International Circuit. Official Formula 1 logos, proprietary fonts, and protected brand assets are not used as application assets.
 
-**Implementation is underway through Phase 5.**
+## Current status
 
-Implemented so far:
+The core public-demo flow is implemented through predictions:
 
-- Phase 0 — Next.js/TypeScript/Tailwind foundation, SEPANG design system, shared shell and CI commands
-- Phase 1 — responsive Landing experience
-- Phase 2 — familiarity check, six Learn lessons, local progress and Race Ready milestone
-- Phase 3 — Sepang guided/free explorer, five hotspots, local progress, 2D fallback and React Three Fiber scene
-- Phase 4 — eight-question anonymous Prediction flow, local draft, podium validation and summary/editing
-- Phase 5 — Supabase SSR auth plumbing, Google OAuth callback, authenticated prediction persistence and server-side deadline enforcement
+- Phase 0 — Next.js, TypeScript, Tailwind, design tokens, shared shell, and quality tooling
+- Phase 1 — responsive landing experience
+- Phase 2 — familiarity check, six Learn lessons, local progress, and Race Ready milestone
+- Phase 3 — Sepang guided/free explorer, five hotspots, local progress, 2D fallback, and React Three Fiber scene
+- Phase 4 — eight-question anonymous prediction flow, local draft persistence, podium validation, and summary/editing
+- Phase 5 — Supabase SSR auth and authenticated prediction persistence are implemented but temporarily parked while the public demo is deployed as a static site
+
+The temporary GitHub Pages build is intentionally frontend-only. Landing, Learn, Sepang, Predictions, and Prediction Summary work without a backend and persist browser progress with `localStorage`.
+
+The production backend will be restored later for a VPS-backed Next.js deployment. The parked server-only integration lives under `backend/next/`.
 
 Major product decisions are finalized for Learn, Sepang, Predictions, scoring, leagues/leaderboards, auth, and persistence.
-
-Start with:
-
-- `AGENTS.md`
-- `docs/implementation-blueprint.md`
-- `DESIGN.md`
-
-Then follow the dedicated flow/behavior standards under `docs/`.
-
-Do not reopen finalized product decisions during coding unless a real implementation constraint requires product-owner review.
 
 ## Development
 
@@ -59,9 +53,27 @@ npm test
 npm run build
 ```
 
-## Supabase setup
+## Static demo / GitHub Pages
 
-Copy `.env.example` to `.env.local` and configure:
+The current demo uses Next.js static export with the repository base path configured automatically in GitHub Actions.
+
+No secrets or environment variables are required for the static demo.
+
+The exported routes are:
+
+```text
+/
+/learn
+/sepang
+/predict
+/predict/summary
+```
+
+Backend-only actions such as Google sign-in, official prediction submission, leagues, and persisted leaderboards are intentionally unavailable in this temporary deployment mode.
+
+## Backend setup for the later VPS deployment
+
+When the project moves to the VPS-backed deployment, restore the runtime files documented in `backend/next/README.md`, disable static export, and configure the values described in `.env.example`:
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL
@@ -70,33 +82,26 @@ SUPABASE_SECRET_KEY
 NEXT_PUBLIC_PREDICTION_DEADLINE
 ```
 
-The publishable key is browser-safe. `SUPABASE_SECRET_KEY` is server-only and must never use a `NEXT_PUBLIC_` prefix.
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is browser-safe. `SUPABASE_SECRET_KEY` is server-only and must never use a `NEXT_PUBLIC_` prefix or be committed to the repository.
 
-Apply the SQL migration under:
+The database migration is stored at:
 
 ```text
 supabase/migrations/202609010001_auth_predictions.sql
 ```
 
-Enable **Google** as the only MVP auth provider in Supabase Auth. Add the application callback URL to the Supabase redirect allow list:
-
-```text
-http://localhost:3000/auth/callback
-https://YOUR_PRODUCTION_DOMAIN/auth/callback
-```
-
-The prediction handoff is:
+The planned authenticated prediction handoff is:
 
 ```text
 Prediction Summary
-  → SAVE PICKS
+  → Save Picks
   → Google OAuth if needed
   → /auth/callback
   → same Prediction Summary
-  → server validates + persists picks
+  → server validates and persists picks
 ```
 
-The browser draft remains in local storage through OAuth. Official prediction writes go through `/api/predictions`, which revalidates the eight answers and rejects writes at/after the configured race deadline.
+The browser draft survives the OAuth round trip. Official writes are revalidated on the server and rejected at or after the configured prediction deadline.
 
 ## Product principle
 
@@ -108,28 +113,35 @@ If a beginner encounters unexplained jargon, the interface has failed.
 
 The feature set is deliberately modest. The presentation is not.
 
-SEPANG 56 should feel like an interactive current-generation motorsport experience rather than a generic learning/prediction website. Three.js is part of the planned MVP experience layer, but its use is predetermined in `docs/threejs-experience.md`; coding agents should not invent additional 3D features.
+SEPANG 56 should feel like an interactive current-generation motorsport experience rather than a generic learning or prediction website. Three.js is part of the approved MVP presentation layer, but its use is constrained by `docs/threejs-experience.md`.
 
-## Planned web stack
+## Web stack
 
-- Next.js / React component architecture
+- Next.js and React
 - TypeScript
 - Tailwind CSS
-- **shadcn/ui + Radix primitives for accessible interaction behavior**
-- Three.js + React Three Fiber / Drei for explicitly approved 3D scenes
-- Motion/Framer Motion for ordinary non-3D UI transitions; add GSAP only if a specific approved cinematic interaction requires it
-- Supabase for auth, predictions, leagues, and leaderboard persistence
-- Static/local content for F1 lessons and Sepang educational content where practical
+- shadcn/ui and Radix primitives for accessible interaction behavior
+- Three.js, React Three Fiber, and Drei for explicitly approved 3D scenes
+- Supabase for the later authenticated predictions, leagues, and leaderboard backend
+- static/local content for lessons and Sepang educational content where practical
 
 ### UI engineering principle
 
-> **shadcn gives us the behavior. SEPANG 56 gives it the F1 skin.**
+> **shadcn gives us the behavior. SEPANG 56 gives it the motorsport skin.**
 
-Default shadcn visuals are not the product design. All primitives must use the exact SEPANG 56 tokens and component rules in `DESIGN.md` and `docs/ui-standardization.md`.
+Default shadcn visuals are not the product design. All primitives must use the SEPANG 56 tokens and component rules in `DESIGN.md` and `docs/ui-standardization.md`.
 
-Identity-heavy elements such as the race header, driver cards, prediction shell, timing leaderboard, circuit information panel, starting lights, and Three.js scenes are custom SEPANG components.
+Identity-heavy elements such as the race header, driver cards, prediction shell, timing leaderboard, circuit information panel, starting lights, and Three.js scenes are custom SEPANG 56 components.
 
-## Finalized product standards
+## Product and implementation standards
+
+Start with:
+
+- `AGENTS.md`
+- `docs/implementation-blueprint.md`
+- `DESIGN.md`
+
+Finalized standards include:
 
 - `docs/learn-flow-standard.md`
 - `docs/sepang-flow-standard.md`
@@ -138,9 +150,8 @@ Identity-heavy elements such as the race header, driver cards, prediction shell,
 - `docs/league-leaderboard-standard.md`
 - `docs/auth-persistence-standard.md`
 - `docs/component-architecture.md`
-- `docs/implementation-blueprint.md`
 
-Responsive/design standards remain in `DESIGN.md`, `docs/ui-standardization.md`, and the `docs/mobile-*.md` files.
+Responsive and visual standards remain in `DESIGN.md`, `docs/ui-standardization.md`, and the `docs/mobile-*.md` files.
 
 ## KISS / YAGNI
 
@@ -157,16 +168,14 @@ Prefer:
 
 ## Design references
 
-Google Stitch outputs are used as **visual/composition baselines**, not production specifications.
+Google Stitch outputs are used as **visual and composition baselines**, not production specifications.
 
-Generated Stitch HTML and generated design files can contain substituted fonts, inconsistent palettes, fake telemetry, invented navigation, and route-specific component styling. Codex/OpenCode must standardize those references against the repo source-of-truth documents.
-
-Do not reproduce Stitch exports line-for-line.
+Generated prototypes may contain substituted fonts, inconsistent palettes, fake telemetry, invented navigation, or route-specific styling. Production implementation must normalize those references against the repository design standards rather than reproduce them line-for-line.
 
 ## MVP exclusions
 
-The MVP does **not** include AI chat/tutoring, live race telemetry, live timing, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, admin CMS work, automated race-result ingestion, or league social/moderation systems.
+The MVP does **not** include AI chat or tutoring, live race telemetry, live timing, weather APIs, race simulators, tyre strategy calculators, live GPS, fantasy systems, social feeds, payments, native apps, an admin CMS, automated race-result ingestion, or league moderation systems.
 
-Decorative Stitch labels such as live timing, circuit-open status, countdown timers, coordinates, and fake system telemetry are not product features.
+Decorative prototype labels such as live timing, circuit-open status, countdown timers, coordinates, and fake system telemetry are not product features.
 
-3D/WebGL is **not** generally open-ended. It is allowed only for the explicitly approved experiences in `docs/threejs-experience.md` unless product scope is changed by the owner.
+3D/WebGL is not open-ended. It is used only for the explicitly approved experiences in `docs/threejs-experience.md` unless product scope is deliberately changed.
