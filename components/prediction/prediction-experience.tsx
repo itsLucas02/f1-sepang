@@ -139,7 +139,7 @@ export function PredictionExperience() {
     return (
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/sepang")} />
-        <main className="race-grid mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
+        <main className="mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
             Loading your picks…
           </p>
@@ -152,8 +152,8 @@ export function PredictionExperience() {
     return (
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/")} />
-        <main className="race-grid mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
-          <section className="w-full overflow-hidden border border-border bg-[#121218] p-7 sm:p-12">
+        <main className="mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
+          <section className="w-full overflow-hidden border border-white/10 bg-[#111113] p-7 sm:p-12">
             <div className="flex items-center gap-3">
               <LockKeyhole aria-hidden="true" className="size-5 text-race-red" />
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-race-red">
@@ -247,10 +247,10 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+          <div className="mt-5 flex items-center gap-3 border-t border-black/10 pt-4">
             <span className="size-2 bg-race-red" aria-hidden="true" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
-              Current call: <span className="text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
+              Current call: <span className="text-[#111113]">{selectedDriver.firstName} {selectedDriver.surname}</span>
             </p>
           </div>
         ) : null}
@@ -267,25 +267,25 @@ function PredictionIntro({
   onStart: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-[#0e0e14]">
+    <div className="min-h-screen bg-[#080809]">
       <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
       <main className="race-grid relative min-h-[calc(100vh-56px)] overflow-hidden">
         <div
           aria-hidden="true"
-          className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.035] sm:text-[28rem] lg:text-[38rem]"
+          className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.03] sm:text-[28rem] lg:text-[38rem]"
         >
           08
         </div>
         <div
           aria-hidden="true"
-          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/15 blur-[110px]"
+          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/12 blur-[110px]"
         />
 
         <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
           <section className="lg:col-span-7">
             <div className="flex items-center gap-3">
               <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/52">
                 Prediction grid
               </p>
             </div>
@@ -293,7 +293,7 @@ function PredictionIntro({
               Eight calls.
               <span className="block text-race-red">One race.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-7 text-text-secondary sm:text-xl sm:leading-8">
+            <p className="mt-7 max-w-xl text-lg leading-7 text-white/64 sm:text-xl sm:leading-8">
               Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
             </p>
             <Button type="button" onClick={onStart} className="mt-9 min-w-48">
