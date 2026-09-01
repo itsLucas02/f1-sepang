@@ -13,9 +13,16 @@ This repository is the working source of truth for the Kracked Devs Formula 1 Se
 
 ## Implementation status
 
-**Implementation is underway. Phase 0 (project foundation) has started.**
+**Implementation is underway through Phase 5.**
 
-The repository now contains the Next.js/TypeScript/Tailwind foundation, shadcn/Radix configuration, canonical SEPANG 56 design tokens/fonts, shared shell primitives, and CI quality commands.
+Implemented so far:
+
+- Phase 0 — Next.js/TypeScript/Tailwind foundation, SEPANG design system, shared shell and CI commands
+- Phase 1 — responsive Landing experience
+- Phase 2 — familiarity check, six Learn lessons, local progress and Race Ready milestone
+- Phase 3 — Sepang guided/free explorer, five hotspots, local progress, 2D fallback and React Three Fiber scene
+- Phase 4 — eight-question anonymous Prediction flow, local draft, podium validation and summary/editing
+- Phase 5 — Supabase SSR auth plumbing, Google OAuth callback, authenticated prediction persistence and server-side deadline enforcement
 
 Major product decisions are finalized for Learn, Sepang, Predictions, scoring, leagues/leaderboards, auth, and persistence.
 
@@ -51,6 +58,45 @@ npm run typecheck
 npm test
 npm run build
 ```
+
+## Supabase setup
+
+Copy `.env.example` to `.env.local` and configure:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+SUPABASE_SECRET_KEY
+NEXT_PUBLIC_PREDICTION_DEADLINE
+```
+
+The publishable key is browser-safe. `SUPABASE_SECRET_KEY` is server-only and must never use a `NEXT_PUBLIC_` prefix.
+
+Apply the SQL migration under:
+
+```text
+supabase/migrations/202609010001_auth_predictions.sql
+```
+
+Enable **Google** as the only MVP auth provider in Supabase Auth. Add the application callback URL to the Supabase redirect allow list:
+
+```text
+http://localhost:3000/auth/callback
+https://YOUR_PRODUCTION_DOMAIN/auth/callback
+```
+
+The prediction handoff is:
+
+```text
+Prediction Summary
+  → SAVE PICKS
+  → Google OAuth if needed
+  → /auth/callback
+  → same Prediction Summary
+  → server validates + persists picks
+```
+
+The browser draft remains in local storage through OAuth. Official prediction writes go through `/api/predictions`, which revalidates the eight answers and rejects writes at/after the configured race deadline.
 
 ## Product principle
 
