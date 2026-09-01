@@ -1,6 +1,8 @@
 name: Deploy SEPANG 56 to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -38,6 +40,7 @@ jobs:
           test -f out/sepang/index.html
           test -f out/predict/index.html
           test -f out/predict/summary/index.html
+          test -f out/leaderboard/index.html
           test -f out/.nojekyll
 
       - name: Upload Pages artifact
