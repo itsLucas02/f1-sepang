@@ -97,8 +97,8 @@ export function SepangExplorer() {
 
   if (!hydrated) {
     return (
-      <section className="race-grid min-h-[420px] border border-border bg-[#111118] p-6 sm:p-8">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+      <section className="min-h-[420px] border border-black/10 bg-white p-6 sm:p-8">
+        <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#77777d]">
           Preparing the circuit…
         </p>
       </section>
@@ -112,17 +112,17 @@ export function SepangExplorer() {
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3">
               <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6b6b70]">
                 Circuit briefing / Malaysia
               </p>
             </div>
-            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-white sm:text-7xl lg:text-8xl">
+            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-[#111113] sm:text-7xl lg:text-8xl">
               Meet
               <span className="block text-race-red">Sepang.</span>
             </h1>
           </div>
           <div className="lg:col-span-4 lg:col-start-9">
-            <p className="text-lg leading-7 text-text-secondary">
+            <p className="text-lg leading-7 text-[#55555b]">
               A 5.543 km circuit with 15 turns, long straights and braking zones that make battles easy to follow — even if this is your first F1 race.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
@@ -145,15 +145,15 @@ export function SepangExplorer() {
           <SepangCircuitStage selectedHotspot="main-straight" />
         </div>
 
-        <div className="mt-6 grid gap-px border-y border-border bg-border sm:grid-cols-3">
+        <div className="mt-6 grid gap-px overflow-hidden border border-black/10 bg-black/10 sm:grid-cols-3">
           {[
             ["5.543 KM", "Circuit length"],
             ["15", "Turns"],
             ["56", "Historic F1 race laps"],
           ].map(([value, label]) => (
-            <div key={label} className="bg-[#15151c] px-5 py-5 sm:px-6">
+            <div key={label} className="bg-[#111113] px-5 py-5 sm:px-6">
               <p className="font-display text-3xl font-extrabold uppercase text-white">{value}</p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/45">
                 {label}
               </p>
             </div>
@@ -165,18 +165,18 @@ export function SepangExplorer() {
 
   return (
     <div>
-      <section className="grid gap-6 border-b border-border pb-8 lg:grid-cols-12 lg:items-end">
+      <section className="grid gap-6 border-b border-black/12 pb-8 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">
           <div className="flex items-center gap-3">
             <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6b6b70]">
               Circuit explorer / {state.tourMode === "guided" ? "Guided" : "Free explore"}
             </p>
           </div>
-          <h1 className="mt-4 font-display text-6xl font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-white sm:text-7xl">
+          <h1 className="mt-4 font-display text-6xl font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-[#111113] sm:text-7xl">
             Read Sepang.
           </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-7 text-text-secondary">
+          <p className="mt-4 max-w-2xl text-lg leading-7 text-[#55555b]">
             Choose a hotspot. The camera moves to the real section of circuit and shows you what to watch when the race reaches it.
           </p>
         </div>
@@ -184,10 +184,10 @@ export function SepangExplorer() {
         <div className="lg:col-span-3 lg:col-start-10">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="font-display text-4xl font-extrabold text-white">
-                {state.visitedHotspots.length}<span className="text-text-muted">/{HOTSPOT_ORDER.length}</span>
+              <p className="font-display text-4xl font-extrabold text-[#111113]">
+                {state.visitedHotspots.length}<span className="text-[#8a8a90]">/{HOTSPOT_ORDER.length}</span>
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
                 hotspots read
               </p>
             </div>
@@ -195,7 +195,7 @@ export function SepangExplorer() {
               {state.tourMode === "guided" ? "Free Explore" : "Guided"}
             </Button>
           </div>
-          <div className="mt-4 h-1 overflow-hidden bg-surface-03">
+          <div className="mt-4 h-1 overflow-hidden bg-black/10">
             <div
               className="h-full bg-race-red transition-[width] duration-500"
               style={{ width: `${(state.visitedHotspots.length / HOTSPOT_ORDER.length) * 100}%` }}
@@ -205,9 +205,9 @@ export function SepangExplorer() {
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-12 lg:items-stretch">
-        <div className="lg:col-span-8">
+        <div className="min-w-0 lg:col-span-8">
           <SepangCircuitStage selectedHotspot={state.selectedHotspot} />
-          <div className="mt-4 overflow-x-auto">
+          <div className="mt-4">
             <CircuitHotspotTabs
               selectedHotspot={state.selectedHotspot}
               visitedHotspots={state.visitedHotspots}
@@ -216,7 +216,7 @@ export function SepangExplorer() {
           </div>
         </div>
 
-        <div className="lg:col-span-4">
+        <div className="min-w-0 lg:col-span-4">
           <CircuitInfoPanel
             key={selected.id}
             hotspot={selected}
