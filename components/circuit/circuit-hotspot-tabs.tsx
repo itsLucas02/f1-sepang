@@ -20,7 +20,7 @@ export function CircuitHotspotTabs({
     <div
       role="group"
       aria-label="Sepang circuit hotspots"
-      className="grid min-w-[680px] grid-cols-5 border-y border-border bg-[#14141b] sm:min-w-0"
+      className="grid grid-cols-2 overflow-hidden border border-black/12 bg-white sm:grid-cols-5"
     >
       {SEPANG_HOTSPOTS.map((hotspot) => {
         const selected = hotspot.id === selectedHotspot;
@@ -33,17 +33,19 @@ export function CircuitHotspotTabs({
             aria-pressed={selected}
             onClick={() => onSelect(hotspot.id)}
             className={cn(
-              "group relative min-h-20 border-r border-border px-4 py-4 text-left transition-colors duration-200 last:border-r-0 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
+              "group relative min-h-20 border-b border-r border-black/10 px-4 py-4 text-left transition-colors duration-200 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black sm:border-b-0 sm:last:border-r-0",
               selected
-                ? "bg-[#202028] text-white"
-                : "text-text-secondary hover:bg-[#191920] hover:text-white",
+                ? "bg-[#111113] text-white"
+                : "bg-white text-[#252527] hover:bg-[#ebe9e4]",
             )}
           >
             <span className="flex items-center justify-between gap-2">
-              <span className={cn(
-                "font-mono text-[10px] tracking-[0.12em]",
-                selected ? "text-race-red" : "text-text-muted",
-              )}>
+              <span
+                className={cn(
+                  "font-mono text-[10px] tracking-[0.12em]",
+                  selected ? "text-race-red" : "text-[#7a7a80]",
+                )}
+              >
                 {hotspot.index}
               </span>
               {visited ? (
@@ -56,7 +58,7 @@ export function CircuitHotspotTabs({
             <span
               aria-hidden="true"
               className={cn(
-                "absolute inset-x-0 bottom-0 h-1 origin-left bg-race-red transition-transform duration-300",
+                "absolute inset-x-0 bottom-0 h-[3px] origin-left bg-race-red transition-transform duration-300",
                 selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
               )}
             />
