@@ -20,30 +20,51 @@ export function PredictionStep({
   onContinue: () => void;
   continueLabel?: string;
 }) {
+  const current = Number(progress.slice(0, 2));
+  const percent = Number.isFinite(current) ? (current / 8) * 100 : 0;
+
   return (
-    <div className="pb-28 sm:pb-32">
+    <div className="panel-enter pb-28 sm:pb-32">
       <section className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12 lg:py-16">
-        <span className="inline-flex min-h-8 items-center rounded-md border border-border bg-surface-03 px-3 font-mono text-xs font-medium tracking-[0.1em] text-race-red">
-          {progress}
-        </span>
+        <div className="flex items-center gap-5">
+          <span className="font-mono text-xs font-medium tracking-[0.12em] text-race-red">
+            {progress}
+          </span>
+          <div className="h-1 flex-1 overflow-hidden bg-surface-03">
+            <div
+              className="h-full bg-race-red transition-[width] duration-500"
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.13em] text-text-muted sm:block">
+            Race calls
+          </span>
+        </div>
 
-        <h1 className="mt-5 max-w-4xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
-          {heading}
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-6 text-text-secondary sm:text-lg sm:leading-7">
-          {helper}
-        </p>
+        <div className="mt-8 grid gap-5 lg:grid-cols-12 lg:items-end">
+          <h1 className="font-display text-5xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-white sm:text-6xl lg:col-span-8 lg:text-7xl">
+            {heading}
+          </h1>
+          <p className="max-w-xl text-base leading-6 text-text-secondary sm:text-lg sm:leading-7 lg:col-span-4">
+            {helper}
+          </p>
+        </div>
 
-        <div className="mt-8 sm:mt-10">{children}</div>
+        <div className="mt-9 border-t border-white/10 pt-8 sm:mt-11 sm:pt-10">
+          {children}
+        </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-canvas/95 pb-[max(16px,env(safe-area-inset-bottom))] pt-4 backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#101016]/95 pb-[max(16px,env(safe-area-inset-bottom))] pt-4 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center gap-5 px-5 sm:px-8">
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.13em] text-text-muted sm:block">
+            {canContinue ? "Selection ready" : "Choose an answer"}
+          </span>
           <Button
             type="button"
             disabled={!canContinue}
             onClick={onContinue}
-            className="w-full sm:ml-auto sm:flex sm:w-auto sm:min-w-44"
+            className="w-full sm:ml-auto sm:flex sm:w-auto sm:min-w-48"
           >
             {continueLabel}
             <ArrowRight aria-hidden="true" className="size-4" />
