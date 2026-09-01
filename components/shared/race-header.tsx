@@ -19,17 +19,19 @@ type RaceHeaderProps = {
 
 export function RaceHeader({ activeHref }: RaceHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-header">
-      <div className="h-1 bg-stripe-dark" aria-hidden="true">
-        <div className="h-full w-24 bg-stripe-light" />
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#101016]/95 backdrop-blur-md">
+      <div className="h-[3px] bg-[#1d1d25]" aria-hidden="true">
+        <div className="h-full w-28 bg-race-red" />
       </div>
 
       <SiteContainer className="flex h-14 items-center justify-between gap-6 md:h-[72px]">
         <Link
           href="/"
-          className="font-display text-xl font-extrabold tracking-[0.04em] text-white"
+          aria-label={`${SITE_NAME} home`}
+          className="group flex items-baseline gap-1 font-display text-2xl font-extrabold uppercase tracking-[0.025em] text-white"
         >
-          {SITE_NAME}
+          <span>SEPANG</span>
+          <span className="text-race-red transition-colors group-hover:text-white">56</span>
         </Link>
 
         <nav aria-label="Primary navigation" className="hidden items-stretch md:flex">
@@ -42,9 +44,9 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative flex h-[72px] items-center px-4 text-sm font-semibold text-text-secondary transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
+                  "relative flex h-[72px] items-center px-5 text-xs font-bold uppercase tracking-[0.08em] text-text-secondary transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
                   isActive &&
-                    "text-white after:absolute after:inset-x-4 after:bottom-0 after:h-0.5 after:bg-race-red",
+                    "text-white after:absolute after:inset-x-5 after:bottom-0 after:h-[3px] after:bg-race-red",
                 )}
               >
                 {item.label}
@@ -53,13 +55,20 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           })}
         </nav>
 
+        <div className="hidden items-center gap-3 md:flex">
+          <span className="h-px w-7 bg-white/20" aria-hidden="true" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
+            Race ready
+          </span>
+        </div>
+
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <button
                 type="button"
                 aria-label="Open navigation"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-surface-01 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[4px] border border-white/15 bg-[#15151c] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <Menu aria-hidden="true" className="size-5" />
               </button>
@@ -76,8 +85,8 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                       href={item.href}
                       aria-current={item.href === activeHref ? "page" : undefined}
                       className={cn(
-                        "block min-h-11 border-b border-border px-1 py-4 text-base font-semibold text-text-secondary transition-colors hover:text-white focus-visible:outline-none focus-visible:text-white",
-                        item.href === activeHref && "text-white",
+                        "block min-h-11 border-b border-border px-1 py-4 text-base font-bold uppercase tracking-[0.05em] text-text-secondary transition-colors hover:text-white focus-visible:outline-none focus-visible:text-white",
+                        item.href === activeHref && "border-l-2 border-l-race-red pl-3 text-white",
                       )}
                     >
                       {item.label}
