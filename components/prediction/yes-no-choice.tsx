@@ -20,10 +20,10 @@ export function YesNoChoice({
     <label
       htmlFor={inputId}
       className={cn(
-        "relative flex min-h-32 cursor-pointer items-center justify-between rounded-md border bg-surface-01 p-6 transition-colors duration-200",
+        "group relative flex min-h-40 cursor-pointer items-end justify-between overflow-hidden rounded-[4px] border bg-[#121218] p-6 transition-[transform,border-color,background-color] duration-200 sm:min-h-48 sm:p-8",
         selected
-          ? "border-race-red bg-[rgba(225,6,0,0.05)]"
-          : "border-border hover:border-text-muted",
+          ? "race-select-pop border-race-red bg-[#1b1519]"
+          : "border-border hover:-translate-y-0.5 hover:border-[#6a6a74] hover:bg-[#17171e]",
       )}
     >
       <input
@@ -34,16 +34,37 @@ export function YesNoChoice({
         onChange={onSelect}
         className="peer sr-only"
       />
-      <span className="font-display text-4xl font-extrabold uppercase leading-none text-white">
+
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute -right-7 -top-16 font-display text-[10rem] font-extrabold leading-none transition-colors sm:text-[12rem]",
+          selected ? "text-race-red/12" : "text-white/[0.035]",
+        )}
+      >
+        {value ? "Y" : "N"}
+      </span>
+
+      <span className="relative z-10 font-display text-5xl font-extrabold uppercase leading-none tracking-[-0.03em] text-white sm:text-6xl">
         {label}
       </span>
       {selected ? (
-        <span className="flex size-7 items-center justify-center border border-race-red bg-race-red text-white">
+        <span className="relative z-10 flex size-8 items-center justify-center bg-race-red text-white">
           <Check aria-hidden="true" className="size-4" />
           <span className="sr-only">Selected</span>
         </span>
-      ) : null}
-      <span className="pointer-events-none absolute inset-0 rounded-md peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
+      ) : (
+        <span aria-hidden="true" className="relative z-10 size-2 bg-white/25" />
+      )}
+
+      <span
+        aria-hidden="true"
+        className={cn(
+          "absolute inset-x-0 bottom-0 h-1 bg-race-red transition-transform duration-300",
+          selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+        )}
+      />
+      <span className="pointer-events-none absolute inset-0 rounded-[4px] peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
     </label>
   );
 }
