@@ -1,0 +1,64 @@
+name: Public Readiness Audit
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan full git history for credential patterns
+        shell: bash
+        run: |
+          set -uo pipefail
+
+          pattern='sb_secret_[A-Za-z0-9_-]{16,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{30,}|GOCSPX-[0-9A-Za-z_-]{20,}|sk_live_[0-9A-Za-z]{16,}|rk_live_[0-9A-Za-z]{16,}|sk-proj-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}|-----BEGIN ([A-Z ]+)?PRIVATE KEY-----|eyJhbGciOi[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}|(postgres|postgresql|mysql|mongodb|mongodb\+srv)://[^[:space:]/]+:[^[:space:]@]+@|(secret|token|password|api[_-]?key|client[_-]?secret)[A-Za-z0-9_.-]*[[:space:]]*[:=][[:space:]]*[A-Za-z0-9_./+=-]{20,}'
+
+          : > raw-secret-findings.txt
+          for commit in $(git rev-list --all); do
+            git grep -I -n -E "$pattern" "$commit" -- . >> raw-secret-findings.txt 2>/dev/null || true
+          done
+
+          sort -u raw-secret-findings.txt \
+            | grep -Ev 'REPLACE_ME|YOUR_PROJECT_REF|YOUR_PRODUCTION_DOMAIN|example\.com|example only' \
+            > secret-findings.txt || true
+
+          if [ -s secret-findings.txt ]; then
+            echo 'POTENTIAL_SECRET_FINDINGS_BEGIN'
+            cat secret-findings.txt
+            echo 'POTENTIAL_SECRET_FINDINGS_END'
+          else
+            echo 'SECRET_SCAN_CLEAN'
+          fi
+
+      - name: Scan current tree for personal emails and non-local IP addresses
+        shell: bash
+        run: |
+          set -uo pipefail
+          : > privacy-findings.txt
+
+          git grep -I -n -E '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' HEAD -- . \
+            | grep -Ev 'users\.noreply\.github\.com|example\.com' \
+            >> privacy-findings.txt || true
+
+          git grep -I -n -E '(^|[^0-9])([0-9]{1,3}\.){3}[0-9]{1,3}([^0-9]|$)' HEAD -- . \
+            | grep -Ev '127\.0\.0\.1|0\.0\.0\.0' \
+            >> privacy-findings.txt || true
+
+          if [ -s privacy-findings.txt ]; then
+            echo 'PRIVACY_FINDINGS_BEGIN'
+            sort -u privacy-findings.txt
+            echo 'PRIVACY_FINDINGS_END'
+          else
+            echo 'PRIVACY_SCAN_CLEAN'
+          fi
