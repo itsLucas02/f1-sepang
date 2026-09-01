@@ -139,12 +139,10 @@ export function PredictionExperience() {
     return (
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/sepang")} />
-        <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
-          <div className="border border-border bg-surface-01 p-6">
-            <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-              Loading your picks…
-            </p>
-          </div>
+        <main className="race-grid mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
+          <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+            Loading your picks…
+          </p>
         </main>
       </div>
     );
@@ -154,19 +152,21 @@ export function PredictionExperience() {
     return (
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/")} />
-        <main className="mx-auto flex min-h-[calc(100vh-56px)] max-w-3xl items-center px-5 py-12 sm:px-8">
-          <section className="w-full border border-border bg-surface-01 p-6 sm:p-10">
-            <LockKeyhole aria-hidden="true" className="size-7 text-race-red" />
-            <p className="mt-6 font-mono text-xs uppercase tracking-[0.12em] text-race-red">
-              Predictions Locked
-            </p>
-            <h1 className="mt-3 font-display text-5xl font-extrabold uppercase leading-[0.95] text-white sm:text-6xl">
-              Picks are closed
+        <main className="race-grid mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
+          <section className="w-full overflow-hidden border border-border bg-[#121218] p-7 sm:p-12">
+            <div className="flex items-center gap-3">
+              <LockKeyhole aria-hidden="true" className="size-5 text-race-red" />
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-race-red">
+                Predictions locked
+              </p>
+            </div>
+            <h1 className="mt-6 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] text-white sm:text-7xl">
+              The grid is closed.
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-7 text-text-secondary">
+            <p className="mt-6 max-w-xl text-lg leading-7 text-text-secondary">
               The race deadline has passed, so prediction answers are now read-only.
             </p>
-            <div className="mt-8">
+            <div className="mt-9">
               <Button asChild>
                 <Link href="/predict/summary">View Your Picks</Link>
               </Button>
@@ -179,49 +179,13 @@ export function PredictionExperience() {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-canvas">
-        <RaceFlowHeader onBack={goBack} backLabel="Back to Sepang" />
-        <main className="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-16">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-race-red">
-            Make Your Picks
-          </p>
-          <h1 className="mt-4 font-display text-5xl font-extrabold uppercase leading-[0.95] tracking-[-0.02em] text-white sm:text-6xl lg:text-7xl">
-            Eight picks. One race.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-7 text-text-secondary">
-            Go one question at a time. You can change any answer before the race deadline, and you do not need an account just to start.
-          </p>
-
-          <div className="mt-10 grid gap-px border border-border bg-border sm:grid-cols-2">
-            {PREDICTION_QUESTIONS.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-4 bg-surface-01 p-4 sm:p-5"
-              >
-                <span className="font-mono text-xs text-race-red">
-                  {String(item.index).padStart(2, "0")}
-                </span>
-                <span className="font-display text-xl font-bold uppercase text-white">
-                  {item.summaryLabel}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex justify-end">
-            <Button
-              type="button"
-              onClick={() => {
-                setDraft((current) => ({ ...current, hasSeenIntro: true }));
-                setShowIntro(false);
-              }}
-            >
-              Start Picking
-              <ArrowRight aria-hidden="true" className="size-4" />
-            </Button>
-          </div>
-        </main>
-      </div>
+      <PredictionIntro
+        onBack={goBack}
+        onStart={() => {
+          setDraft((current) => ({ ...current, hasSeenIntro: true }));
+          setShowIntro(false);
+        }}
+      />
     );
   }
 
@@ -233,6 +197,7 @@ export function PredictionExperience() {
       />
 
       <PredictionStep
+        key={question.id}
         progress={`${String(question.index).padStart(2, "0")} / 08`}
         heading={question.heading}
         helper={question.helper}
@@ -243,7 +208,7 @@ export function PredictionExperience() {
         {question.kind === "driver" ? (
           <fieldset>
             <legend className="sr-only">Choose one driver</legend>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
               {DRIVERS.map((driver) => {
                 const selected = answer === driver.id;
                 const unavailable = unavailableDriverIds.includes(driver.id);
@@ -282,11 +247,80 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <p className="mt-5 font-mono text-xs uppercase tracking-[0.08em] text-text-muted">
-            Selected: {selectedDriver.firstName} {selectedDriver.surname}
-          </p>
+          <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+            <span className="size-2 bg-race-red" aria-hidden="true" />
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+              Current call: <span className="text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
+            </p>
+          </div>
         ) : null}
       </PredictionStep>
+    </div>
+  );
+}
+
+function PredictionIntro({
+  onBack,
+  onStart,
+}: {
+  onBack: () => void;
+  onStart: () => void;
+}) {
+  return (
+    <div className="min-h-screen bg-[#0e0e14]">
+      <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
+      <main className="race-grid relative min-h-[calc(100vh-56px)] overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.035] sm:text-[28rem] lg:text-[38rem]"
+        >
+          08
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/15 blur-[110px]"
+        />
+
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
+          <section className="lg:col-span-7">
+            <div className="flex items-center gap-3">
+              <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/55">
+                Prediction grid
+              </p>
+            </div>
+            <h1 className="mt-5 max-w-3xl font-display text-7xl font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-white sm:text-8xl lg:text-[7.5rem]">
+              Eight calls.
+              <span className="block text-race-red">One race.</span>
+            </h1>
+            <p className="mt-7 max-w-xl text-lg leading-7 text-text-secondary sm:text-xl sm:leading-8">
+              Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
+            </p>
+            <Button type="button" onClick={onStart} className="mt-9 min-w-48">
+              Start Picking
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Button>
+          </section>
+
+          <section className="lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
+            <div className="border-t-2 border-white/75">
+              {PREDICTION_QUESTIONS.map((item) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/12 py-3.5"
+                >
+                  <span className="font-mono text-[10px] text-race-red">
+                    {String(item.index).padStart(2, "0")}
+                  </span>
+                  <span className="font-display text-lg font-bold uppercase text-white/82">
+                    {item.summaryLabel}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
     </div>
   );
 }
