@@ -45,27 +45,27 @@ export default function HomePage() {
       <RaceHeader />
 
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-[#0b0b10]">
+        <section className="relative overflow-hidden bg-[#080809]">
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-race-red via-race-red to-transparent"
+            className="absolute inset-x-0 bottom-0 h-[3px] bg-race-red"
           />
 
           <SiteContainer className="py-6 sm:py-8 lg:py-10">
-            <div className="relative min-h-[700px] overflow-hidden rounded-[6px] border border-white/10 bg-[#0d0d13] lg:min-h-[720px]">
+            <div className="relative min-h-[700px] overflow-hidden rounded-[4px] border border-white/10 bg-[#0b0b0d] lg:min-h-[720px]">
               <div className="absolute inset-0 lg:left-[39%]">
                 <LandingScene />
               </div>
 
               <div
                 aria-hidden="true"
-                className="absolute inset-0 bg-[linear-gradient(90deg,#0d0d13_0%,#0d0d13_36%,rgba(13,13,19,0.93)_48%,rgba(13,13,19,0.18)_77%,rgba(13,13,19,0.08)_100%)] max-lg:bg-[linear-gradient(180deg,#0d0d13_0%,#0d0d13_42%,rgba(13,13,19,0.82)_61%,rgba(13,13,19,0.15)_100%)]"
+                className="absolute inset-0 bg-[linear-gradient(90deg,#0b0b0d_0%,#0b0b0d_36%,rgba(11,11,13,0.94)_48%,rgba(11,11,13,0.18)_77%,rgba(11,11,13,0.06)_100%)] max-lg:bg-[linear-gradient(180deg,#0b0b0d_0%,#0b0b0d_42%,rgba(11,11,13,0.84)_61%,rgba(11,11,13,0.12)_100%)]"
               />
 
               <div className="relative z-20 flex min-h-[700px] flex-col justify-between p-6 sm:p-8 lg:min-h-[720px] lg:w-[58%] lg:p-12 xl:p-16">
                 <div className="flex items-center gap-3">
                   <span className="h-0.5 w-10 bg-race-red" aria-hidden="true" />
-                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/65 sm:text-xs">
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/62 sm:text-xs">
                     Beginner-first race weekend guide
                   </p>
                 </div>
@@ -79,7 +79,7 @@ export default function HomePage() {
                     <span className="block text-white/92">to Sepang.</span>
                   </h1>
 
-                  <p className="mt-7 max-w-xl text-lg leading-7 text-white/70 sm:text-xl sm:leading-8">
+                  <p className="mt-7 max-w-xl text-lg leading-7 text-white/68 sm:text-xl sm:leading-8">
                     You do not need to know F1 to enjoy it. Learn the basics,
                     understand the circuit and make picks you can actually explain.
                   </p>
@@ -93,7 +93,7 @@ export default function HomePage() {
                     </Button>
                     <Link
                       href="/sepang"
-                      className="inline-flex min-h-11 items-center gap-2 px-1 text-sm font-bold uppercase tracking-[0.04em] text-white/75 transition-colors hover:text-white"
+                      className="inline-flex min-h-11 items-center gap-2 px-1 text-sm font-bold uppercase tracking-[0.04em] text-white/72 transition-colors hover:text-white"
                     >
                       Explore the circuit
                       <ArrowRight aria-hidden="true" className="size-4" />
@@ -104,19 +104,19 @@ export default function HomePage() {
                 <div className="grid grid-cols-3 gap-5 border-t border-white/15 pt-5">
                   <div>
                     <p className="font-display text-3xl font-extrabold text-white sm:text-4xl">56</p>
-                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 sm:text-[10px]">
+                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/42 sm:text-[10px]">
                       race laps
                     </p>
                   </div>
                   <div>
                     <p className="font-display text-3xl font-extrabold text-white sm:text-4xl">15</p>
-                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 sm:text-[10px]">
+                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/42 sm:text-[10px]">
                       corners
                     </p>
                   </div>
                   <div>
                     <p className="font-display text-3xl font-extrabold text-white sm:text-4xl">8</p>
-                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/45 sm:text-[10px]">
+                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/42 sm:text-[10px]">
                       race picks
                     </p>
                   </div>
@@ -126,7 +126,7 @@ export default function HomePage() {
           </SiteContainer>
         </section>
 
-        <section className="bg-[#f1f1f0] text-[#141419]">
+        <section className="bg-[#f4f3ef] text-[#111113]">
           <SiteContainer className="py-16 sm:py-20 lg:py-24">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-5">
@@ -137,7 +137,7 @@ export default function HomePage() {
                   Go from zero to race ready.
                 </h2>
               </div>
-              <p className="max-w-xl text-lg leading-7 text-[#56565f] lg:col-span-5 lg:col-start-8">
+              <p className="max-w-xl text-lg leading-7 text-[#56565c] lg:col-span-5 lg:col-start-8">
                 Four focused steps. No fantasy dashboard, no fake telemetry, no wall of jargon — just what helps you understand Sepang and enjoy the race.
               </p>
             </div>
@@ -153,8 +153,8 @@ export default function HomePage() {
           </SiteContainer>
         </section>
 
-        <section className="relative overflow-hidden border-y border-border bg-[#15151c]">
-          <div className="race-grid absolute inset-0 opacity-35" aria-hidden="true" />
+        <section className="relative overflow-hidden border-y border-white/10 bg-[#111113]">
+          <div className="race-grid absolute inset-0 opacity-25" aria-hidden="true" />
           <SiteContainer className="relative py-14 sm:py-16">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-8">
