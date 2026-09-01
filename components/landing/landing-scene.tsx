@@ -1,85 +1,142 @@
+import {
+  SEPANG_TRACK_PATH,
+  SEPANG_TRACK_VIEWBOX,
+} from "@/lib/sepang-geometry";
+
 export function LandingScene() {
   return (
     <div
       role="img"
-      aria-label="Sepang-inspired racing illustration"
-      className="relative aspect-[4/3] w-full overflow-hidden rounded-[6px] border border-border bg-surface-01 lg:aspect-[5/4]"
+      aria-label="Animated SEPANG 56 race opening with starting lights, a Formula-style car silhouette and the real Sepang circuit outline"
+      className="relative min-h-[420px] w-full overflow-hidden rounded-[6px] border border-white/10 bg-[#0b0b10] sm:min-h-[520px] lg:min-h-[650px]"
     >
+      <div className="race-grid absolute inset-0 opacity-60" aria-hidden="true" />
+      <div className="race-noise absolute inset-0 opacity-[0.14]" aria-hidden="true" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
+        className="absolute -right-[12%] -top-[18%] h-[62%] w-[62%] rounded-full bg-race-red/20 blur-[100px]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute -bottom-[30%] left-[8%] h-[58%] w-[70%] rounded-full bg-white/[0.07] blur-[110px]"
       />
 
-      <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-4 p-5 sm:p-6">
-        <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-text-muted sm:text-xs">
+      <div className="absolute left-5 top-5 z-20 flex items-center gap-3 sm:left-7 sm:top-7">
+        <span className="h-px w-7 bg-race-red" />
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-white/70 sm:text-[11px]">
           Sepang / Malaysia
         </span>
-        <span className="h-px w-16 bg-race-red sm:w-24" aria-hidden="true" />
       </div>
-
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 640 480"
-        className="absolute inset-0 h-full w-full p-8 sm:p-12"
-        fill="none"
-      >
-        <path
-          d="M117 309C87 283 82 239 105 207C129 174 171 170 210 190L297 235C335 255 378 250 409 220C442 188 459 143 503 132C548 121 585 145 588 181C591 214 565 238 535 254L476 286C443 304 421 332 427 362C433 390 414 410 389 410C361 410 342 389 349 363L365 311C371 291 354 276 334 283L258 311C229 322 212 342 188 350C159 360 136 340 117 309Z"
-          stroke="currentColor"
-          strokeWidth="18"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-surface-03"
-        />
-        <path
-          d="M117 309C87 283 82 239 105 207C129 174 171 170 210 190L297 235C335 255 378 250 409 220C442 188 459 143 503 132C548 121 585 145 588 181C591 214 565 238 535 254L476 286C443 304 421 332 427 362C433 390 414 410 389 410C361 410 342 389 349 363L365 311C371 291 354 276 334 283L258 311C229 322 212 342 188 350C159 360 136 340 117 309Z"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-white/75"
-        />
-        <path
-          d="M494 136C532 123 568 140 584 167"
-          stroke="currentColor"
-          strokeWidth="4"
-          strokeLinecap="round"
-          className="text-race-red"
-        />
-      </svg>
 
       <div
         aria-hidden="true"
-        className="absolute bottom-6 left-5 flex gap-2 sm:bottom-8 sm:left-6"
+        className="absolute right-5 top-5 z-20 flex gap-1.5 rounded-[4px] border border-white/10 bg-black/40 p-2 backdrop-blur-sm sm:right-7 sm:top-7 sm:gap-2 sm:p-2.5"
       >
-        {[0, 1, 2, 3].map((slot) => (
+        {Array.from({ length: 5 }, (_, index) => (
           <span
-            key={slot}
-            className="block h-10 w-6 border border-white/10 bg-white/[0.025] sm:h-12 sm:w-7"
+            key={index}
+            className="hero-start-light block size-4 rounded-full border border-white/15 bg-[#3a0908] sm:size-5"
           />
         ))}
       </div>
 
-      <span
+      <svg
         aria-hidden="true"
-        className="absolute -bottom-8 right-3 font-display text-[9rem] font-extrabold leading-none text-white/[0.045] sm:-bottom-12 sm:text-[13rem]"
+        viewBox={SEPANG_TRACK_VIEWBOX}
+        preserveAspectRatio="xMidYMid meet"
+        className="absolute inset-[9%] h-[82%] w-[82%] translate-x-[5%] translate-y-[3%] -rotate-[7deg]"
+        fill="none"
+      >
+        <g transform="translate(-99.972483,57.371556)">
+          <g transform="matrix(0.6831882,0,0,0.6831882,-1707.7889,-493.83516)">
+            <path
+              d={SEPANG_TRACK_PATH}
+              stroke="#000000"
+              strokeWidth="32"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.55"
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#FFFFFF"
+              strokeWidth="11"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.86"
+              className="hero-track-draw"
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#E10600"
+              strokeWidth="17"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="hero-track-accent"
+            />
+          </g>
+        </g>
+      </svg>
+
+      <div
+        aria-hidden="true"
+        className="hero-speed-line absolute left-0 top-[47%] h-px w-[76%] bg-gradient-to-r from-transparent via-white/65 to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="hero-speed-line absolute left-[8%] top-[51%] h-px w-[64%] bg-gradient-to-r from-transparent via-race-red/70 to-transparent [animation-delay:70ms]"
+      />
+
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 520 150"
+        className="hero-car-pass absolute left-[12%] top-[39%] z-10 w-[76%] drop-shadow-[0_22px_22px_rgba(0,0,0,0.55)]"
+      >
+        <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <path
+            d="M38 91h62l35-22 70-9 46-35h57l24 32 77 15 50 24h25"
+            stroke="#ffffff"
+            strokeWidth="8"
+          />
+          <path
+            d="M113 96h288M210 60l21 36M335 59l-18 37"
+            stroke="#E10600"
+            strokeWidth="7"
+          />
+          <path
+            d="M56 104h50M409 104h54"
+            stroke="#ffffff"
+            strokeWidth="15"
+          />
+          <circle cx="135" cy="103" r="24" stroke="#70707a" strokeWidth="11" />
+          <circle cx="386" cy="103" r="24" stroke="#70707a" strokeWidth="11" />
+          <path d="M226 59h91l-17-22h-49z" fill="#1a1a24" stroke="#ffffff" strokeWidth="5" />
+          <path d="M238 36h65" stroke="#E10600" strokeWidth="5" />
+        </g>
+      </svg>
+
+      <div
+        aria-hidden="true"
+        className="absolute -bottom-12 -right-2 font-display text-[11rem] font-extrabold leading-none tracking-[-0.07em] text-white/[0.055] sm:-bottom-16 sm:text-[17rem] lg:text-[21rem]"
       >
         56
-      </span>
+      </div>
 
-      <div className="absolute bottom-5 right-5 text-right sm:bottom-6 sm:right-6">
-        <p className="font-display text-lg font-bold uppercase leading-none text-white sm:text-xl">
-          Sepang
+      <div className="absolute bottom-5 left-5 z-20 sm:bottom-7 sm:left-7">
+        <p className="font-display text-2xl font-bold uppercase leading-none text-white sm:text-3xl">
+          The race starts here.
         </p>
-        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted sm:text-[11px]">
-          Learn / Predict / Compete
+        <p className="mt-2 max-w-xs text-sm leading-5 text-white/60">
+          Learn the language. Read the circuit. Make the call.
         </p>
       </div>
+
+      <div
+        aria-hidden="true"
+        className="race-scanline pointer-events-none absolute inset-y-0 left-0 w-1/3"
+      />
     </div>
   );
 }
