@@ -5,7 +5,7 @@ import { SiteContainer } from "@/components/shared/site-container";
 
 export default function LearnPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-canvas">
+    <div className="flex min-h-screen flex-col bg-[#f4f3ef] text-[#111113]">
       <RaceHeader activeHref="/learn" />
       <main className="flex-1">
         <SiteContainer className="py-12 sm:py-16 lg:py-20">
