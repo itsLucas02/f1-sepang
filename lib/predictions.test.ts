@@ -4,9 +4,21 @@ import {
   getUnavailablePodiumDriverIds,
   isPredictionComplete,
   isPredictionLocked,
+  isValidPredictionSubmission,
   parsePersistedPredictionDraft,
   setPredictionAnswer,
 } from "@/lib/predictions";
+
+const completeAnswers = {
+  winner: "norris",
+  second: "verstappen",
+  third: "leclerc",
+  p1StarterWins: false,
+  fastestLap: "piastri",
+  rain: false,
+  safetyCar: true,
+  firstRetirement: "stroll",
+} as const;
 
 describe("podium validation", () => {
   it("prevents the winner from being reused for second place", () => {
@@ -51,22 +63,21 @@ describe("podium validation", () => {
     expect(answers.second).toBeUndefined();
     expect(answers.third).toBe("leclerc");
   });
+
+  it("rejects a complete submission with a duplicate podium", () => {
+    expect(
+      isValidPredictionSubmission({
+        ...completeAnswers,
+        third: "verstappen",
+      }),
+    ).toBe(false);
+  });
 });
 
 describe("prediction completion", () => {
   it("treats false as a valid Yes/No answer", () => {
-    expect(
-      isPredictionComplete({
-        winner: "norris",
-        second: "verstappen",
-        third: "leclerc",
-        p1StarterWins: false,
-        fastestLap: "piastri",
-        rain: false,
-        safetyCar: true,
-        firstRetirement: "stroll",
-      }),
-    ).toBe(true);
+    expect(isPredictionComplete(completeAnswers)).toBe(true);
+    expect(isValidPredictionSubmission(completeAnswers)).toBe(true);
   });
 });
 
