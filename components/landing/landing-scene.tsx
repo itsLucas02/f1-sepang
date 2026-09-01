@@ -8,34 +8,34 @@ export function LandingScene() {
     <div
       role="img"
       aria-label="Animated SEPANG 56 race opening with starting lights, a Formula-style car silhouette and the real Sepang circuit outline"
-      className="relative min-h-[420px] w-full overflow-hidden rounded-[6px] border border-white/10 bg-[#0b0b10] sm:min-h-[520px] lg:min-h-[650px]"
+      className="relative min-h-[420px] w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#080809] sm:min-h-[520px] lg:min-h-[650px]"
     >
-      <div className="race-grid absolute inset-0 opacity-60" aria-hidden="true" />
-      <div className="race-noise absolute inset-0 opacity-[0.14]" aria-hidden="true" />
+      <div className="race-grid absolute inset-0 opacity-50" aria-hidden="true" />
+      <div className="race-noise absolute inset-0 opacity-[0.12]" aria-hidden="true" />
       <div
         aria-hidden="true"
-        className="absolute -right-[12%] -top-[18%] h-[62%] w-[62%] rounded-full bg-race-red/20 blur-[100px]"
+        className="absolute -right-[12%] -top-[18%] h-[62%] w-[62%] rounded-full bg-race-red/18 blur-[100px]"
       />
       <div
         aria-hidden="true"
-        className="absolute -bottom-[30%] left-[8%] h-[58%] w-[70%] rounded-full bg-white/[0.07] blur-[110px]"
+        className="absolute -bottom-[30%] left-[8%] h-[58%] w-[70%] rounded-full bg-white/[0.055] blur-[110px]"
       />
 
       <div className="absolute left-5 top-5 z-20 flex items-center gap-3 sm:left-7 sm:top-7">
         <span className="h-px w-7 bg-race-red" />
-        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-white/70 sm:text-[11px]">
+        <span className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-white/68 sm:text-[11px]">
           Sepang / Malaysia
         </span>
       </div>
 
       <div
         aria-hidden="true"
-        className="absolute right-5 top-5 z-20 flex gap-1.5 rounded-[4px] border border-white/10 bg-black/40 p-2 backdrop-blur-sm sm:right-7 sm:top-7 sm:gap-2 sm:p-2.5"
+        className="absolute right-5 top-5 z-20 flex gap-1.5 rounded-[3px] border border-white/10 bg-black/45 p-2 backdrop-blur-sm sm:right-7 sm:top-7 sm:gap-2 sm:p-2.5"
       >
         {Array.from({ length: 5 }, (_, index) => (
           <span
             key={index}
-            className="hero-start-light block size-4 rounded-full border border-white/15 bg-[#3a0908] sm:size-5"
+            className="hero-start-light block size-4 rounded-full border border-white/15 bg-[#2b0807] sm:size-5"
           />
         ))}
       </div>
@@ -60,11 +60,11 @@ export function LandingScene() {
             <path
               d={SEPANG_TRACK_PATH}
               pathLength={1}
-              stroke="#FFFFFF"
+              stroke="#F2F1ED"
               strokeWidth="11"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity="0.86"
+              opacity="0.9"
               className="hero-track-draw"
             />
             <path
@@ -82,11 +82,11 @@ export function LandingScene() {
 
       <div
         aria-hidden="true"
-        className="hero-speed-line absolute left-0 top-[47%] h-px w-[76%] bg-gradient-to-r from-transparent via-white/65 to-transparent"
+        className="hero-speed-line absolute left-0 top-[47%] h-px w-[76%] bg-gradient-to-r from-transparent via-white/60 to-transparent"
       />
       <div
         aria-hidden="true"
-        className="hero-speed-line absolute left-[8%] top-[51%] h-px w-[64%] bg-gradient-to-r from-transparent via-race-red/70 to-transparent [animation-delay:70ms]"
+        className="hero-speed-line absolute left-[8%] top-[51%] h-px w-[64%] bg-gradient-to-r from-transparent via-race-red/65 to-transparent [animation-delay:70ms]"
       />
 
       <svg
@@ -97,7 +97,7 @@ export function LandingScene() {
         <g fill="none" strokeLinecap="round" strokeLinejoin="round">
           <path
             d="M38 91h62l35-22 70-9 46-35h57l24 32 77 15 50 24h25"
-            stroke="#ffffff"
+            stroke="#F2F1ED"
             strokeWidth="8"
           />
           <path
@@ -107,19 +107,19 @@ export function LandingScene() {
           />
           <path
             d="M56 104h50M409 104h54"
-            stroke="#ffffff"
+            stroke="#F2F1ED"
             strokeWidth="15"
           />
-          <circle cx="135" cy="103" r="24" stroke="#70707a" strokeWidth="11" />
-          <circle cx="386" cy="103" r="24" stroke="#70707a" strokeWidth="11" />
-          <path d="M226 59h91l-17-22h-49z" fill="#1a1a24" stroke="#ffffff" strokeWidth="5" />
+          <circle cx="135" cy="103" r="24" stroke="#67676c" strokeWidth="11" />
+          <circle cx="386" cy="103" r="24" stroke="#67676c" strokeWidth="11" />
+          <path d="M226 59h91l-17-22h-49z" fill="#111113" stroke="#F2F1ED" strokeWidth="5" />
           <path d="M238 36h65" stroke="#E10600" strokeWidth="5" />
         </g>
       </svg>
 
       <div
         aria-hidden="true"
-        className="absolute -bottom-12 -right-2 font-display text-[11rem] font-extrabold leading-none tracking-[-0.07em] text-white/[0.055] sm:-bottom-16 sm:text-[17rem] lg:text-[21rem]"
+        className="absolute -bottom-12 -right-2 font-display text-[11rem] font-extrabold leading-none tracking-[-0.07em] text-white/[0.045] sm:-bottom-16 sm:text-[17rem] lg:text-[21rem]"
       >
         56
       </div>
@@ -128,7 +128,7 @@ export function LandingScene() {
         <p className="font-display text-2xl font-bold uppercase leading-none text-white sm:text-3xl">
           The race starts here.
         </p>
-        <p className="mt-2 max-w-xs text-sm leading-5 text-white/60">
+        <p className="mt-2 max-w-xs text-sm leading-5 text-white/58">
           Learn the language. Read the circuit. Make the call.
         </p>
       </div>
