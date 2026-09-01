@@ -48,6 +48,22 @@ export function isValidAnswer(
     : typeof value === "boolean";
 }
 
+export function parsePredictionAnswers(value: unknown): PredictionAnswers {
+  const answers: PredictionAnswers = {};
+
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return answers;
+  }
+
+  for (const [key, answer] of Object.entries(value)) {
+    if (isPredictionQuestionId(key) && isValidAnswer(key, answer)) {
+      answers[key] = answer;
+    }
+  }
+
+  return answers;
+}
+
 export function parsePersistedPredictionDraft(
   raw: string | null,
 ): PersistedPredictionDraft {
@@ -62,20 +78,7 @@ export function parsePersistedPredictionDraft(
       hasSeenIntro?: unknown;
     };
 
-    const answers: PredictionAnswers = {};
-
-    if (
-      parsed.answers &&
-      typeof parsed.answers === "object" &&
-      !Array.isArray(parsed.answers)
-    ) {
-      for (const [key, value] of Object.entries(parsed.answers)) {
-        if (isPredictionQuestionId(key) && isValidAnswer(key, value)) {
-          answers[key] = value;
-        }
-      }
-    }
-
+    const answers = parsePredictionAnswers(parsed.answers);
     const currentQuestion =
       typeof parsed.currentQuestion === "number" &&
       Number.isInteger(parsed.currentQuestion) &&
@@ -156,6 +159,15 @@ export function isPredictionComplete(answers: PredictionAnswers) {
   return PREDICTION_QUESTION_IDS.every((questionId) =>
     isQuestionAnswered(questionId, answers),
   );
+}
+
+export function hasUniquePodium(answers: PredictionAnswers) {
+  const podium = [answers.winner, answers.second, answers.third].filter(isDriverId);
+  return podium.length === 3 && new Set(podium).size === 3;
+}
+
+export function isValidPredictionSubmission(answers: PredictionAnswers) {
+  return isPredictionComplete(answers) && hasUniquePodium(answers);
 }
 
 export function isPredictionLocked(
