@@ -1,8 +1,6 @@
 name: Deploy SEPANG 56 to GitHub Pages
 
 on:
-  push:
-    branches: ["arena/01a0606c-f1-sepang"]
   workflow_dispatch:
 
 permissions:
