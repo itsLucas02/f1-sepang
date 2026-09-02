@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -152,23 +153,23 @@ export function PredictionExperience() {
     return (
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/")} />
-        <main className="mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
-          <section className="relative w-full overflow-hidden rounded-lg border border-white/10 bg-surface-01 p-7 sm:p-12">
-            <span aria-hidden="true" className="absolute -right-24 -top-24 size-64 rounded-full bg-race-red/15 blur-3xl" />
-            <div className="relative flex items-center gap-3">
+        <main className="relative mx-auto flex min-h-[calc(100vh-56px)] max-w-6xl items-center overflow-hidden px-5 py-12 sm:px-8">
+          <div className="speed-hatch pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
+          <section className="relative w-full border border-white/14 bg-[#0d0d0f] p-7 sm:p-12">
+            <div className="flex items-center gap-3">
               <LockKeyhole aria-hidden="true" className="size-5 text-race-red" />
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-race-red">
                 Predictions locked
               </p>
             </div>
-            <h1 className="relative mt-6 max-w-3xl font-display text-5xl font-extrabold uppercase leading-[0.84] text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-6 max-w-3xl font-display text-5xl font-extrabold uppercase italic leading-[0.84] text-white sm:text-6xl lg:text-7xl">
               The grid is closed.
             </h1>
-            <p className="relative mt-6 max-w-xl text-lg leading-8 text-text-secondary">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
               The race deadline has passed, so prediction answers are now read-only.
             </p>
-            <div className="relative mt-9">
-              <Button asChild size="large">
+            <div className="mt-9">
+              <Button asChild size="large" className="rounded-none">
                 <Link href="/predict/summary">View Your Picks</Link>
               </Button>
             </div>
@@ -209,7 +210,7 @@ export function PredictionExperience() {
         {question.kind === "driver" ? (
           <fieldset>
             <legend className="sr-only">Choose one driver</legend>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
               {DRIVERS.map((driver) => {
                 const selected = answer === driver.id;
                 const unavailable = unavailableDriverIds.includes(driver.id);
@@ -248,10 +249,9 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <div className="mt-6 flex items-center gap-3 rounded-md border border-white/10 bg-surface-02 px-4 py-3">
-            <span className="size-2 rounded-full bg-race-red shadow-[0_0_10px_var(--sepang-race-red)]" aria-hidden="true" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
-              Current call: <span className="text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
+          <div className="mt-6 flex items-center gap-3 border-l-2 border-race-red bg-[#0d0d0f] px-4 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45 sm:text-[10px]">
+              Current call: <span className="font-semibold text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
             </p>
           </div>
         ) : null}
@@ -270,43 +270,42 @@ function PredictionIntro({
   return (
     <div className="min-h-screen bg-canvas">
       <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
-      <main className="relative min-h-[calc(100vh-56px)] overflow-hidden">
-        <div aria-hidden="true" className="sepang-glow pointer-events-none absolute inset-0" />
-        <div aria-hidden="true" className="race-grid pointer-events-none absolute inset-0 opacity-50" />
-        <div
-          aria-hidden="true"
-          className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.03] sm:text-[28rem] lg:text-[38rem]"
-        >
-          08
+      <main className="relative min-h-[calc(100vh-56px)] overflow-hidden bg-[#050506]">
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[60%]">
+          <Image
+            src="/hero-sepang.jpg"
+            alt="Sepang race atmosphere"
+            fill
+            sizes="60vw"
+            className="object-cover object-[64%_center] grayscale-[0.22] contrast-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/66 to-black/10" aria-hidden="true" />
         </div>
-        <div
-          aria-hidden="true"
-          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/20 blur-[110px]"
-        />
+        <div className="race-noise pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
+        <div className="relative mx-auto grid max-w-[1280px] gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
           <section className="lg:col-span-7">
-            <div className="flex items-center gap-3">
-              <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-text-secondary">
+            <div className="flex items-center gap-4">
+              <span className="motorsport-stripe block" aria-hidden="true" />
+              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
                 Prediction grid
               </p>
             </div>
-            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-white sm:text-7xl lg:text-[6.8rem]">
+            <h1 className="mt-6 max-w-3xl font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[7rem]">
               Eight calls.
-              <span className="text-gradient-heat block">One race.</span>
+              <span className="block text-race-red">One race.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-8 text-text-secondary sm:text-xl">
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/65 sm:text-xl">
               Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
             </p>
-            <Button type="button" size="large" onClick={onStart} className="mt-9 min-w-52">
+            <Button type="button" size="large" onClick={onStart} className="sheen mt-9 min-w-52 rounded-none uppercase tracking-[0.05em]">
               Start Picking
               <ArrowRight aria-hidden="true" className="size-4" />
             </Button>
           </section>
 
           <section className="lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
-            <div className="rounded-lg border border-white/10 bg-surface-01/80 p-2 backdrop-blur-sm">
+            <div className="border border-white/14 bg-[#09090b]/92 p-2">
               {PREDICTION_QUESTIONS.map((item) => (
                 <div
                   key={item.id}
@@ -315,7 +314,7 @@ function PredictionIntro({
                   <span className="font-mono text-[10px] text-race-red">
                     {String(item.index).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-lg font-bold uppercase text-white">
+                  <span className="font-display text-lg font-bold uppercase italic text-white">
                     {item.summaryLabel}
                   </span>
                 </div>
