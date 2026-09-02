@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
   assetPrefix: pagesBasePath || undefined,
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "commons.wikimedia.org",
+      },
+    ],
   },
 };
 
