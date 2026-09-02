@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Check } from "lucide-react";
 
 import type { Driver } from "@/content/drivers";
@@ -22,12 +23,12 @@ export function DriverCard({
     <label
       htmlFor={inputId}
       className={cn(
-        "group relative isolate block min-h-40 cursor-pointer overflow-hidden rounded-lg border p-5 transition-[transform,border-color,background-color,box-shadow] duration-200 sm:min-h-44 sm:p-6",
+        "group relative isolate block min-h-[290px] cursor-pointer overflow-hidden border bg-[#0d0d0f] transition-[transform,border-color,box-shadow] duration-250 sm:min-h-[340px] xl:min-h-[390px]",
         selected
-          ? "race-select-pop border-race-red bg-[linear-gradient(150deg,#1b0e12_0%,#140f14_55%,#0e1116_100%)] shadow-[0_0_0_1px_rgba(232,17,45,0.35),0_18px_40px_-18px_rgba(232,17,45,0.55)]"
-          : "border-white/10 bg-surface-02 hover:-translate-y-1 hover:border-white/25 hover:bg-surface-03 hover:shadow-[0_18px_36px_-20px_rgba(0,0,0,0.9)]",
+          ? "race-select-pop border-race-red shadow-[0_0_0_1px_rgba(225,6,0,0.28),0_20px_45px_rgba(0,0,0,0.48)]"
+          : "border-white/18 hover:-translate-y-1 hover:border-white/42 hover:shadow-[0_22px_48px_rgba(0,0,0,0.5)]",
         disabled &&
-          "cursor-not-allowed opacity-35 hover:translate-y-0 hover:border-white/10 hover:bg-surface-02 hover:shadow-none",
+          "cursor-not-allowed opacity-35 hover:translate-y-0 hover:border-white/18 hover:shadow-none",
       )}
     >
       <input
@@ -41,71 +42,69 @@ export function DriverCard({
         className="peer sr-only"
       />
 
-      {/* angled livery sweep */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute -right-10 -top-20 h-52 w-32 rotate-[24deg] transition-colors duration-300",
-          selected
-            ? "bg-race-red/25"
-            : "bg-white/[0.03] group-hover:bg-sunset/10",
-        )}
-      />
+      {driver.media ? (
+        <div className="absolute inset-x-0 top-0 h-[72%] overflow-hidden bg-[#151517]">
+          <Image
+            src={driver.media.src}
+            alt={`${driver.firstName} ${driver.surname}`}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 17vw"
+            className="object-cover object-[50%_24%] grayscale-[0.28] contrast-110 saturate-[0.8] transition duration-500 group-hover:scale-[1.025] group-hover:grayscale-[0.12] group-hover:saturate-100"
+          />
+          <div className="absolute inset-0 bg-black/8" aria-hidden="true" />
+          <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0d0d0f] via-[#0d0d0f]/72 to-transparent" aria-hidden="true" />
+          <p className="absolute bottom-3 right-3 max-w-[85%] text-right font-mono text-[7px] uppercase tracking-[0.06em] text-white/30">
+            {driver.media.credit}
+          </p>
+        </div>
+      ) : (
+        <div className="absolute inset-x-0 top-0 h-[68%] overflow-hidden bg-[#111113] track-topography">
+          <span className="absolute -bottom-5 right-2 font-display text-[9rem] font-extrabold italic leading-none tracking-[-0.08em] text-white/[0.05] sm:text-[11rem]">
+            {driver.number}
+          </span>
+          <div className="absolute left-5 top-5 h-20 w-[2px] bg-race-red/70" aria-hidden="true" />
+        </div>
+      )}
 
-      <span
-        className={cn(
-          "relative z-10 block max-w-[72%] font-mono text-[10px] font-medium uppercase tracking-[0.12em] sm:text-[11px]",
-          selected ? "text-sunset" : "text-text-muted",
-        )}
-      >
-        {driver.team}
-      </span>
-
-      <span className="relative z-10 mt-9 block">
-        <span
-          className={cn(
-            "block text-sm font-semibold leading-none",
-            selected ? "text-white/70" : "text-text-secondary",
-          )}
-        >
-          {driver.firstName}
-        </span>
-        <span className="mt-1 block font-display text-3xl font-extrabold uppercase leading-[0.88] tracking-[-0.02em] text-white sm:text-4xl">
-          {driver.surname}
-        </span>
-      </span>
-
-      {/* ghost race number */}
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute -bottom-5 right-2 font-display text-[6.5rem] font-extrabold leading-none tracking-[-0.06em] transition-colors duration-300 sm:text-[7.5rem]",
-          selected ? "text-race-red/35" : "text-white/[0.05]",
-        )}
-      >
-        {driver.number}
-      </span>
+      <div className="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-5">
+        <p className="font-mono text-[8px] font-medium uppercase tracking-[0.14em] text-white/45 sm:text-[9px]">
+          {driver.team}
+        </p>
+        <div className="mt-2 flex items-end gap-2">
+          <span className="font-display text-3xl font-extrabold italic leading-none text-race-red sm:text-4xl">
+            {driver.number}
+          </span>
+          <div className="min-w-0 pb-0.5">
+            <span className="block text-[10px] font-semibold leading-none text-white/55 sm:text-xs">
+              {driver.firstName}
+            </span>
+            <span className="mt-1 block truncate font-display text-[1.65rem] font-extrabold uppercase italic leading-[0.9] tracking-[-0.025em] text-white sm:text-3xl xl:text-[2rem]">
+              {driver.surname}
+            </span>
+          </div>
+        </div>
+      </div>
 
       {selected ? (
-        <span className="absolute right-4 top-4 z-10 flex size-7 items-center justify-center rounded-sm bg-race-red text-white shadow-[0_0_16px_rgba(232,17,45,0.6)]">
+        <span className="absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-full bg-race-red text-white shadow-[0_8px_18px_rgba(0,0,0,0.38)]">
           <Check aria-hidden="true" className="size-4" />
           <span className="sr-only">Selected</span>
         </span>
       ) : (
         <span
           aria-hidden="true"
-          className="absolute right-5 top-5 size-2 rounded-full bg-white/20 transition-colors group-hover:bg-white/45"
+          className="absolute right-3 top-3 z-20 size-7 rounded-full border border-white/65 bg-black/20 transition-colors group-hover:bg-white/10"
         />
       )}
 
       <span
         aria-hidden="true"
         className={cn(
-          "absolute inset-x-0 bottom-0 h-[3px] origin-left bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] transition-transform duration-300",
+          "absolute inset-x-0 bottom-0 z-20 h-[3px] origin-left bg-race-red transition-transform duration-300",
           selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
         )}
       />
-      <span className="pointer-events-none absolute inset-0 rounded-lg peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-teal" />
+      <span className="pointer-events-none absolute inset-0 peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
     </label>
   );
 }
