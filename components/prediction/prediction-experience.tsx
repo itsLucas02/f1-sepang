@@ -153,21 +153,22 @@ export function PredictionExperience() {
       <div className="min-h-screen bg-canvas">
         <RaceFlowHeader onBack={() => router.push("/")} />
         <main className="mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
-          <section className="w-full overflow-hidden border border-white/10 bg-[#111113] p-7 sm:p-12">
-            <div className="flex items-center gap-3">
+          <section className="relative w-full overflow-hidden rounded-lg border border-white/10 bg-surface-01 p-7 sm:p-12">
+            <span aria-hidden="true" className="absolute -right-24 -top-24 size-64 rounded-full bg-race-red/15 blur-3xl" />
+            <div className="relative flex items-center gap-3">
               <LockKeyhole aria-hidden="true" className="size-5 text-race-red" />
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-race-red">
                 Predictions locked
               </p>
             </div>
-            <h1 className="mt-6 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] text-white sm:text-7xl">
+            <h1 className="relative mt-6 max-w-3xl font-display text-5xl font-extrabold uppercase leading-[0.84] text-white sm:text-6xl lg:text-7xl">
               The grid is closed.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-7 text-text-secondary">
+            <p className="relative mt-6 max-w-xl text-lg leading-8 text-text-secondary">
               The race deadline has passed, so prediction answers are now read-only.
             </p>
-            <div className="mt-9">
-              <Button asChild>
+            <div className="relative mt-9">
+              <Button asChild size="large">
                 <Link href="/predict/summary">View Your Picks</Link>
               </Button>
             </div>
@@ -247,10 +248,10 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <div className="mt-5 flex items-center gap-3 border-t border-black/10 pt-4">
-            <span className="size-2 bg-race-red" aria-hidden="true" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
-              Current call: <span className="text-[#111113]">{selectedDriver.firstName} {selectedDriver.surname}</span>
+          <div className="mt-6 flex items-center gap-3 rounded-md border border-white/10 bg-surface-02 px-4 py-3">
+            <span className="size-2 rounded-full bg-race-red shadow-[0_0_10px_var(--sepang-race-red)]" aria-hidden="true" />
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+              Current call: <span className="text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
             </p>
           </div>
         ) : null}
@@ -267,9 +268,11 @@ function PredictionIntro({
   onStart: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-[#080809]">
+    <div className="min-h-screen bg-canvas">
       <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
-      <main className="race-grid relative min-h-[calc(100vh-56px)] overflow-hidden">
+      <main className="relative min-h-[calc(100vh-56px)] overflow-hidden">
+        <div aria-hidden="true" className="sepang-glow pointer-events-none absolute inset-0" />
+        <div aria-hidden="true" className="race-grid pointer-events-none absolute inset-0 opacity-50" />
         <div
           aria-hidden="true"
           className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.03] sm:text-[28rem] lg:text-[38rem]"
@@ -278,41 +281,41 @@ function PredictionIntro({
         </div>
         <div
           aria-hidden="true"
-          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/12 blur-[110px]"
+          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/20 blur-[110px]"
         />
 
         <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
           <section className="lg:col-span-7">
             <div className="flex items-center gap-3">
               <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/52">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-text-secondary">
                 Prediction grid
               </p>
             </div>
-            <h1 className="mt-5 max-w-3xl font-display text-7xl font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-white sm:text-8xl lg:text-[7.5rem]">
+            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-white sm:text-7xl lg:text-[6.8rem]">
               Eight calls.
-              <span className="block text-race-red">One race.</span>
+              <span className="text-gradient-heat block">One race.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-7 text-white/64 sm:text-xl sm:leading-8">
+            <p className="mt-7 max-w-xl text-lg leading-8 text-text-secondary sm:text-xl">
               Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
             </p>
-            <Button type="button" onClick={onStart} className="mt-9 min-w-48">
+            <Button type="button" size="large" onClick={onStart} className="mt-9 min-w-52">
               Start Picking
               <ArrowRight aria-hidden="true" className="size-4" />
             </Button>
           </section>
 
           <section className="lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
-            <div className="border-t-2 border-white/75">
+            <div className="rounded-lg border border-white/10 bg-surface-01/80 p-2 backdrop-blur-sm">
               {PREDICTION_QUESTIONS.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/12 py-3.5"
+                  className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/8 px-3 py-3.5 last:border-b-0"
                 >
                   <span className="font-mono text-[10px] text-race-red">
                     {String(item.index).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-lg font-bold uppercase text-white/82">
+                  <span className="font-display text-lg font-bold uppercase text-white">
                     {item.summaryLabel}
                   </span>
                 </div>
