@@ -2,8 +2,6 @@
 
 import { ArrowLeft } from "lucide-react";
 
-import { SITE_NAME } from "@/lib/constants";
-
 export function RaceFlowHeader({
   onBack,
   backLabel = "Go back",
