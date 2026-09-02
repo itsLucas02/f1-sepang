@@ -97,8 +97,8 @@ export function SepangExplorer() {
 
   if (!hydrated) {
     return (
-      <section className="min-h-[420px] border border-black/10 bg-white p-6 sm:p-8">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#77777d]">
+      <section className="min-h-[420px] rounded-lg border border-white/10 bg-surface-01 p-6 sm:p-8">
+        <p className="font-mono text-xs uppercase tracking-[0.14em] text-text-muted">
           Preparing the circuit…
         </p>
       </section>
@@ -112,26 +112,27 @@ export function SepangExplorer() {
           <div className="lg:col-span-7">
             <div className="flex items-center gap-3">
               <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6b6b70]">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-text-muted">
                 Circuit briefing / Malaysia
               </p>
             </div>
-            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-[#111113] sm:text-7xl lg:text-8xl">
+            <h1 className="mt-5 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] tracking-[-0.035em] text-white sm:text-7xl lg:text-8xl">
               Meet
-              <span className="block text-race-red">Sepang.</span>
+              <span className="text-gradient-heat block">Sepang.</span>
             </h1>
           </div>
           <div className="lg:col-span-4 lg:col-start-9">
-            <p className="text-lg leading-7 text-[#55555b]">
+            <p className="text-lg leading-8 text-text-secondary">
               A 5.543 km circuit with 15 turns, long straights and braking zones that make battles easy to follow — even if this is your first F1 race.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <Button type="button" onClick={() => enterExplorer("guided")}>
+              <Button type="button" size="large" onClick={() => enterExplorer("guided")}>
                 Start Guided Tour
                 <ArrowRight aria-hidden="true" className="size-4" />
               </Button>
               <Button
                 type="button"
+                size="large"
                 variant="secondary"
                 onClick={() => enterExplorer("free")}
               >
@@ -145,15 +146,15 @@ export function SepangExplorer() {
           <SepangCircuitStage selectedHotspot="main-straight" />
         </div>
 
-        <div className="mt-6 grid gap-px overflow-hidden border border-black/10 bg-black/10 sm:grid-cols-3">
+        <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 sm:grid-cols-3">
           {[
             ["5.543 KM", "Circuit length"],
             ["15", "Turns"],
             ["56", "Historic F1 race laps"],
           ].map(([value, label]) => (
-            <div key={label} className="bg-[#111113] px-5 py-5 sm:px-6">
-              <p className="font-display text-3xl font-extrabold uppercase text-white">{value}</p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/45">
+            <div key={label} className="bg-surface-01 px-5 py-5 sm:px-6">
+              <p className="font-display text-3xl font-extrabold uppercase text-white sm:text-4xl">{value}</p>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
                 {label}
               </p>
             </div>
@@ -165,18 +166,18 @@ export function SepangExplorer() {
 
   return (
     <div>
-      <section className="grid gap-6 border-b border-black/12 pb-8 lg:grid-cols-12 lg:items-end">
+      <section className="grid gap-6 border-b border-white/10 pb-8 lg:grid-cols-12 lg:items-end">
         <div className="lg:col-span-8">
           <div className="flex items-center gap-3">
             <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[#6b6b70]">
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-text-muted">
               Circuit explorer / {state.tourMode === "guided" ? "Guided" : "Free explore"}
             </p>
           </div>
-          <h1 className="mt-4 font-display text-6xl font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-[#111113] sm:text-7xl">
+          <h1 className="mt-4 font-display text-5xl font-extrabold uppercase leading-[0.85] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
             Read Sepang.
           </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-7 text-[#55555b]">
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-text-secondary">
             Choose a hotspot. The camera moves to the real section of circuit and shows you what to watch when the race reaches it.
           </p>
         </div>
@@ -184,10 +185,10 @@ export function SepangExplorer() {
         <div className="lg:col-span-3 lg:col-start-10">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="font-display text-4xl font-extrabold text-[#111113]">
-                {state.visitedHotspots.length}<span className="text-[#8a8a90]">/{HOTSPOT_ORDER.length}</span>
+              <p className="font-display text-4xl font-extrabold leading-none text-white">
+                {state.visitedHotspots.length}<span className="text-text-muted">/{HOTSPOT_ORDER.length}</span>
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
                 hotspots read
               </p>
             </div>
@@ -195,9 +196,9 @@ export function SepangExplorer() {
               {state.tourMode === "guided" ? "Free Explore" : "Guided"}
             </Button>
           </div>
-          <div className="mt-4 h-1 overflow-hidden bg-black/10">
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
             <div
-              className="h-full bg-race-red transition-[width] duration-500"
+              className="h-full rounded-full bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] shadow-[0_0_12px_rgba(232,17,45,0.6)] transition-[width] duration-500"
               style={{ width: `${(state.visitedHotspots.length / HOTSPOT_ORDER.length) * 100}%` }}
             />
           </div>
