@@ -19,29 +19,20 @@ type RaceHeaderProps = {
 
 export function RaceHeader({ activeHref }: RaceHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/8 bg-header/85 backdrop-blur-xl">
-      {/* kerb edge */}
-      <div className="kerb-stripe-thin h-[3px] opacity-90" aria-hidden="true" />
-
-      <SiteContainer className="flex h-16 items-center justify-between gap-6 md:h-[76px]">
+    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#050506]/96 backdrop-blur-lg">
+      <SiteContainer className="flex h-16 items-center justify-between gap-5 md:h-[68px]">
         <Link
           href="/"
           aria-label={`${SITE_NAME} home`}
-          className="group flex items-center gap-3"
+          className="group inline-flex items-baseline gap-2 font-display text-2xl font-extrabold uppercase italic leading-none tracking-[-0.02em] text-white sm:text-[1.7rem]"
         >
-          <span
-            aria-hidden="true"
-            className="h-7 w-[3px] skew-x-[-16deg] bg-[linear-gradient(180deg,var(--sepang-race-red),var(--sepang-sunset))] transition-all duration-300 group-hover:h-9"
-          />
-          <span className="flex items-baseline gap-1.5 font-display text-2xl font-extrabold uppercase leading-none tracking-[0.02em] text-white">
-            <span>SEPANG</span>
-            <span className="text-race-red transition-colors duration-200 group-hover:text-sunset">
-              56
-            </span>
+          <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
+            SEPANG
           </span>
+          <span className="text-race-red">56</span>
         </Link>
 
-        <nav aria-label="Primary navigation" className="hidden items-stretch md:flex">
+        <nav aria-label="Primary navigation" className="hidden h-full items-stretch md:flex">
           {NAV_ITEMS.map((item) => {
             const isActive = item.href === activeHref;
 
@@ -51,7 +42,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "group relative flex h-[76px] items-center px-5 font-display text-[13px] font-bold uppercase tracking-[0.12em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal",
+                  "group relative flex h-full items-center px-5 font-display text-[12px] font-bold uppercase tracking-[0.16em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
                   isActive ? "text-white" : "text-text-secondary hover:text-white",
                 )}
               >
@@ -59,7 +50,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute inset-x-4 bottom-0 h-[3px] origin-left bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] transition-transform duration-300",
+                    "absolute inset-x-4 bottom-0 h-[3px] origin-center bg-race-red transition-transform duration-300",
                     isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
                   )}
                 />
@@ -68,13 +59,10 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2.5 md:flex">
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-teal opacity-60" />
-            <span className="relative inline-flex size-2 rounded-full bg-teal" />
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-text-secondary">
-            Race ready
+        <div className="hidden items-center gap-3 md:flex">
+          <span className="motorsport-stripe block scale-75 origin-right" aria-hidden="true" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
+            Sepang / MY
           </span>
         </div>
 
@@ -84,7 +72,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
               <button
                 type="button"
                 aria-label="Open navigation"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-white/15 bg-surface-02 text-white transition-colors hover:border-teal/60 hover:bg-surface-03 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center border border-white/15 bg-[#0d0d0f] text-white transition-colors hover:border-white/35 hover:bg-[#171719] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <Menu aria-hidden="true" className="size-5" />
               </button>
@@ -119,6 +107,8 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           </Sheet>
         </div>
       </SiteContainer>
+
+      <div className="motorsport-corner pointer-events-none absolute right-0 top-0 hidden h-3 w-28 md:block" aria-hidden="true" />
     </header>
   );
 }
