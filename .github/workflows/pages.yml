@@ -19,8 +19,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Arena redesign
         uses: actions/checkout@v4
+        with:
+          ref: arena/01a0606c-f1-sepang
 
       - name: Setup Node
         uses: actions/setup-node@v4
