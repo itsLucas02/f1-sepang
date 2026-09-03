@@ -33,10 +33,10 @@ export function CircuitHotspotTabs({
             aria-pressed={selected}
             onClick={() => onSelect(hotspot.id)}
             className={cn(
-              "group relative min-h-16 border-b border-r border-white/10 px-4 py-3 text-left transition-colors duration-200 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white sm:border-b-0 sm:last:border-r-0",
+              "group relative min-h-16 border-b border-r border-white/10 px-4 py-3 text-left transition-[background-color,color,transform] duration-200 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white sm:border-b-0 sm:last:border-r-0",
               selected
-                ? "bg-race-red text-white"
-                : "bg-transparent text-white/58 hover:bg-white/[0.045] hover:text-white",
+                ? "race-select-pop bg-race-red text-white"
+                : "bg-transparent text-white/58 hover:-translate-y-0.5 hover:bg-white/[0.045] hover:text-white",
             )}
           >
             <span className="flex items-center justify-between gap-2">
@@ -44,7 +44,7 @@ export function CircuitHotspotTabs({
                 {hotspot.index}
               </span>
               {visited ? (
-                <Check aria-label="Visited" className={cn("size-3.5", selected ? "text-white" : "text-white/45")} />
+                <Check aria-label="Visited" className={cn("size-3.5 transition-transform duration-200", selected ? "scale-110 text-white" : "text-white/45")} />
               ) : null}
             </span>
             <span className="mt-2 block font-display text-base font-extrabold uppercase italic leading-none sm:text-lg">
