@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Keep the public Pages preview pinned to the approved Arena design branch
+      # without merging that branch into main.
       - name: Checkout Arena redesign
         uses: actions/checkout@v4
         with:
