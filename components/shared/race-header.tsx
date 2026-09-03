@@ -51,7 +51,9 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                   aria-hidden="true"
                   className={cn(
                     "absolute inset-x-4 bottom-0 h-[3px] origin-center bg-race-red transition-transform duration-300",
-                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                    isActive
+                      ? "nav-active-line scale-x-100"
+                      : "scale-x-0 group-hover:scale-x-100",
                   )}
                 />
               </Link>
