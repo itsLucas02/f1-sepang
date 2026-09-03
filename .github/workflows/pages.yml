@@ -20,7 +20,7 @@ jobs:
 
     steps:
       # Keep the public Pages preview pinned to the approved Arena design branch,
-      # including the current signature motion pass, without merging Arena to main.
+      # including the current transition-polish pass, without merging Arena to main.
       - name: Checkout Arena redesign
         uses: actions/checkout@v4
         with:
