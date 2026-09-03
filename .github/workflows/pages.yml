@@ -54,6 +54,7 @@ jobs:
           test -f out/media/drivers/leclerc.webp
           test -f out/media/drivers/norris.webp
           test -f out/media/prediction/intro.webp
+          test -f out/media/heritage/petronas-mercedes.webp
           test -f out/media/sepang/main-straight.webp
           test -f out/media/sepang/t1.webp
           test -f out/media/sepang/t4.webp
