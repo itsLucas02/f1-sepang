@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-09-03T10:04:54.765Z",
+  "formats": {
+    "hero": "webp",
+    "journey": "webp",
+    "drivers": "webp"
+  },
+  "dimensions": {
+    "hero": "1600x900 max",
+    "journey": "640x360",
+    "drivers": "440x600"
+  },
+  "quality": {
+    "hero": 78,
+    "journey": 72,
+    "drivers": 72
+  }
+}
