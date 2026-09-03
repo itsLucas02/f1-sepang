@@ -8,6 +8,7 @@ import { CircuitHotspotTabs } from "@/components/circuit/circuit-hotspot-tabs";
 import { CircuitInfoPanel } from "@/components/circuit/circuit-info-panel";
 import { CircuitMobileSheet } from "@/components/circuit/circuit-mobile-sheet";
 import { SepangCircuitStage } from "@/components/circuit/sepang-circuit-stage";
+import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
 import { publicAsset } from "@/lib/assets";
@@ -33,9 +34,7 @@ export function SepangExplorer() {
     );
 
     setState(
-      stored.hasVisitedSepang
-        ? { ...stored, tourMode: "free" }
-        : stored,
+      stored.hasVisitedSepang ? { ...stored, tourMode: "free" } : stored,
     );
     setHydrated(true);
   }, []);
@@ -51,8 +50,7 @@ export function SepangExplorer() {
   const selected = getHotspot(state.selectedHotspot);
   const ready = isSepangReady(state.visitedHotspots);
   const nextGuidedHotspot = useMemo(
-    () =>
-      getNextGuidedHotspot(state.selectedHotspot, state.visitedHotspots),
+    () => getNextGuidedHotspot(state.selectedHotspot, state.visitedHotspots),
     [state.selectedHotspot, state.visitedHotspots],
   );
 
@@ -126,32 +124,37 @@ export function SepangExplorer() {
     return (
       <div>
         <section className="grid gap-8 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
-            <div className="flex items-center gap-4">
-              <span className="motorsport-stripe block" aria-hidden="true" />
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
-                Interactive circuit explorer / Malaysia
+          <ScrollReveal className="lg:col-span-8" variant="slide-left">
+            <div>
+              <div className="flex items-center gap-4">
+                <span className="motorsport-stripe block" aria-hidden="true" />
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+                  Interactive circuit explorer / Malaysia
+                </p>
+              </div>
+              <h1 className="mt-5 max-w-5xl font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[6.2rem]">
+                Sepang International
+                <span className="block text-race-red">Circuit.</span>
+              </h1>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal className="lg:col-span-4" delay={100} variant="slide-right">
+            <div>
+              <p className="text-lg leading-8 text-white/62">
+                5.543 km, 15 turns and two long straights. Start with five places that make the lap easy to read even if this is your first Formula 1 weekend.
               </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+                <Button type="button" size="large" onClick={() => enterExplorer("guided")} className="sheen rounded-none uppercase tracking-[0.05em]">
+                  Start Guided Tour
+                  <ArrowRight aria-hidden="true" className="size-4" />
+                </Button>
+                <Button type="button" size="large" variant="secondary" onClick={() => enterExplorer("free")} className="rounded-none border-white/25 uppercase tracking-[0.05em]">
+                  Explore Freely
+                </Button>
+              </div>
             </div>
-            <h1 className="mt-5 max-w-5xl font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[6.2rem]">
-              Sepang International
-              <span className="block text-race-red">Circuit.</span>
-            </h1>
-          </div>
-          <div className="lg:col-span-4">
-            <p className="text-lg leading-8 text-white/62">
-              5.543 km, 15 turns and two long straights. Start with five places that make the lap easy to read even if this is your first Formula 1 weekend.
-            </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-              <Button type="button" size="large" onClick={() => enterExplorer("guided")} className="sheen rounded-none uppercase tracking-[0.05em]">
-                Start Guided Tour
-                <ArrowRight aria-hidden="true" className="size-4" />
-              </Button>
-              <Button type="button" size="large" variant="secondary" onClick={() => enterExplorer("free")} className="rounded-none border-white/25 uppercase tracking-[0.05em]">
-                Explore Freely
-              </Button>
-            </div>
-          </div>
+          </ScrollReveal>
         </section>
 
         <div className="mt-10">
@@ -164,13 +167,13 @@ export function SepangExplorer() {
             ["15", "Turns"],
             ["56", "Historic F1 race laps"],
           ].map(([value, label], index) => (
-            <div key={label} className="relative px-5 py-5 sm:px-6">
-              {index > 0 ? <span className="absolute inset-y-4 left-0 hidden w-px bg-white/12 sm:block" aria-hidden="true" /> : null}
-              <p className="font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">{value}</p>
-              <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/35">
-                {label}
-              </p>
-            </div>
+            <ScrollReveal key={label} delay={index * 70} variant="rise">
+              <div className="relative h-full px-5 py-5 sm:px-6">
+                {index > 0 ? <span className="absolute inset-y-4 left-0 hidden w-px bg-white/12 sm:block" aria-hidden="true" /> : null}
+                <p className="font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">{value}</p>
+                <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/35">{label}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -249,42 +252,38 @@ export function SepangExplorer() {
       />
 
       <section className="mt-8 grid overflow-hidden border border-white/14 bg-[#09090b] lg:grid-cols-12">
-        <div className="relative min-h-[300px] lg:col-span-8 lg:min-h-[360px]">
-          <Image
-            src={publicAsset("/media/sepang/overview.webp")}
-            alt="Sepang International Circuit race atmosphere"
-            fill
-            loading="lazy"
-            sizes="(max-width: 1024px) 100vw, 66vw"
-            className="object-cover object-center grayscale-[0.1] contrast-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-transparent to-transparent" aria-hidden="true" />
-          <div className="absolute bottom-6 left-6">
-            <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
-            <p className="mt-3 font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">
-              Built for battles.
-            </p>
-            <p className="mt-2 font-mono text-[7px] uppercase tracking-[0.08em] text-white/48">
-              Sepang photography: Morio / CC BY-SA 4.0
-            </p>
+        <ScrollReveal className="lg:col-span-8" variant="photo-wipe">
+          <div className="relative min-h-[300px] lg:min-h-[360px]">
+            <Image
+              src={publicAsset("/media/sepang/overview.webp")}
+              alt="Sepang International Circuit race atmosphere"
+              fill
+              loading="lazy"
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              className="hero-kenburns object-cover object-center grayscale-[0.1] contrast-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-transparent to-transparent" aria-hidden="true" />
+            <div className="absolute bottom-6 left-6">
+              <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
+              <p className="mt-3 font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">Built for battles.</p>
+              <p className="mt-2 font-mono text-[7px] uppercase tracking-[0.08em] text-white/48">Sepang photography: Morio / CC BY-SA 4.0</p>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
-        <div className="p-6 sm:p-8 lg:col-span-4">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">
-            Circuit at a glance
-          </p>
-          <dl className="mt-5 divide-y divide-white/10">
-            <Fact icon={<MapPin className="size-4" />} label="Location" value="Sepang, Malaysia" />
-            <Fact icon={<ArrowRight className="size-4" />} label="Length" value="5.543 KM" />
-            <Fact icon={<ArrowRight className="size-4" />} label="Turns" value="15" />
-            <Fact icon={<Trophy className="size-4" />} label="First Grand Prix" value="1999" />
-            <Fact icon={<Timer className="size-4" />} label="Lap record" value="1:34.223" />
-          </dl>
-          <p className="mt-5 font-mono text-[8px] uppercase tracking-[0.1em] text-white/30">
-            F1 race lap record: Juan Pablo Montoya, 2004.
-          </p>
-        </div>
+        <ScrollReveal className="lg:col-span-4" delay={110} variant="slide-right">
+          <div className="p-6 sm:p-8">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">Circuit at a glance</p>
+            <dl className="mt-5 divide-y divide-white/10">
+              <Fact icon={<MapPin className="size-4" />} label="Location" value="Sepang, Malaysia" />
+              <Fact icon={<ArrowRight className="size-4" />} label="Length" value="5.543 KM" />
+              <Fact icon={<ArrowRight className="size-4" />} label="Turns" value="15" />
+              <Fact icon={<Trophy className="size-4" />} label="First Grand Prix" value="1999" />
+              <Fact icon={<Timer className="size-4" />} label="Lap record" value="1:34.223" />
+            </dl>
+            <p className="mt-5 font-mono text-[8px] uppercase tracking-[0.1em] text-white/30">F1 race lap record: Juan Pablo Montoya, 2004.</p>
+          </div>
+        </ScrollReveal>
       </section>
     </div>
   );
