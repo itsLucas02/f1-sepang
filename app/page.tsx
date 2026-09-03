@@ -7,6 +7,7 @@ import { RaceFooter } from "@/components/shared/race-footer";
 import { RaceHeader } from "@/components/shared/race-header";
 import { SiteContainer } from "@/components/shared/site-container";
 import { Button } from "@/components/ui/button";
+import { publicAsset } from "@/lib/assets";
 
 const JOURNEY_STEPS = [
   {
@@ -15,6 +16,7 @@ const JOURNEY_STEPS = [
     description: "Grasp the essentials of F1 in focused, beginner-friendly lessons.",
     href: "/learn",
     icon: BookOpen,
+    imageSrc: "/media/journey/learn.webp",
     imagePosition: "55% 62%",
   },
   {
@@ -23,6 +25,7 @@ const JOURNEY_STEPS = [
     description: "Explore Sepang's real layout, braking zones and race-shaping corners.",
     href: "/sepang",
     icon: MapPinned,
+    imageSrc: "/media/journey/sepang.webp",
     imagePosition: "68% 38%",
   },
   {
@@ -31,7 +34,8 @@ const JOURNEY_STEPS = [
     description: "Make eight informed race calls and build your Sepang prediction card.",
     href: "/predict",
     icon: Flag,
-    imagePosition: "42% 72%",
+    imageSrc: "/media/journey/predict.webp",
+    imagePosition: "50% 30%",
   },
   {
     number: "04",
@@ -39,7 +43,8 @@ const JOURNEY_STEPS = [
     description: "Compare your calls with friends when competition goes live.",
     href: "/leaderboard",
     icon: Trophy,
-    imagePosition: "84% 54%",
+    imageSrc: "/media/journey/compete.webp",
+    imagePosition: "50% 30%",
   },
 ] as const;
 
@@ -50,10 +55,9 @@ const HERO_STATS = [
   { value: "8", label: "Race picks" },
 ] as const;
 
-const LECLERC_IMAGE =
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Charles-Leclerc%20%28cropped%29.jpg?width=900";
-const NORRIS_IMAGE =
-  "https://commons.wikimedia.org/wiki/Special:FilePath/Lando%20Norris%20Formula%201%20Driver%20%2849379469418%29.jpg?width=900";
+const HERO_IMAGE = publicAsset("/media/hero/hero-sepang.webp");
+const LECLERC_IMAGE = publicAsset("/media/drivers/leclerc.webp");
+const NORRIS_IMAGE = publicAsset("/media/drivers/norris.webp");
 
 export default function HomePage() {
   return (
@@ -64,7 +68,7 @@ export default function HomePage() {
         <section className="relative isolate overflow-hidden border-b border-white/10 bg-[#050506]">
           <div className="absolute inset-y-0 right-0 -z-20 w-full lg:w-[72%]">
             <Image
-              src="/hero-sepang.jpg"
+              src={HERO_IMAGE}
               alt="Sepang circuit race atmosphere"
               fill
               priority
