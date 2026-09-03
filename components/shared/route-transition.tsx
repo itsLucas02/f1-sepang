@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import styles from "@/components/shared/motorsport-motion.module.css";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-const COVER_MS = 330;
-const BRAND_HOLD_MS = 120;
-const UNCOVER_MS = 440;
+const COVER_MS = 300;
+const BRAND_HOLD_MS = 90;
+const UNCOVER_MS = 400;
 
 type Phase = "idle" | "exit" | "enter";
 
