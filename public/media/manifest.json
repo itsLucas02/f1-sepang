@@ -1,18 +1,29 @@
 {
-  "generatedAt": "2026-09-03T10:04:54.765Z",
+  "generatedAt": "2026-09-03T12:15:30.804Z",
   "formats": {
     "hero": "webp",
     "journey": "webp",
-    "drivers": "webp"
+    "drivers": "webp",
+    "sepang": "webp",
+    "prediction": "webp"
   },
   "dimensions": {
     "hero": "1600x900 max",
     "journey": "640x360",
-    "drivers": "440x600"
+    "drivers": "440x600",
+    "sepangHotspots": "720x420",
+    "sepangOverview": "1200x720",
+    "predictionIntro": "1400x900"
   },
   "quality": {
     "hero": 78,
     "journey": 72,
-    "drivers": 72
+    "drivers": 72,
+    "sepangHotspots": 74,
+    "sepangOverview": 76,
+    "predictionIntro": 78
+  },
+  "sources": {
+    "sepangPhotography": "Morio / Wikimedia Commons / CC BY-SA 4.0"
   }
 }
