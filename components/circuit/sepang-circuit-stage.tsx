@@ -23,7 +23,7 @@ export function SepangCircuitStage({
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-5 p-5 sm:p-7">
         <div>
           <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/42 sm:text-[10px]">
-            Circuit explorer
+            Interactive circuit explorer
           </p>
           <p className="mt-1 font-display text-2xl font-extrabold uppercase italic text-white sm:text-3xl">
             Sepang International Circuit
