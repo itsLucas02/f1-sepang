@@ -21,12 +21,13 @@ export function StartLightIntro() {
     }
 
     window.sessionStorage.setItem(SESSION_KEY, "1");
-    setShow(true);
 
+    const showTimer = window.setTimeout(() => setShow(true), 0);
     const fadeTimer = window.setTimeout(() => setDone(true), 1420);
     const removeTimer = window.setTimeout(() => setShow(false), 1710);
 
     return () => {
+      window.clearTimeout(showTimer);
       window.clearTimeout(fadeTimer);
       window.clearTimeout(removeTimer);
     };
