@@ -9,6 +9,7 @@ import { RouteTransition } from "@/components/shared/route-transition";
 
 import "./globals.css";
 import "./motion.css";
+import "./scrollbar.css";
 
 const displayFont = Barlow_Condensed({
   subsets: ["latin"],
