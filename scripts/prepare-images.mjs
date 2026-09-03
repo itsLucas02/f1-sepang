@@ -10,6 +10,7 @@ const journeyOutDir = path.join(root, "public", "media", "journey");
 const heroOutDir = path.join(root, "public", "media", "hero");
 const sepangOutDir = path.join(root, "public", "media", "sepang");
 const predictionOutDir = path.join(root, "public", "media", "prediction");
+const heritageOutDir = path.join(root, "public", "media", "heritage");
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -19,6 +20,7 @@ await Promise.all([
   mkdir(heroOutDir, { recursive: true }),
   mkdir(sepangOutDir, { recursive: true }),
   mkdir(predictionOutDir, { recursive: true }),
+  mkdir(heritageOutDir, { recursive: true }),
 ]);
 
 const driverSource = await readFile(driverSourcePath, "utf8");
@@ -131,11 +133,16 @@ const remoteSources = {
   predictionIntro: commons(
     "Red Bull duo and Lewis Hamilton 2016 Malaysia Race.jpg",
   ),
+  heritagePetronas: commons(
+    "2025 Japan GP - Mercedes - George Russell - FP3.jpg",
+  ),
 };
 
 const downloaded = new Map();
 for (const [name, url] of Object.entries(remoteSources)) {
-  downloaded.set(name, await fetchImage(url, name === "predictionIntro" ? 1400 : 1100));
+  const width =
+    name === "predictionIntro" || name === "heritagePetronas" ? 1500 : 1100;
+  downloaded.set(name, await fetchImage(url, width));
   await sleep(1400);
 }
 
@@ -184,6 +191,12 @@ await sharp(downloaded.get("predictionIntro"))
   .webp({ quality: 78, effort: 5, smartSubsample: true })
   .toFile(path.join(predictionOutDir, "intro.webp"));
 
+await sharp(downloaded.get("heritagePetronas"))
+  .rotate()
+  .resize(1400, 900, { fit: "cover", position: "attention" })
+  .webp({ quality: 78, effort: 5, smartSubsample: true })
+  .toFile(path.join(heritageOutDir, "petronas-mercedes.webp"));
+
 const manifest = {
   generatedAt: new Date().toISOString(),
   formats: {
@@ -192,6 +205,7 @@ const manifest = {
     drivers: "webp",
     sepang: "webp",
     prediction: "webp",
+    heritage: "webp",
   },
   dimensions: {
     hero: "1600x900 max",
@@ -200,6 +214,7 @@ const manifest = {
     sepangHotspots: "720x420",
     sepangOverview: "1200x720",
     predictionIntro: "1400x900",
+    heritage: "1400x900",
   },
   quality: {
     hero: 78,
@@ -208,9 +223,12 @@ const manifest = {
     sepangHotspots: 74,
     sepangOverview: 76,
     predictionIntro: 78,
+    heritage: 78,
   },
   sources: {
     sepangPhotography: "Morio / Wikimedia Commons / CC BY-SA 4.0",
+    petronasHeritage:
+      "Liauzh / 2025 Japan GP - Mercedes - George Russell - FP3.jpg / Wikimedia Commons / CC BY-SA 4.0",
   },
 };
 
