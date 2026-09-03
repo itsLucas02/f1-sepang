@@ -13,6 +13,7 @@ import { RaceFlowHeader } from "@/components/shared/race-flow-header";
 import { Button } from "@/components/ui/button";
 import { DRIVERS, getDriver, isDriverId } from "@/content/drivers";
 import { PREDICTION_QUESTIONS } from "@/content/predictions";
+import { publicAsset } from "@/lib/assets";
 import {
   DEFAULT_PREDICTION_DRAFT,
   PREDICTION_DEADLINE,
@@ -139,7 +140,12 @@ export function PredictionExperience() {
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-canvas">
-        <RaceFlowHeader onBack={() => router.push("/sepang")} />
+        <RaceFlowHeader
+          onBack={() => router.push("/sepang")}
+          backLabel="Back to Sepang"
+          exitHref="/sepang"
+          exitLabel="Exit predictions"
+        />
         <main className="mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
             Loading your picks…
@@ -152,7 +158,12 @@ export function PredictionExperience() {
   if (locked) {
     return (
       <div className="min-h-screen bg-canvas">
-        <RaceFlowHeader onBack={() => router.push("/")} />
+        <RaceFlowHeader
+          onBack={() => router.push("/")}
+          backLabel="Back home"
+          exitHref="/sepang"
+          exitLabel="Exit predictions"
+        />
         <main className="relative mx-auto flex min-h-[calc(100vh-56px)] max-w-6xl items-center overflow-hidden px-5 py-12 sm:px-8">
           <div className="speed-hatch pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
           <section className="relative w-full border border-white/14 bg-[#0d0d0f] p-7 sm:p-12">
@@ -196,6 +207,8 @@ export function PredictionExperience() {
       <RaceFlowHeader
         onBack={goBack}
         backLabel={returnToSummary ? "Back to prediction summary" : "Previous step"}
+        exitHref="/sepang"
+        exitLabel="Exit predictions"
       />
 
       <PredictionStep
@@ -269,15 +282,21 @@ function PredictionIntro({
 }) {
   return (
     <div className="min-h-screen bg-canvas">
-      <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
+      <RaceFlowHeader
+        onBack={onBack}
+        backLabel="Back to Sepang"
+        exitHref="/sepang"
+        exitLabel="Exit predictions"
+      />
       <main className="relative min-h-[calc(100vh-56px)] overflow-hidden bg-[#050506]">
         <div className="absolute inset-y-0 right-0 w-full lg:w-[60%]">
           <Image
-            src="/hero-sepang.jpg"
-            alt="Sepang race atmosphere"
+            src={publicAsset("/media/prediction/intro.webp")}
+            alt="Formula-style cars racing at Sepang"
             fill
-            sizes="60vw"
-            className="object-cover object-[64%_center] grayscale-[0.22] contrast-110"
+            priority
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="object-cover object-[64%_center] grayscale-[0.12] contrast-110"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/66 to-black/10" aria-hidden="true" />
         </div>
@@ -296,7 +315,7 @@ function PredictionIntro({
               <span className="block text-race-red">One race.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-8 text-white/65 sm:text-xl">
-              Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
+              Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving. Your progress stays saved if you leave and come back.
             </p>
             <Button type="button" size="large" onClick={onStart} className="sheen mt-9 min-w-52 rounded-none uppercase tracking-[0.05em]">
               Start Picking
