@@ -9,6 +9,8 @@ const driverOutDir = path.join(root, "public", "media", "drivers");
 const journeyOutDir = path.join(root, "public", "media", "journey");
 const heroOutDir = path.join(root, "public", "media", "hero");
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 await Promise.all([
   mkdir(driverOutDir, { recursive: true }),
   mkdir(journeyOutDir, { recursive: true }),
@@ -27,17 +29,32 @@ if (matches.length !== 22) {
 const fetched = new Map();
 
 async function fetchImage(url) {
-  const optimizedSourceUrl = url.replace(/\?width=900$/, "?width=640");
-  const response = await fetch(optimizedSourceUrl, {
-    headers: { "User-Agent": "SEPANG56-asset-pipeline/1.0" },
-    redirect: "follow",
-  });
+  const optimizedSourceUrl = url.replace(/\?width=900$/, "?width=520");
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${optimizedSourceUrl}: ${response.status}`);
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const response = await fetch(optimizedSourceUrl, {
+      headers: { "User-Agent": "SEPANG56-asset-pipeline/1.0 (GitHub Pages media optimization)" },
+      redirect: "follow",
+    });
+
+    if (response.ok) {
+      return Buffer.from(await response.arrayBuffer());
+    }
+
+    if (response.status !== 429 && response.status < 500) {
+      throw new Error(`Failed to fetch ${optimizedSourceUrl}: ${response.status}`);
+    }
+
+    const retryAfter = Number(response.headers.get("retry-after"));
+    const delay = Number.isFinite(retryAfter) && retryAfter > 0
+      ? retryAfter * 1000
+      : 2500 * 2 ** attempt;
+
+    console.warn(`Fetch ${response.status} for ${optimizedSourceUrl}; retrying in ${delay}ms`);
+    await sleep(delay);
   }
 
-  return Buffer.from(await response.arrayBuffer());
+  throw new Error(`Failed to fetch ${optimizedSourceUrl} after retries`);
 }
 
 for (const [, id, url] of matches) {
@@ -49,6 +66,8 @@ for (const [, id, url] of matches) {
     .resize(440, 600, { fit: "cover", position: "attention", withoutEnlargement: true })
     .webp({ quality: 72, effort: 5, smartSubsample: true })
     .toFile(path.join(driverOutDir, `${id}.webp`));
+
+  await sleep(1200);
 }
 
 await sharp(heroSourcePath)
