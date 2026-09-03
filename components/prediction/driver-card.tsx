@@ -19,12 +19,19 @@ export function DriverCard({
   onSelect: () => void;
 }) {
   const inputId = `${name}-${driver.id}`;
+  const surnameLength = driver.surname.length;
+  const surnameSize =
+    surnameLength >= 10
+      ? "text-[1.22rem] sm:text-[1.42rem] xl:text-[1.55rem]"
+      : surnameLength >= 8
+        ? "text-[1.38rem] sm:text-[1.62rem] xl:text-[1.75rem]"
+        : "text-[1.55rem] sm:text-[1.8rem] xl:text-[1.95rem]";
 
   return (
     <label
       htmlFor={inputId}
       className={cn(
-        "group relative isolate block min-h-[290px] cursor-pointer overflow-hidden border bg-[#0d0d0f] transition-[transform,border-color,box-shadow] duration-250 sm:min-h-[340px] xl:min-h-[390px]",
+        "carbon-weave group relative isolate block min-h-[290px] cursor-pointer overflow-hidden border bg-[#0d0d0f] transition-[transform,border-color,box-shadow] duration-250 sm:min-h-[340px] xl:min-h-[390px]",
         selected
           ? "race-select-pop border-race-red shadow-[0_0_0_1px_rgba(225,6,0,0.28),0_20px_45px_rgba(0,0,0,0.48)]"
           : "border-white/18 hover:-translate-y-1 hover:border-white/42 hover:shadow-[0_22px_48px_rgba(0,0,0,0.5)]",
@@ -60,19 +67,24 @@ export function DriverCard({
         ) : null}
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-5">
+      <div className="absolute inset-x-0 bottom-0 z-10 p-4 pr-5 sm:p-5 sm:pr-6">
         <p className="font-mono text-[8px] font-medium uppercase tracking-[0.14em] text-white/45 sm:text-[9px]">
           {driver.team}
         </p>
-        <div className="mt-2 flex items-end gap-2">
+        <div className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] items-end gap-2.5">
           <span className="font-display text-3xl font-extrabold italic leading-none text-race-red sm:text-4xl">
             {driver.number}
           </span>
-          <div className="min-w-0 pb-0.5">
+          <div className="min-w-0 pb-0.5 pr-1.5">
             <span className="block text-[10px] font-semibold leading-none text-white/55 sm:text-xs">
               {driver.firstName}
             </span>
-            <span className="mt-1 block truncate font-display text-[1.65rem] font-extrabold uppercase italic leading-[0.9] tracking-[-0.025em] text-white sm:text-3xl xl:text-[2rem]">
+            <span
+              className={cn(
+                "mt-1 block whitespace-nowrap pr-1 font-display font-extrabold uppercase italic leading-[0.92] tracking-[-0.01em] text-white",
+                surnameSize,
+              )}
+            >
               {driver.surname}
             </span>
           </div>
