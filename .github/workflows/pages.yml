@@ -20,7 +20,7 @@ jobs:
 
     steps:
       # Keep the public Pages preview pinned to the approved Arena design branch,
-      # including the current transition-polish pass, without merging Arena to main.
+      # including the simplified transition and rebalanced hero, without merging Arena to main.
       - name: Checkout Arena redesign
         uses: actions/checkout@v4
         with:
