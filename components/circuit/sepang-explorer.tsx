@@ -9,6 +9,7 @@ import { CircuitInfoPanel } from "@/components/circuit/circuit-info-panel";
 import { SepangCircuitStage } from "@/components/circuit/sepang-circuit-stage";
 import { Button } from "@/components/ui/button";
 import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
+import { publicAsset } from "@/lib/assets";
 import {
   DEFAULT_SEPANG_STATE,
   SEPANG_STORAGE_KEY,
@@ -230,7 +231,7 @@ export function SepangExplorer() {
       <section className="mt-8 grid overflow-hidden border border-white/14 bg-[#09090b] lg:grid-cols-12">
         <div className="relative min-h-[300px] lg:col-span-8 lg:min-h-[360px]">
           <Image
-            src="/hero-sepang.jpg"
+            src={publicAsset("/media/hero/hero-sepang.webp")}
             alt="Sepang race atmosphere"
             fill
             sizes="(max-width: 1024px) 100vw, 66vw"
