@@ -3,41 +3,28 @@
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  transform: translate3d(-112%, 0, 0) skewX(-5deg) scaleX(1.08);
-  background:
-    linear-gradient(
-      90deg,
-      #050506 0 10%,
-      #e10600 10% 30%,
-      #f3f1ec 30% 34%,
-      #e10600 34% 42%,
-      #050506 42% 58%,
-      #e10600 58% 66%,
-      #f3f1ec 66% 70%,
-      #e10600 70% 90%,
-      #050506 90% 100%
-    );
-  box-shadow: 0 0 58px rgba(0, 0, 0, 0.58);
+  transform: translate3d(-112%, 0, 0) skewX(-7deg) scaleX(1.1);
+  background: linear-gradient(
+    90deg,
+    #050506 0 8%,
+    #e10600 8% 28%,
+    #f3f1ec 28% 32%,
+    #e10600 32% 78%,
+    #f3f1ec 78% 82%,
+    #e10600 82% 92%,
+    #050506 92% 100%
+  );
+  box-shadow: 0 0 44px rgba(0, 0, 0, 0.48);
   will-change: transform;
 }
 
-.routeLayer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.18;
-  background-image:
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 7px),
-    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 7px);
-}
-
 .routeExit {
-  animation: route-in 330ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation: route-in 300ms cubic-bezier(0.42, 0, 0.18, 1) forwards;
 }
 
 .routeEnter {
-  transform: translate3d(0, 0, 0) skewX(-5deg) scaleX(1.08);
-  animation: route-out 440ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  transform: translate3d(0, 0, 0) skewX(-7deg) scaleX(1.1);
+  animation: route-out 400ms cubic-bezier(0.38, 0, 0.16, 1) forwards;
 }
 
 .routeMark {
@@ -47,20 +34,10 @@
   z-index: 2;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.16em;
-  transform: translate(-50%, -50%) skewX(5deg);
-  min-width: clamp(260px, 34vw, 560px);
-  justify-content: center;
-  padding: 18px 30px 20px;
-  border-inline: 1px solid rgba(243, 241, 236, 0.28);
-  background:
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 5px),
-    #050506;
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.42),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+  gap: 0.14em;
+  transform: translate(-50%, -50%) skewX(7deg);
   font-family: var(--font-display-source), sans-serif;
-  font-size: clamp(2.6rem, 5.2vw, 5.1rem);
+  font-size: clamp(2.7rem, 5vw, 4.9rem);
   font-weight: 800;
   font-style: italic;
   line-height: 0.82;
@@ -69,32 +46,18 @@
   white-space: nowrap;
 }
 
-.routeMark::before,
-.routeMark::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: repeating-linear-gradient(
-    90deg,
-    #e10600 0 24px,
-    #f3f1ec 24px 40px,
-    #050506 40px 52px
-  );
-}
-
-.routeMark::before { top: 0; }
-.routeMark::after { bottom: 0; }
-
 .routeWord {
   color: #f3f1ec;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  text-shadow:
+    0 2px 0 rgba(5, 5, 6, 0.6),
+    0 5px 22px rgba(0, 0, 0, 0.58);
 }
 
 .routeNumber {
-  color: #e10600;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  color: #050506;
+  text-shadow:
+    0 1px 0 rgba(243, 241, 236, 0.28),
+    0 4px 18px rgba(0, 0, 0, 0.28);
 }
 
 .heritagePhoto {
@@ -189,11 +152,11 @@
 }
 
 @keyframes route-in {
-  to { transform: translate3d(0, 0, 0) skewX(-5deg) scaleX(1.08); }
+  to { transform: translate3d(0, 0, 0) skewX(-7deg) scaleX(1.1); }
 }
 
 @keyframes route-out {
-  to { transform: translate3d(112%, 0, 0) skewX(-5deg) scaleX(1.08); }
+  to { transform: translate3d(112%, 0, 0) skewX(-7deg) scaleX(1.1); }
 }
 
 @keyframes heritage-photo-sweep {
