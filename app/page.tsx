@@ -3,9 +3,11 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, Flag, MapPinned, Trophy } from "lucide-react";
 
 import { JourneyStepCard } from "@/components/landing/journey-step-card";
+import { MalaysiaF1Heritage } from "@/components/landing/malaysia-f1-heritage";
 import { RaceFooter } from "@/components/shared/race-footer";
 import { RaceHeader } from "@/components/shared/race-header";
 import { SiteContainer } from "@/components/shared/site-container";
+import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
 import { publicAsset } from "@/lib/assets";
 
@@ -65,7 +67,7 @@ export default function HomePage() {
       <RaceHeader />
 
       <main className="flex-1">
-        <section className="relative isolate overflow-hidden border-b border-white/10 bg-[#050506]">
+        <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden border-b border-white/10 bg-[#050506] md:min-h-[calc(100svh-4.25rem)]">
           <div className="absolute inset-y-0 right-0 -z-20 w-full lg:w-[72%]">
             <Image
               src={HERO_IMAGE}
@@ -77,6 +79,7 @@ export default function HomePage() {
             />
           </div>
 
+          <div aria-hidden="true" className={`${textures.carbonFade} absolute inset-y-0 left-0 -z-10 hidden w-[46%] opacity-90 lg:block`} />
           <div
             aria-hidden="true"
             className="photo-vignette absolute inset-0 -z-10 max-lg:hidden"
@@ -87,11 +90,11 @@ export default function HomePage() {
           />
           <div aria-hidden="true" className="race-noise absolute inset-0 -z-10 opacity-20" />
 
-          <SiteContainer className="relative min-h-[720px] py-10 sm:min-h-[780px] sm:py-14 lg:min-h-[760px] lg:py-16 xl:min-h-[820px]">
-            <div className="grid min-h-[610px] gap-10 lg:grid-cols-12 lg:items-center">
+          <SiteContainer className="relative flex min-h-[calc(100svh-4rem)] flex-col py-8 sm:py-10 md:min-h-[calc(100svh-4.25rem)] lg:py-12">
+            <div className="grid min-h-[560px] flex-1 gap-10 lg:grid-cols-12 lg:items-center">
               <div className="relative z-10 lg:col-span-6 xl:col-span-5">
                 <div className="rise-in flex items-center gap-4">
-                  <span className="motorsport-stripe block" aria-hidden="true" />
+                  <span className={textures.stripeFlag} aria-hidden="true" />
                   <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/60 sm:text-[11px]">
                     Malaysia / Sepang / 2026
                   </p>
@@ -125,7 +128,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="relative hidden min-h-[610px] lg:col-span-6 lg:block xl:col-span-7">
+              <div className="relative hidden min-h-[560px] lg:col-span-6 lg:block xl:col-span-7">
                 <div className="absolute bottom-5 right-0 top-5 w-[34%] min-w-[250px]">
                   <div className="absolute inset-x-0 top-0 h-[57%] overflow-hidden border-l border-white/35 bg-[#121214] [clip-path:polygon(20%_0,100%_0,82%_100%,0_100%)]">
                     <Image
@@ -161,7 +164,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <dl className="relative z-20 mt-3 grid grid-cols-2 border border-white/16 bg-[#09090b]/95 shadow-[0_22px_55px_rgba(0,0,0,0.45)] sm:grid-cols-4 lg:mt-0">
+            <dl className="carbon-weave relative z-20 mt-4 grid grid-cols-2 border border-white/16 bg-[#09090b]/95 shadow-[0_22px_55px_rgba(0,0,0,0.45)] sm:grid-cols-4">
               {HERO_STATS.map((stat, index) => (
                 <div
                   key={stat.label}
@@ -181,6 +184,7 @@ export default function HomePage() {
               <div className="motorsport-corner pointer-events-none absolute -right-px -top-px hidden h-3 w-24 sm:block" aria-hidden="true" />
             </dl>
           </SiteContainer>
+          <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-1.5`} aria-hidden="true" />
         </section>
 
         <section className="bg-[#f2f0eb] text-[#111113]">
@@ -209,13 +213,15 @@ export default function HomePage() {
           </SiteContainer>
         </section>
 
+        <MalaysiaF1Heritage />
+
         <section className="relative overflow-hidden border-y border-white/8 bg-[#080809]">
           <div className="speed-hatch absolute inset-0 opacity-25" aria-hidden="true" />
           <SiteContainer className="relative py-16 sm:py-20">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
               <div className="lg:col-span-8">
                 <div className="flex items-center gap-4">
-                  <span className="motorsport-stripe block" aria-hidden="true" />
+                  <span className={textures.stripeFlag} aria-hidden="true" />
                   <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">Why SEPANG 56 exists</p>
                 </div>
                 <p className="mt-5 max-w-4xl font-display text-4xl font-extrabold uppercase italic leading-[0.94] text-white sm:text-5xl lg:text-6xl">
