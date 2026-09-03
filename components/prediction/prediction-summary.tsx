@@ -21,6 +21,8 @@ import {
   type PredictionAnswer,
 } from "@/lib/predictions";
 
+const FINISH_SWEEP_SESSION_KEY = "sepang56.prediction-finish-sweep";
+
 function formatAnswer(answer: PredictionAnswer | undefined) {
   if (isDriverId(answer)) {
     const driver = getDriver(answer);
@@ -57,6 +59,7 @@ export function PredictionSummary() {
     DEFAULT_PREDICTION_DRAFT,
   );
   const [locked, setLocked] = useState(false);
+  const [showFinishSweep, setShowFinishSweep] = useState(false);
 
   useEffect(() => {
     const stored = parsePersistedPredictionDraft(
@@ -79,6 +82,30 @@ export function PredictionSummary() {
 
     return () => window.clearInterval(timer);
   }, [hydrated]);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    const finished = isPredictionComplete(draft.answers) || locked;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (
+      !finished ||
+      reducedMotion ||
+      window.sessionStorage.getItem(FINISH_SWEEP_SESSION_KEY) === "1"
+    ) {
+      return;
+    }
+
+    window.sessionStorage.setItem(FINISH_SWEEP_SESSION_KEY, "1");
+    setShowFinishSweep(true);
+    const timer = window.setTimeout(() => setShowFinishSweep(false), 820);
+    return () => window.clearTimeout(timer);
+  }, [draft.answers, hydrated, locked]);
 
   const complete = isPredictionComplete(draft.answers);
   const deadlineLabel = formatDeadline(PREDICTION_DEADLINE);
@@ -114,6 +141,8 @@ export function PredictionSummary() {
 
   return (
     <div className="min-h-screen bg-canvas text-foreground">
+      {showFinishSweep ? <div className="finish-sweep" aria-hidden="true" /> : null}
+
       <RaceFlowHeader
         onBack={() => router.push(summaryFinished ? "/" : "/predict")}
         backLabel={summaryFinished ? "Back home" : "Back to predictions"}
@@ -122,7 +151,7 @@ export function PredictionSummary() {
       <main className="relative min-h-[calc(100vh-56px)] overflow-hidden">
         <div aria-hidden="true" className="sepang-glow pointer-events-none absolute inset-x-0 top-0 h-[600px]" />
         <div aria-hidden="true" className="race-grid pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-50" />
-        <div className="relative mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14 lg:py-16">
+        <div className="summary-board-enter relative mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14 lg:py-16">
           <div className="grid gap-7 border-b border-white/10 pb-9 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-8">
               <div className="flex items-center gap-3">
