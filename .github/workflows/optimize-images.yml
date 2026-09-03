@@ -20,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: arena/01a0606c-f1-sepang
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -47,4 +48,5 @@ jobs:
             exit 0
           fi
           git commit -m 'perf: commit compressed WebP media assets'
+          git pull --rebase origin arena/01a0606c-f1-sepang
           git push origin HEAD:arena/01a0606c-f1-sepang
