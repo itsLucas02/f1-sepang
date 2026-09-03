@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, type LucideIcon } from "lucide-react";
 
+import { publicAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 type JourneyStepCardProps = {
@@ -10,6 +11,7 @@ type JourneyStepCardProps = {
   description: string;
   href: string;
   icon: LucideIcon;
+  imageSrc: string;
   imagePosition?: string;
   className?: string;
 };
@@ -20,6 +22,7 @@ export function JourneyStepCard({
   description,
   href,
   icon: Icon,
+  imageSrc,
   imagePosition = "50% 50%",
   className,
 }: JourneyStepCardProps) {
@@ -59,10 +62,11 @@ export function JourneyStepCard({
 
       <div className="relative h-36 overflow-hidden border-t border-black/8 sm:h-40">
         <Image
-          src="/hero-sepang.jpg"
+          src={publicAsset(imageSrc)}
           alt=""
           aria-hidden="true"
           fill
+          loading="lazy"
           sizes="(max-width: 768px) 100vw, 25vw"
           className="object-cover grayscale-[0.15] transition duration-500 group-hover:scale-[1.035] group-hover:grayscale-0"
           style={{ objectPosition: imagePosition }}
