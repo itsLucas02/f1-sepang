@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Flag } from "lucide-react";
 
+import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
 import type { SepangHotspot } from "@/content/sepang";
 import { publicAsset } from "@/lib/assets";
@@ -32,13 +33,13 @@ export function CircuitInfoPanel({
   return (
     <aside
       className={cn(
-        "relative flex flex-col overflow-hidden bg-[#0a0a0c] text-foreground",
+        `relative flex flex-col overflow-hidden bg-[#0a0a0c] text-foreground ${textures.carbonPanel}`,
         mobile
           ? "min-h-0"
           : "h-[610px] border border-white/14",
       )}
     >
-      <figure className={cn("relative shrink-0 overflow-hidden bg-[#111113]", mobile ? "h-48" : "h-44")}> 
+      <figure className={cn("relative shrink-0 overflow-hidden bg-[#111113]", mobile ? "h-48" : "h-44")}>
         <Image
           src={publicAsset(`/media/sepang/${hotspot.id}.webp`)}
           alt={hotspot.media.alt}
@@ -56,15 +57,18 @@ export function CircuitInfoPanel({
             {hotspot.media.credit}
           </p>
         </div>
-        <div className="motorsport-corner pointer-events-none absolute right-0 top-0 h-2.5 w-24" aria-hidden="true" />
+        <div className={`${textures.stripeBand} pointer-events-none absolute inset-x-0 top-0 h-1.5`} aria-hidden="true" />
       </figure>
 
-      <div className={cn("flex min-h-0 flex-1 flex-col", mobile ? "p-5 sm:p-6" : "p-5 xl:p-6")}> 
+      <div className={cn("flex min-h-0 flex-1 flex-col", mobile ? "p-5 sm:p-6" : "p-5 xl:p-6")}>
         <div className="shrink-0">
           <div className="flex items-center justify-between gap-4">
-            <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-race-red">
-              Selected section / {hotspot.index}
-            </p>
+            <div className="flex items-center gap-3">
+              <span className={textures.stripeFlagSmall} aria-hidden="true" />
+              <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-race-red">
+                Selected / {hotspot.index}
+              </p>
+            </div>
             <Flag aria-hidden="true" className="size-4 text-white/38" />
           </div>
           <h2 className={cn(
@@ -81,7 +85,7 @@ export function CircuitInfoPanel({
           </p>
         </div>
 
-        <div className="mt-4 shrink-0 border border-white/12 bg-[#0d0d0f] p-4">
+        <div className={`mt-4 shrink-0 border border-white/12 bg-[#0d0d0f] p-4 ${textures.rubberGrain}`}>
           <p className="font-mono text-[8px] font-semibold uppercase tracking-[0.14em] text-race-red">
             Why it matters
           </p>
