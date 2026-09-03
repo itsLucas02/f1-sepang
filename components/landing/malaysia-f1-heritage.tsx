@@ -3,6 +3,7 @@ import { ExternalLink } from "lucide-react";
 
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SiteContainer } from "@/components/shared/site-container";
+import motion from "@/components/shared/motorsport-motion.module.css";
 import textures from "@/components/shared/motorsport-textures.module.css";
 import { publicAsset } from "@/lib/assets";
 
@@ -75,36 +76,34 @@ export function MalaysiaF1Heritage() {
             </ScrollReveal>
           </div>
 
-          <ScrollReveal className="lg:col-span-7" delay={90} variant="photo-wipe">
-            <div className="relative min-h-[430px] overflow-hidden border border-white/14 bg-[#0b0b0d] lg:min-h-full">
-              <Image
-                src={publicAsset("/media/heritage/petronas-mercedes.webp")}
-                alt="Mercedes-AMG Formula 1 car carrying PETRONAS branding on track"
-                fill
-                sizes="(max-width: 1024px) 100vw, 58vw"
-                className="hero-kenburns object-cover object-[58%_center] contrast-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/8 to-transparent" aria-hidden="true" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                <span className={textures.stripeFlag} aria-hidden="true" />
-                <p className="mt-5 max-w-2xl font-display text-3xl font-extrabold uppercase italic leading-[0.92] text-white sm:text-4xl">
-                  Malaysian engineering on the world stage.
-                </p>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
-                  PETRONAS remains Mercedes-AMG&apos;s Title and Technical Partner as Formula 1 enters its 2026 regulations era.
-                </p>
-                <a
-                  href="https://commons.wikimedia.org/wiki/File:2025_Japan_GP_-_Mercedes_-_George_Russell_-_FP3.jpg"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-block font-mono text-[7px] uppercase tracking-[0.08em] text-white/35 hover:text-white/60"
-                >
-                  Photo: Liauzh / CC BY-SA 4.0
-                </a>
-              </div>
-              <div className={`${textures.stripeBand} absolute inset-x-0 top-0 h-2`} aria-hidden="true" />
+          <div className={`relative min-h-[430px] overflow-hidden border border-white/14 bg-[#0b0b0d] lg:col-span-7 lg:min-h-[560px] ${motion.heritagePhoto}`}>
+            <Image
+              src={publicAsset("/media/heritage/petronas-mercedes.webp")}
+              alt="Mercedes-AMG Formula 1 car carrying PETRONAS branding on track"
+              fill
+              sizes="(max-width: 1024px) 100vw, 58vw"
+              className={`${motion.heritagePhotoImage} object-cover object-[58%_center] contrast-105`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/8 to-transparent" aria-hidden="true" />
+            <div className="absolute inset-x-0 bottom-0 z-[2] p-6 sm:p-8">
+              <span className={textures.stripeFlag} aria-hidden="true" />
+              <p className="mt-5 max-w-2xl font-display text-3xl font-extrabold uppercase italic leading-[0.92] text-white sm:text-4xl">
+                Malaysian engineering on the world stage.
+              </p>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
+                PETRONAS remains Mercedes-AMG&apos;s Title and Technical Partner as Formula 1 enters its 2026 regulations era.
+              </p>
+              <a
+                href="https://commons.wikimedia.org/wiki/File:2025_Japan_GP_-_Mercedes_-_George_Russell_-_FP3.jpg"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-block font-mono text-[7px] uppercase tracking-[0.08em] text-white/35 hover:text-white/60"
+              >
+                Photo: Liauzh / CC BY-SA 4.0
+              </a>
             </div>
-          </ScrollReveal>
+            <div className={`${textures.stripeBand} absolute inset-x-0 top-0 z-[3] h-2`} aria-hidden="true" />
+          </div>
         </div>
       </SiteContainer>
     </section>
