@@ -4,8 +4,10 @@ import { ArrowRight, BookOpen, Flag, MapPinned, Trophy } from "lucide-react";
 
 import { JourneyStepCard } from "@/components/landing/journey-step-card";
 import { MalaysiaF1Heritage } from "@/components/landing/malaysia-f1-heritage";
+import { StartLightIntro } from "@/components/landing/start-light-intro";
 import { RaceFooter } from "@/components/shared/race-footer";
 import { RaceHeader } from "@/components/shared/race-header";
+import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SiteContainer } from "@/components/shared/site-container";
 import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
@@ -80,15 +82,10 @@ export default function HomePage() {
           </div>
 
           <div aria-hidden="true" className={`${textures.carbonFade} absolute inset-y-0 left-0 -z-10 hidden w-[46%] opacity-90 lg:block`} />
-          <div
-            aria-hidden="true"
-            className="photo-vignette absolute inset-0 -z-10 max-lg:hidden"
-          />
-          <div
-            aria-hidden="true"
-            className="photo-vignette-mobile absolute inset-0 -z-10 lg:hidden"
-          />
+          <div aria-hidden="true" className="photo-vignette absolute inset-0 -z-10 max-lg:hidden" />
+          <div aria-hidden="true" className="photo-vignette-mobile absolute inset-0 -z-10 lg:hidden" />
           <div aria-hidden="true" className="race-noise absolute inset-0 -z-10 opacity-20" />
+          <StartLightIntro />
 
           <SiteContainer className="relative flex min-h-[calc(100svh-4rem)] flex-col py-8 sm:py-10 md:min-h-[calc(100svh-4.25rem)] lg:py-12">
             <div className="grid min-h-[560px] flex-1 gap-10 lg:grid-cols-12 lg:items-center">
@@ -130,7 +127,7 @@ export default function HomePage() {
 
               <div className="relative hidden min-h-[560px] lg:col-span-6 lg:block xl:col-span-7">
                 <div className="absolute bottom-5 right-0 top-5 w-[34%] min-w-[250px]">
-                  <div className="absolute inset-x-0 top-0 h-[57%] overflow-hidden border-l border-white/35 bg-[#121214] [clip-path:polygon(20%_0,100%_0,82%_100%,0_100%)]">
+                  <div className="hero-portrait-enter hero-portrait-enter-1 absolute inset-x-0 top-0 h-[57%] overflow-hidden border-l border-white/35 bg-[#121214] [clip-path:polygon(20%_0,100%_0,82%_100%,0_100%)]">
                     <Image
                       src={LECLERC_IMAGE}
                       alt="Charles Leclerc"
@@ -143,7 +140,7 @@ export default function HomePage() {
                     <p className="absolute bottom-5 left-12 font-display text-xl font-extrabold uppercase italic text-white">Leclerc</p>
                   </div>
 
-                  <div className="absolute inset-x-0 bottom-0 h-[45%] overflow-hidden border-l border-race-red/70 bg-[#121214] [clip-path:polygon(12%_0,100%_0,100%_100%,0_100%)]">
+                  <div className="hero-portrait-enter hero-portrait-enter-2 absolute inset-x-0 bottom-0 h-[45%] overflow-hidden border-l border-race-red/70 bg-[#121214] [clip-path:polygon(12%_0,100%_0,100%_100%,0_100%)]">
                     <Image
                       src={NORRIS_IMAGE}
                       alt="Lando Norris"
@@ -164,21 +161,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            <dl className="carbon-weave relative z-20 mt-4 grid grid-cols-2 border border-white/16 bg-[#09090b]/95 shadow-[0_22px_55px_rgba(0,0,0,0.45)] sm:grid-cols-4">
+            <dl className="hero-stats-enter carbon-weave relative z-20 mt-4 grid grid-cols-2 border border-white/16 bg-[#09090b]/95 shadow-[0_22px_55px_rgba(0,0,0,0.45)] sm:grid-cols-4">
               {HERO_STATS.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="relative px-5 py-5 sm:px-6 lg:px-7 lg:py-6"
-                >
-                  {index > 0 ? (
-                    <span className="absolute inset-y-5 left-0 hidden w-px bg-white/16 sm:block" aria-hidden="true" />
-                  ) : null}
-                  <dd className="font-display text-4xl font-extrabold italic leading-none text-white lg:text-5xl">
-                    {stat.value}
-                  </dd>
-                  <dt className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55 sm:text-[10px]">
-                    {stat.label}
-                  </dt>
+                <div key={stat.label} className="relative px-5 py-5 sm:px-6 lg:px-7 lg:py-6">
+                  {index > 0 ? <span className="absolute inset-y-5 left-0 hidden w-px bg-white/16 sm:block" aria-hidden="true" /> : null}
+                  <dd className="font-display text-4xl font-extrabold italic leading-none text-white lg:text-5xl">{stat.value}</dd>
+                  <dt className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55 sm:text-[10px]">{stat.label}</dt>
                 </div>
               ))}
               <div className="motorsport-corner pointer-events-none absolute -right-px -top-px hidden h-3 w-24 sm:block" aria-hidden="true" />
@@ -190,23 +178,25 @@ export default function HomePage() {
         <section className="bg-[#f2f0eb] text-[#111113]">
           <SiteContainer className="py-16 sm:py-20 lg:py-24">
             <div className="grid gap-10 lg:grid-cols-[250px_1fr] xl:grid-cols-[280px_1fr]">
-              <div>
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">
-                  Your race weekend
-                </p>
-                <h2 className="mt-4 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] sm:text-6xl">
-                  Four steps
-                  <span className="block">to race day</span>
-                </h2>
-                <div className="mt-6 h-px w-16 bg-race-red" aria-hidden="true" />
-                <p className="mt-6 max-w-[25ch] text-base leading-7 text-[#5d5d62]">
-                  Everything you need to go from rookie to race-weekend ready.
-                </p>
-              </div>
+              <ScrollReveal variant="slide-left">
+                <div>
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">Your race weekend</p>
+                  <h2 className="mt-4 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] sm:text-6xl">
+                    Four steps
+                    <span className="block">to race day</span>
+                  </h2>
+                  <div className="mt-6 h-px w-16 bg-race-red" aria-hidden="true" />
+                  <p className="mt-6 max-w-[25ch] text-base leading-7 text-[#5d5d62]">
+                    Everything you need to go from rookie to race-weekend ready.
+                  </p>
+                </div>
+              </ScrollReveal>
 
               <div aria-label="Your SEPANG 56 journey" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {JOURNEY_STEPS.map((step) => (
-                  <JourneyStepCard key={step.number} {...step} />
+                {JOURNEY_STEPS.map((step, index) => (
+                  <ScrollReveal key={step.number} delay={index * 70} variant="rise">
+                    <JourneyStepCard {...step} />
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
@@ -219,23 +209,25 @@ export default function HomePage() {
           <div className="speed-hatch absolute inset-0 opacity-25" aria-hidden="true" />
           <SiteContainer className="relative py-16 sm:py-20">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-              <div className="lg:col-span-8">
-                <div className="flex items-center gap-4">
-                  <span className={textures.stripeFlag} aria-hidden="true" />
-                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">Why SEPANG 56 exists</p>
+              <ScrollReveal className="lg:col-span-8" variant="slide-left">
+                <div>
+                  <div className="flex items-center gap-4">
+                    <span className={textures.stripeFlag} aria-hidden="true" />
+                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">Why SEPANG 56 exists</p>
+                  </div>
+                  <p className="mt-5 max-w-4xl font-display text-4xl font-extrabold uppercase italic leading-[0.94] text-white sm:text-5xl lg:text-6xl">
+                    Watch the race knowing why a corner, tyre call or late-braking move <span className="text-race-red">matters.</span>
+                  </p>
                 </div>
-                <p className="mt-5 max-w-4xl font-display text-4xl font-extrabold uppercase italic leading-[0.94] text-white sm:text-5xl lg:text-6xl">
-                  Watch the race knowing why a corner, tyre call or late-braking move <span className="text-race-red">matters.</span>
-                </p>
-              </div>
-              <div className="lg:col-span-3 lg:col-start-10">
+              </ScrollReveal>
+              <ScrollReveal className="lg:col-span-3 lg:col-start-10" delay={120} variant="slide-right">
                 <Button asChild size="large" className="sheen w-full rounded-none uppercase tracking-[0.05em]">
                   <Link href="/learn">
                     Start with the Basics
                     <ArrowRight aria-hidden="true" className="size-4" />
                   </Link>
                 </Button>
-              </div>
+              </ScrollReveal>
             </div>
           </SiteContainer>
           <div className="kerb-stripe h-2 opacity-90" aria-hidden="true" />
