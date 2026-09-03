@@ -10,14 +10,11 @@ type PageShellProps = {
   activeHref?: (typeof NAV_ITEMS)[number]["href"];
   children: ReactNode;
   className?: string;
-  /** Renders the ambient sunset/teal wash behind the page content. */
+  /** Renders the ambient photographic wash behind the page content. */
   glow?: boolean;
 };
 
-/**
- * Standard dark page frame: header, ambient atmosphere, contained main, footer.
- * Every content page uses this so surfaces and contrast stay consistent.
- */
+/** Standard dark page frame shared by the editorial content routes. */
 export function PageShell({
   activeHref,
   children,
@@ -43,7 +40,7 @@ export function PageShell({
         ) : null}
 
         <SiteContainer
-          className={cn("relative py-12 sm:py-16 lg:py-20", className)}
+          className={cn("panel-enter relative py-12 sm:py-16 lg:py-20", className)}
         >
           {children}
         </SiteContainer>
