@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import styles from "@/components/shared/motorsport-motion.module.css";
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const COVER_MS = 330;
+const BRAND_HOLD_MS = 120;
+const UNCOVER_MS = 440;
 
 type Phase = "idle" | "exit" | "enter";
 
@@ -23,7 +26,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
     }
 
     setPhase("enter");
-    const timer = window.setTimeout(() => setPhase("idle"), 390);
+    const timer = window.setTimeout(() => setPhase("idle"), UNCOVER_MS + 20);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
@@ -82,7 +85,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
             : nextUrl.pathname;
 
         router.push(`${pathnameWithoutBase}${nextUrl.search}${nextUrl.hash}`);
-      }, 205);
+      }, COVER_MS + BRAND_HOLD_MS);
     }
 
     document.addEventListener("click", onClick, true);
@@ -107,7 +110,10 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
               : ""
         }`}
       >
-        <span className={styles.routeMark}>SEPANG 56</span>
+        <span className={styles.routeMark}>
+          <span className={styles.routeWord}>SEPANG</span>
+          <span className={styles.routeNumber}>56</span>
+        </span>
       </div>
     </>
   );
