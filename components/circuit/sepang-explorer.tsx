@@ -6,6 +6,7 @@ import { ArrowRight, MapPin, Timer, Trophy } from "lucide-react";
 
 import { CircuitHotspotTabs } from "@/components/circuit/circuit-hotspot-tabs";
 import { CircuitInfoPanel } from "@/components/circuit/circuit-info-panel";
+import { CircuitMobileSheet } from "@/components/circuit/circuit-mobile-sheet";
 import { SepangCircuitStage } from "@/components/circuit/sepang-circuit-stage";
 import { Button } from "@/components/ui/button";
 import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
@@ -23,6 +24,7 @@ import {
 
 export function SepangExplorer() {
   const [hydrated, setHydrated] = useState(false);
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
   const [state, setState] = useState<PersistedSepangState>(DEFAULT_SEPANG_STATE);
 
   useEffect(() => {
@@ -67,12 +69,25 @@ export function SepangExplorer() {
     }));
   }
 
-  function selectHotspot(hotspot: HotspotId) {
+  function selectHotspot(hotspot: HotspotId, openMobileDetail = true) {
     setState((current) => ({
       ...current,
       selectedHotspot: hotspot,
       visitedHotspots: addVisitedHotspot(current.visitedHotspots, hotspot),
     }));
+
+    if (
+      openMobileDetail &&
+      window.matchMedia("(max-width: 1023px)").matches
+    ) {
+      setMobileDetailOpen(true);
+    }
+  }
+
+  function goToNextHotspot() {
+    if (nextGuidedHotspot) {
+      selectHotspot(nextGuidedHotspot, false);
+    }
   }
 
   function toggleTourMode() {
@@ -115,7 +130,7 @@ export function SepangExplorer() {
             <div className="flex items-center gap-4">
               <span className="motorsport-stripe block" aria-hidden="true" />
               <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
-                Circuit explorer / Malaysia
+                Interactive circuit explorer / Malaysia
               </p>
             </div>
             <h1 className="mt-5 max-w-5xl font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[6.2rem]">
@@ -169,14 +184,14 @@ export function SepangExplorer() {
           <div className="flex items-center gap-4">
             <span className="motorsport-stripe block" aria-hidden="true" />
             <p className="font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-white/42">
-              Circuit explorer / {state.tourMode === "guided" ? "Guided" : "Free explore"}
+              Interactive circuit explorer / {state.tourMode === "guided" ? "Guided" : "Free explore"}
             </p>
           </div>
           <h1 className="mt-5 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] text-white sm:text-6xl lg:text-[5.6rem]">
             Sepang International Circuit
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-white/60">
-            Select a section and follow the red trace to see where that moment sits on the real lap.
+            Select a section and follow the red trace to see where that moment sits on the real lap. On mobile, section details open without pushing the circuit around.
           </p>
         </div>
 
@@ -200,7 +215,7 @@ export function SepangExplorer() {
         </div>
       </section>
 
-      <section className="mt-8 grid gap-5 lg:grid-cols-12 lg:items-stretch">
+      <section className="mt-8 grid gap-5 lg:grid-cols-12 lg:items-start">
         <div className="min-w-0 lg:col-span-8">
           <SepangCircuitStage selectedHotspot={state.selectedHotspot} />
           <div className="mt-4">
@@ -212,36 +227,45 @@ export function SepangExplorer() {
           </div>
         </div>
 
-        <div className="min-w-0 lg:col-span-4">
+        <div className="hidden min-w-0 lg:col-span-4 lg:block">
           <CircuitInfoPanel
-            key={selected.id}
             hotspot={selected}
             tourMode={state.tourMode}
             sepangReady={ready}
             hasNextHotspot={nextGuidedHotspot !== null}
-            onNextHotspot={() => {
-              if (nextGuidedHotspot) {
-                selectHotspot(nextGuidedHotspot);
-              }
-            }}
+            onNextHotspot={goToNextHotspot}
           />
         </div>
       </section>
 
+      <CircuitMobileSheet
+        open={mobileDetailOpen}
+        onOpenChange={setMobileDetailOpen}
+        hotspot={selected}
+        tourMode={state.tourMode}
+        sepangReady={ready}
+        hasNextHotspot={nextGuidedHotspot !== null}
+        onNextHotspot={goToNextHotspot}
+      />
+
       <section className="mt-8 grid overflow-hidden border border-white/14 bg-[#09090b] lg:grid-cols-12">
         <div className="relative min-h-[300px] lg:col-span-8 lg:min-h-[360px]">
           <Image
-            src={publicAsset("/media/hero/hero-sepang.webp")}
-            alt="Sepang race atmosphere"
+            src={publicAsset("/media/sepang/overview.webp")}
+            alt="Sepang International Circuit race atmosphere"
             fill
+            loading="lazy"
             sizes="(max-width: 1024px) 100vw, 66vw"
-            className="object-cover object-[62%_54%] grayscale-[0.18] contrast-110"
+            className="object-cover object-center grayscale-[0.1] contrast-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-transparent to-transparent" aria-hidden="true" />
           <div className="absolute bottom-6 left-6">
             <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
             <p className="mt-3 font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">
               Built for battles.
+            </p>
+            <p className="mt-2 font-mono text-[7px] uppercase tracking-[0.08em] text-white/48">
+              Sepang photography: Morio / CC BY-SA 4.0
             </p>
           </div>
         </div>
