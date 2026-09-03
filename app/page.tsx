@@ -70,21 +70,23 @@ export default function HomePage() {
 
       <main className="flex-1">
         <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden border-b border-white/10 bg-[#050506] md:min-h-[calc(100svh-4.25rem)]">
-          <div className="absolute inset-y-0 right-0 -z-20 w-full lg:w-[72%]">
+          <div className="absolute inset-0 -z-20">
             <Image
               src={HERO_IMAGE}
               alt="Sepang circuit race atmosphere"
               fill
               priority
               sizes="100vw"
-              className="hero-kenburns object-cover object-[62%_center]"
+              className="hero-kenburns object-cover object-center"
             />
           </div>
 
-          <div aria-hidden="true" className={`${textures.carbonFade} absolute inset-y-0 left-0 -z-10 hidden w-[46%] opacity-90 lg:block`} />
-          <div aria-hidden="true" className="photo-vignette absolute inset-0 -z-10 max-lg:hidden" />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 hidden bg-[linear-gradient(90deg,rgba(5,5,6,0.86)_0%,rgba(5,5,6,0.74)_26%,rgba(5,5,6,0.42)_48%,rgba(5,5,6,0.12)_72%,rgba(5,5,6,0.02)_100%)] lg:block"
+          />
           <div aria-hidden="true" className="photo-vignette-mobile absolute inset-0 -z-10 lg:hidden" />
-          <div aria-hidden="true" className="race-noise absolute inset-0 -z-10 opacity-20" />
+          <div aria-hidden="true" className="race-noise absolute inset-0 -z-10 opacity-16" />
           <StartLightIntro />
 
           <SiteContainer className="relative flex min-h-[calc(100svh-4rem)] flex-col py-8 sm:py-10 md:min-h-[calc(100svh-4.25rem)] lg:py-12">
