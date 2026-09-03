@@ -28,6 +28,8 @@ import {
   type PredictionAnswer,
 } from "@/lib/predictions";
 
+type TransitionDirection = "forward" | "back";
+
 export function PredictionExperience() {
   const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
@@ -37,6 +39,8 @@ export function PredictionExperience() {
   const [showIntro, setShowIntro] = useState(false);
   const [returnToSummary, setReturnToSummary] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [transitionDirection, setTransitionDirection] =
+    useState<TransitionDirection>("forward");
 
   useEffect(() => {
     const stored = parsePersistedPredictionDraft(
@@ -109,6 +113,7 @@ export function PredictionExperience() {
       return;
     }
 
+    setTransitionDirection("back");
     setDraft((current) => ({
       ...current,
       currentQuestion: current.currentQuestion - 1,
@@ -131,6 +136,7 @@ export function PredictionExperience() {
       return;
     }
 
+    setTransitionDirection("forward");
     setDraft((current) => ({
       ...current,
       currentQuestion: current.currentQuestion + 1,
@@ -195,6 +201,7 @@ export function PredictionExperience() {
       <PredictionIntro
         onBack={goBack}
         onStart={() => {
+          setTransitionDirection("forward");
           setDraft((current) => ({ ...current, hasSeenIntro: true }));
           setShowIntro(false);
         }}
@@ -213,6 +220,7 @@ export function PredictionExperience() {
 
       <PredictionStep
         key={question.id}
+        direction={transitionDirection}
         progress={`${String(question.index).padStart(2, "0")} / 08`}
         heading={question.heading}
         helper={question.helper}
@@ -224,7 +232,7 @@ export function PredictionExperience() {
           <fieldset>
             <legend className="sr-only">Choose one driver</legend>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
-              {DRIVERS.map((driver) => {
+              {DRIVERS.map((driver, index) => {
                 const selected = answer === driver.id;
                 const unavailable = unavailableDriverIds.includes(driver.id);
 
@@ -232,6 +240,7 @@ export function PredictionExperience() {
                   <DriverCard
                     key={driver.id}
                     driver={driver}
+                    index={index}
                     name={question.id}
                     selected={selected}
                     disabled={unavailable && !selected}
@@ -262,7 +271,7 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <div className="mt-6 flex items-center gap-3 border-l-2 border-race-red bg-[#0d0d0f] px-4 py-3">
+          <div className="circuit-detail-swap mt-6 flex items-center gap-3 border-l-2 border-race-red bg-[#0d0d0f] px-4 py-3">
             <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45 sm:text-[10px]">
               Current call: <span className="font-semibold text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
             </p>
@@ -296,14 +305,14 @@ function PredictionIntro({
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 60vw"
-            className="object-cover object-[64%_center] grayscale-[0.12] contrast-110"
+            className="hero-kenburns object-cover object-[64%_center] grayscale-[0.12] contrast-110"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/66 to-black/10" aria-hidden="true" />
         </div>
         <div className="race-noise pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
         <div className="relative mx-auto grid max-w-[1280px] gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
-          <section className="lg:col-span-7">
+          <section className="prediction-step-forward lg:col-span-7">
             <div className="flex items-center gap-4">
               <span className="motorsport-stripe block" aria-hidden="true" />
               <p className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
@@ -323,7 +332,7 @@ function PredictionIntro({
             </Button>
           </section>
 
-          <section className="lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
+          <section className="prediction-step-forward lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
             <div className="border border-white/14 bg-[#09090b]/92 p-2">
               {PREDICTION_QUESTIONS.map((item) => (
                 <div
