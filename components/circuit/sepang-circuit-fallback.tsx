@@ -52,6 +52,27 @@ export function SepangCircuitFallback({
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#E10600"
+              strokeWidth="7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="circuit-intro-glow"
+              style={{ filter: "drop-shadow(0 0 8px rgba(225, 6, 0, 0.7))" }}
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#FFFFFF"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="circuit-intro-path"
+            />
+
             <path
               d={SEPANG_TRACK_PATH}
               pathLength={1}
@@ -107,7 +128,7 @@ export function SepangCircuitFallback({
                 cy={y}
                 r={isSelected ? 8 : 4.25}
                 fill={isSelected ? "#E10600" : "#0A0A0B"}
-                stroke={isSelected ? "#F3F1EC" : "#F3F1EC"}
+                stroke="#F3F1EC"
                 strokeWidth={isSelected ? 2.5 : 1.5}
                 opacity={isSelected ? 1 : 0.86}
                 style={{ transition: "r 240ms ease, fill 240ms ease" }}
@@ -120,6 +141,7 @@ export function SepangCircuitFallback({
                 fontFamily="monospace"
                 fontWeight="700"
                 letterSpacing="0.5"
+                style={{ transition: "font-size 240ms ease, fill 240ms ease" }}
               >
                 {hotspot.shortLabel}
               </text>
@@ -128,7 +150,7 @@ export function SepangCircuitFallback({
         })}
       </svg>
 
-      <div className="pointer-events-none absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
+      <div key={selectedHotspot} className="circuit-detail-swap pointer-events-none absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
         <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
         <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
           Selected section
