@@ -5,6 +5,8 @@ import {
   Titillium_Web,
 } from "next/font/google";
 
+import { RouteTransition } from "@/components/shared/route-transition";
+
 import "./globals.css";
 
 const displayFont = Barlow_Condensed({
@@ -45,7 +47,7 @@ export default function RootLayout({
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
     >
       <body className="min-h-screen bg-canvas font-sans text-foreground antialiased">
-        {children}
+        <RouteTransition>{children}</RouteTransition>
       </body>
     </html>
   );
