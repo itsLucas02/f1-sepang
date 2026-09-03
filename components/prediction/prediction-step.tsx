@@ -8,6 +8,7 @@ import { PREDICTION_QUESTIONS } from "@/content/predictions";
 import { publicAsset } from "@/lib/assets";
 
 export function PredictionStep({
+  direction,
   progress,
   heading,
   helper,
@@ -16,6 +17,7 @@ export function PredictionStep({
   onContinue,
   continueLabel = "Next",
 }: {
+  direction: "forward" | "back";
   progress: string;
   heading: string;
   helper: string;
@@ -28,7 +30,9 @@ export function PredictionStep({
   const currentQuestion = PREDICTION_QUESTIONS[Math.max(0, current - 1)];
 
   return (
-    <div className="panel-enter relative min-h-[calc(100vh-56px)] bg-[#070708] pb-36 text-foreground">
+    <div
+      className={`${direction === "back" ? "prediction-step-back" : "prediction-step-forward"} relative min-h-[calc(100vh-56px)] bg-[#070708] pb-36 text-foreground`}
+    >
       <section className="relative overflow-hidden border-b border-white/10 bg-[#050506]">
         <div className="absolute inset-y-0 right-0 w-[64%] max-lg:hidden">
           <Image
@@ -77,7 +81,10 @@ export function PredictionStep({
                 const passed = index + 1 < current;
 
                 return (
-                  <div key={item.id} className="relative min-w-0 border-r border-white/10 px-3 py-3 last:border-r-0">
+                  <div
+                    key={item.id}
+                    className={`relative min-w-0 border-r border-white/10 px-3 py-3 last:border-r-0 ${active ? "prediction-progress-active" : ""}`}
+                  >
                     <div className="flex items-center gap-2">
                       <span
                         className={
@@ -105,10 +112,10 @@ export function PredictionStep({
               size="large"
               disabled={!canContinue}
               onClick={onContinue}
-              className="sheen h-full min-h-0 rounded-none border-0 border-l border-race-red bg-race-red px-10 py-0 font-display text-lg font-extrabold uppercase italic tracking-[0.08em]"
+              className={`sheen h-full min-h-0 rounded-none border-0 border-l border-race-red bg-race-red px-10 py-0 font-display text-lg font-extrabold uppercase italic tracking-[0.08em] ${canContinue ? "prediction-next-ready" : ""}`}
             >
               {continueLabel}
-              <ArrowRight aria-hidden="true" className="size-5" />
+              <ArrowRight aria-hidden="true" className="prediction-next-arrow size-5" />
             </Button>
           </div>
 
@@ -126,10 +133,10 @@ export function PredictionStep({
               size="large"
               disabled={!canContinue}
               onClick={onContinue}
-              className="sheen min-w-36 rounded-none uppercase tracking-[0.05em]"
+              className={`sheen min-w-36 rounded-none uppercase tracking-[0.05em] ${canContinue ? "prediction-next-ready" : ""}`}
             >
               {continueLabel}
-              <ArrowRight aria-hidden="true" className="size-4" />
+              <ArrowRight aria-hidden="true" className="prediction-next-arrow size-4" />
             </Button>
           </div>
         </div>
