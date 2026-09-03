@@ -2,8 +2,10 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 
+import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
 import { PREDICTION_QUESTIONS } from "@/content/predictions";
+import { publicAsset } from "@/lib/assets";
 
 export function PredictionStep({
   progress,
@@ -28,16 +30,18 @@ export function PredictionStep({
   return (
     <div className="panel-enter relative min-h-[calc(100vh-56px)] bg-[#070708] pb-36 text-foreground">
       <section className="relative overflow-hidden border-b border-white/10 bg-[#050506]">
-        <div className="absolute inset-y-0 right-0 w-[58%] max-lg:hidden">
+        <div className="absolute inset-y-0 right-0 w-[64%] max-lg:hidden">
           <Image
-            src="/hero-sepang.jpg"
-            alt="Race car atmosphere at Sepang"
+            src={publicAsset("/media/prediction/intro.webp")}
+            alt="Formula-style cars racing at Sepang"
             fill
-            sizes="58vw"
-            className="object-cover object-[64%_54%] grayscale-[0.25] contrast-110"
+            priority
+            sizes="64vw"
+            className="object-cover object-[62%_52%] contrast-105 saturate-[0.92]"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/24 to-black/10" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/22 to-black/5" aria-hidden="true" />
         </div>
+        <div className={`${textures.carbonFade} pointer-events-none absolute inset-y-0 left-0 w-[58%] opacity-70 max-lg:hidden`} aria-hidden="true" />
         <div className="race-noise pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
         <div className="relative mx-auto max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10 lg:py-12">
@@ -46,7 +50,7 @@ export function PredictionStep({
               <span className="font-mono text-xs font-semibold tracking-[0.16em] text-race-red">
                 {progress}
               </span>
-              <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
+              <span className={textures.stripeFlagSmall} aria-hidden="true" />
             </div>
 
             <h1 className="mt-5 font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[6.5rem]">
@@ -57,16 +61,17 @@ export function PredictionStep({
             </p>
           </div>
         </div>
+        <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-1 opacity-90`} aria-hidden="true" />
       </section>
 
       <section className="relative mx-auto max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10">
         {children}
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/14 bg-[#050506]/96 pb-[max(14px,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl">
+      <div className={`fixed inset-x-0 bottom-0 z-40 border-t border-white/14 bg-[#050506]/96 pb-[max(14px,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl ${textures.rubberGrain}`}>
         <div className="mx-auto max-w-[1440px] px-5 sm:px-8">
-          <div className="hidden items-end gap-3 lg:flex">
-            <div className="grid flex-1 grid-cols-8 gap-0 border border-white/10 bg-[#09090b]">
+          <div className={`hidden h-[76px] overflow-hidden border border-white/12 bg-[#09090b] lg:grid lg:grid-cols-[minmax(0,1fr)_224px] ${textures.carbonPanel}`}>
+            <div className="grid min-w-0 grid-cols-8">
               {PREDICTION_QUESTIONS.map((item, index) => {
                 const active = index + 1 === current;
                 const passed = index + 1 < current;
@@ -100,7 +105,7 @@ export function PredictionStep({
               size="large"
               disabled={!canContinue}
               onClick={onContinue}
-              className="sheen min-h-[62px] min-w-56 rounded-none border border-race-red bg-race-red px-10 font-display text-lg font-extrabold uppercase italic tracking-[0.08em]"
+              className="sheen h-full min-h-0 rounded-none border-0 border-l border-race-red bg-race-red px-10 py-0 font-display text-lg font-extrabold uppercase italic tracking-[0.08em]"
             >
               {continueLabel}
               <ArrowRight aria-hidden="true" className="size-5" />
