@@ -34,19 +34,23 @@ export function CircuitInfoPanel({
     <aside
       className={cn(
         `relative flex flex-col overflow-hidden bg-[#0a0a0c] text-foreground ${textures.carbonPanel}`,
-        mobile
-          ? "min-h-0"
-          : "h-[610px] border border-white/14",
+        mobile ? "min-h-0" : "h-[610px] border border-white/14",
       )}
     >
-      <figure className={cn("relative shrink-0 overflow-hidden bg-[#111113]", mobile ? "h-48" : "h-44")}>
+      <figure
+        key={`${hotspot.id}-photo`}
+        className={cn(
+          "circuit-photo-swap relative shrink-0 overflow-hidden bg-[#111113]",
+          mobile ? "h-48" : "h-44",
+        )}
+      >
         <Image
           src={publicAsset(`/media/sepang/${hotspot.id}.webp`)}
           alt={hotspot.media.alt}
           fill
           loading="lazy"
           sizes={mobile ? "100vw" : "33vw"}
-          className="object-cover object-center grayscale-[0.08] contrast-110 transition-opacity duration-200"
+          className="object-cover object-center grayscale-[0.08] contrast-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/8 to-black/10" aria-hidden="true" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-5 pb-4">
@@ -60,7 +64,13 @@ export function CircuitInfoPanel({
         <div className={`${textures.stripeBand} pointer-events-none absolute inset-x-0 top-0 h-1.5`} aria-hidden="true" />
       </figure>
 
-      <div className={cn("flex min-h-0 flex-1 flex-col", mobile ? "p-5 sm:p-6" : "p-5 xl:p-6")}>
+      <div
+        key={`${hotspot.id}-copy`}
+        className={cn(
+          "circuit-detail-swap flex min-h-0 flex-1 flex-col",
+          mobile ? "p-5 sm:p-6" : "p-5 xl:p-6",
+        )}
+      >
         <div className="shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -71,10 +81,12 @@ export function CircuitInfoPanel({
             </div>
             <Flag aria-hidden="true" className="size-4 text-white/38" />
           </div>
-          <h2 className={cn(
-            "mt-2 font-display font-extrabold uppercase italic leading-[0.84] tracking-[-0.035em] text-white",
-            mobile ? "text-4xl sm:text-5xl" : "text-[2.75rem] xl:text-[3.1rem]",
-          )}>
+          <h2
+            className={cn(
+              "mt-2 font-display font-extrabold uppercase italic leading-[0.84] tracking-[-0.035em] text-white",
+              mobile ? "text-4xl sm:text-5xl" : "text-[2.75rem] xl:text-[3.1rem]",
+            )}
+          >
             {hotspot.title}
           </h2>
         </div>
