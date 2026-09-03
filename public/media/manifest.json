@@ -1,11 +1,12 @@
 {
-  "generatedAt": "2026-09-03T12:15:30.804Z",
+  "generatedAt": "2026-09-03T14:03:18.459Z",
   "formats": {
     "hero": "webp",
     "journey": "webp",
     "drivers": "webp",
     "sepang": "webp",
-    "prediction": "webp"
+    "prediction": "webp",
+    "heritage": "webp"
   },
   "dimensions": {
     "hero": "1600x900 max",
@@ -13,7 +14,8 @@
     "drivers": "440x600",
     "sepangHotspots": "720x420",
     "sepangOverview": "1200x720",
-    "predictionIntro": "1400x900"
+    "predictionIntro": "1400x900",
+    "heritage": "1400x900"
   },
   "quality": {
     "hero": 78,
@@ -21,9 +23,11 @@
     "drivers": 72,
     "sepangHotspots": 74,
     "sepangOverview": 76,
-    "predictionIntro": 78
+    "predictionIntro": 78,
+    "heritage": 78
   },
   "sources": {
-    "sepangPhotography": "Morio / Wikimedia Commons / CC BY-SA 4.0"
+    "sepangPhotography": "Morio / Wikimedia Commons / CC BY-SA 4.0",
+    "petronasHeritage": "Liauzh / 2025 Japan GP - Mercedes - George Russell - FP3.jpg / Wikimedia Commons / CC BY-SA 4.0"
   }
 }
