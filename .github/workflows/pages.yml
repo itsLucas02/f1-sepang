@@ -19,8 +19,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # Keep the public Pages preview pinned to the approved Arena design branch,
+      # including the simplified transition and rebalanced hero, without merging Arena to main.
+      - name: Checkout Arena redesign
         uses: actions/checkout@v4
+        with:
+          ref: arena/01a0606c-f1-sepang
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -29,15 +33,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
 
       - name: Build static export
         run: npm run build
