@@ -1,6 +1,8 @@
 name: Deploy SEPANG 56 to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -28,10 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
       - name: Build static export
         run: npm run build
 
-      - name: Verify static output
+      - name: Verify static output and optimized media
         run: |
           test -f out/index.html
           test -f out/learn/index.html
@@ -40,6 +51,21 @@ jobs:
           test -f out/predict/summary/index.html
           test -f out/leaderboard/index.html
           test -f out/.nojekyll
+          test -f out/media/hero/hero-sepang.webp
+          test -f out/media/journey/learn.webp
+          test -f out/media/journey/sepang.webp
+          test -f out/media/journey/predict.webp
+          test -f out/media/journey/compete.webp
+          test -f out/media/drivers/leclerc.webp
+          test -f out/media/drivers/norris.webp
+          test -f out/media/prediction/intro.webp
+          test -f out/media/heritage/petronas-mercedes.webp
+          test -f out/media/sepang/main-straight.webp
+          test -f out/media/sepang/t1.webp
+          test -f out/media/sepang/t4.webp
+          test -f out/media/sepang/t9.webp
+          test -f out/media/sepang/t15.webp
+          test -f out/media/sepang/overview.webp
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
