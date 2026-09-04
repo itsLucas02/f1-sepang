@@ -1,11 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Flag } from "lucide-react";
 
+import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
 import type { SepangHotspot } from "@/content/sepang";
+import { publicAsset } from "@/lib/assets";
 import type { TourMode } from "@/lib/sepang";
+import { cn } from "@/lib/utils";
 
 type CircuitInfoPanelProps = {
   hotspot: SepangHotspot;
@@ -13,6 +17,7 @@ type CircuitInfoPanelProps = {
   sepangReady: boolean;
   hasNextHotspot: boolean;
   onNextHotspot: () => void;
+  variant?: "desktop" | "mobile";
 };
 
 export function CircuitInfoPanel({
@@ -21,71 +26,118 @@ export function CircuitInfoPanel({
   sepangReady,
   hasNextHotspot,
   onNextHotspot,
+  variant = "desktop",
 }: CircuitInfoPanelProps) {
-  return (
-    <aside className="panel-enter relative flex min-h-full flex-col overflow-hidden border border-black/12 bg-white p-6 text-[#111113] sm:p-8 lg:p-9">
-      <div
-        aria-hidden="true"
-        className="absolute -right-5 -top-10 font-display text-[10rem] font-extrabold leading-none text-black/[0.035]"
-      >
-        {hotspot.index}
-      </div>
+  const mobile = variant === "mobile";
 
-      <div className="relative">
-        <div className="flex items-center gap-3">
-          <span className="h-0.5 w-8 bg-race-red" aria-hidden="true" />
-          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#6f6f75] sm:text-[11px]">
-            Hotspot {hotspot.index} / 05
+  return (
+    <aside
+      className={cn(
+        `relative flex flex-col overflow-hidden bg-[#0a0a0c] text-foreground ${textures.carbonPanel}`,
+        mobile ? "min-h-0" : "h-[610px] border border-white/14",
+      )}
+    >
+      <figure
+        key={`${hotspot.id}-photo`}
+        className={cn(
+          "circuit-photo-swap relative shrink-0 overflow-hidden bg-[#111113]",
+          mobile ? "h-48" : "h-44",
+        )}
+      >
+        <Image
+          src={publicAsset(`/media/sepang/${hotspot.id}.webp`)}
+          alt={hotspot.media.alt}
+          fill
+          loading="lazy"
+          sizes={mobile ? "100vw" : "33vw"}
+          className="object-cover object-center grayscale-[0.08] contrast-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/8 to-black/10" aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-5 pb-4">
+          <p className="font-mono text-[8px] uppercase tracking-[0.1em] text-white/72">
+            {hotspot.media.context}
+          </p>
+          <p className="max-w-[46%] text-right font-mono text-[7px] uppercase tracking-[0.06em] text-white/42">
+            {hotspot.media.credit}
+          </p>
+        </div>
+        <div className={`${textures.stripeBand} pointer-events-none absolute inset-x-0 top-0 h-1.5`} aria-hidden="true" />
+      </figure>
+
+      <div
+        key={`${hotspot.id}-copy`}
+        className={cn(
+          "circuit-detail-swap flex min-h-0 flex-1 flex-col",
+          mobile ? "p-5 sm:p-6" : "p-5 xl:p-6",
+        )}
+      >
+        <div className="shrink-0">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className={textures.stripeFlagSmall} aria-hidden="true" />
+              <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.16em] text-race-red">
+                Selected / {hotspot.index}
+              </p>
+            </div>
+            <Flag aria-hidden="true" className="size-4 text-white/38" />
+          </div>
+          <h2
+            className={cn(
+              "mt-2 font-display font-extrabold uppercase italic leading-[0.84] tracking-[-0.035em] text-white",
+              mobile ? "text-4xl sm:text-5xl" : "text-[2.75rem] xl:text-[3.1rem]",
+            )}
+          >
+            {hotspot.title}
+          </h2>
+        </div>
+
+        <div className="mt-4 shrink-0 border-t border-white/10 pt-4">
+          <p className="text-sm leading-6 text-white/68 xl:text-[15px] xl:leading-6">
+            {hotspot.whatHappens}
           </p>
         </div>
 
-        <h2 className="mt-5 max-w-xs font-display text-5xl font-extrabold uppercase leading-[0.86] tracking-[-0.025em] text-[#111113] sm:text-6xl">
-          {hotspot.title}
-        </h2>
-      </div>
+        <div className={`mt-4 shrink-0 border border-white/12 bg-[#0d0d0f] p-4 ${textures.rubberGrain}`}>
+          <p className="font-mono text-[8px] font-semibold uppercase tracking-[0.14em] text-race-red">
+            Why it matters
+          </p>
+          <p className="mt-2 text-sm font-medium leading-6 text-white/72">
+            {hotspot.whyItMatters}
+          </p>
+        </div>
 
-      <div className="relative mt-10 border-t border-black/12 pt-7">
-        <p className="font-display text-lg font-bold uppercase text-[#111113]">
-          What happens here
-        </p>
-        <p className="mt-3 text-base leading-6 text-[#55555b]">
-          {hotspot.whatHappens}
-        </p>
-      </div>
+        <div className="mt-3 shrink-0 border-l-2 border-race-red bg-white/[0.025] px-3 py-2.5">
+          <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/38">
+            Watch for
+          </p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.035em] text-white/78">
+            {hotspot.watchFor}
+          </p>
+        </div>
 
-      <div className="relative mt-8 border-l-[3px] border-race-red pl-5">
-        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-race-red">
-          Watch for this
-        </p>
-        <p className="mt-3 text-base font-semibold leading-6 text-[#242427]">
-          {hotspot.whyItMatters}
-        </p>
-      </div>
+        <div className="mt-auto shrink-0 border-t border-white/10 pt-4">
+          <p className="mb-3 font-mono text-[8px] font-semibold uppercase tracking-[0.15em] text-white/38">
+            {sepangReady
+              ? "Circuit read complete"
+              : tourMode === "guided" && hasNextHotspot
+                ? "Guided tour / next section"
+                : "Explore freely"}
+          </p>
 
-      <div className="relative mt-auto pt-10">
-        <div className="border-t border-black/12 pt-6">
           {sepangReady ? (
-            <div>
-              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-race-red">
-                Circuit read complete
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[#5e5e64]">
-                You now know the five places worth recognizing before you make your race calls.
-              </p>
-              <Button asChild className="mt-5 w-full">
-                <Link href="/predict">
-                  Make Your Picks
-                  <ArrowRight aria-hidden="true" className="size-4" />
-                </Link>
-              </Button>
-            </div>
+            <Button asChild className="sheen w-full rounded-none uppercase tracking-[0.05em]">
+              <Link href="/predict">
+                Make Your Picks
+                <ArrowRight aria-hidden="true" className="size-4" />
+              </Link>
+            </Button>
           ) : tourMode === "guided" && hasNextHotspot ? (
-            <Button type="button" className="w-full" onClick={onNextHotspot}>
+            <Button type="button" className="sheen w-full rounded-none uppercase tracking-[0.05em]" onClick={onNextHotspot}>
               Next Hotspot
               <ArrowRight aria-hidden="true" className="size-4" />
             </Button>
           ) : (
-            <Button asChild variant="secondary" className="w-full">
+            <Button asChild variant="secondary" className="w-full rounded-none border-white/25 uppercase tracking-[0.05em]">
               <Link href="/predict">
                 Make Your Picks
                 <ArrowRight aria-hidden="true" className="size-4" />

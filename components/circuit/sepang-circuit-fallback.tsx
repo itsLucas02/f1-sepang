@@ -17,10 +17,12 @@ export function SepangCircuitFallback({
   const dashOffset = 1 - SEPANG_HOTSPOT_PROGRESS[selectedHotspot] + 0.037;
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[radial-gradient(circle_at_50%_44%,#18181a_0%,#09090b_68%)]">
+    <div className="absolute inset-0 overflow-hidden bg-[#080809] track-topography">
+      <div className="race-grid pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+
       <svg
         viewBox={SEPANG_TRACK_VIEWBOX}
-        className="h-full w-full p-7 sm:p-10 lg:p-12"
+        className="h-full w-full p-6 sm:p-9 lg:p-11"
         aria-hidden="true"
         fill="none"
         preserveAspectRatio="xMidYMid meet"
@@ -30,25 +32,47 @@ export function SepangCircuitFallback({
             <path
               d={SEPANG_TRACK_PATH}
               stroke="#000000"
-              strokeWidth="22"
+              strokeWidth="24"
               strokeLinecap="round"
               strokeLinejoin="round"
-              opacity="0.5"
+              opacity="0.7"
             />
             <path
               d={SEPANG_TRACK_PATH}
-              stroke="#F2F1ED"
-              strokeWidth="13"
+              stroke="#F3F1EC"
+              strokeWidth="14"
               strokeLinecap="round"
               strokeLinejoin="round"
+              opacity="0.96"
             />
             <path
               d={SEPANG_TRACK_PATH}
-              stroke="#141416"
-              strokeWidth="8"
+              stroke="#171719"
+              strokeWidth="8.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
+
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#E10600"
+              strokeWidth="7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="circuit-intro-glow"
+              style={{ filter: "drop-shadow(0 0 8px rgba(225, 6, 0, 0.7))" }}
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#FFFFFF"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="circuit-intro-path"
+            />
+
             <path
               d={SEPANG_TRACK_PATH}
               pathLength={1}
@@ -60,7 +84,22 @@ export function SepangCircuitFallback({
               strokeDashoffset={dashOffset}
               style={{
                 transition:
-                  "stroke-dashoffset 760ms cubic-bezier(0.22, 1, 0.36, 1)",
+                  "stroke-dashoffset 880ms cubic-bezier(0.22, 1, 0.36, 1)",
+                filter: "drop-shadow(0 0 5px rgba(225, 6, 0, 0.38))",
+              }}
+            />
+            <path
+              d={SEPANG_TRACK_PATH}
+              pathLength={1}
+              stroke="#FFFFFF"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeDasharray="0.012 0.988"
+              strokeDashoffset={dashOffset + 0.027}
+              opacity="0.92"
+              style={{
+                transition:
+                  "stroke-dashoffset 880ms cubic-bezier(0.22, 1, 0.36, 1)",
               }}
             />
           </g>
@@ -69,6 +108,7 @@ export function SepangCircuitFallback({
         {HOTSPOT_ORDER.map((id) => {
           const [x, y] = SEPANG_HOTSPOT_SVG_POINTS[id];
           const isSelected = id === selectedHotspot;
+          const hotspot = getHotspot(id);
 
           return (
             <g key={id}>
@@ -79,33 +119,43 @@ export function SepangCircuitFallback({
                   r="17"
                   fill="none"
                   stroke="#E10600"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   className="sepang-marker-pulse"
                 />
               ) : null}
               <circle
                 cx={x}
                 cy={y}
-                r={isSelected ? 7.5 : 3.5}
-                fill={isSelected ? "#FFFFFF" : "#F2F1ED"}
-                opacity={isSelected ? 1 : 0.62}
-                stroke={isSelected ? "#E10600" : "none"}
-                strokeWidth={isSelected ? 4 : 0}
+                r={isSelected ? 8 : 4.25}
+                fill={isSelected ? "#E10600" : "#0A0A0B"}
+                stroke="#F3F1EC"
+                strokeWidth={isSelected ? 2.5 : 1.5}
+                opacity={isSelected ? 1 : 0.86}
                 style={{ transition: "r 240ms ease, fill 240ms ease" }}
               />
+              <text
+                x={x + (isSelected ? 12 : 9)}
+                y={y - (isSelected ? 10 : 7)}
+                fill={isSelected ? "#FFFFFF" : "#B8B7BA"}
+                fontSize={isSelected ? 12 : 9}
+                fontFamily="monospace"
+                fontWeight="700"
+                letterSpacing="0.5"
+                style={{ transition: "font-size 240ms ease, fill 240ms ease" }}
+              >
+                {hotspot.shortLabel}
+              </text>
             </g>
           );
         })}
       </svg>
 
-      <div className="pointer-events-none absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
-        <div className="flex items-center gap-3">
-          <span className="h-0.5 w-8 bg-race-red" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
-            Focus point
-          </p>
-        </div>
-        <p className="mt-2 font-display text-2xl font-extrabold uppercase text-white sm:text-3xl">
+      <div key={selectedHotspot} className="circuit-detail-swap pointer-events-none absolute bottom-5 left-5 sm:bottom-7 sm:left-7">
+        <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
+        <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
+          Selected section
+        </p>
+        <p className="mt-1 font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">
           {selected.shortLabel}
         </p>
       </div>

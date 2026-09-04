@@ -1,0 +1,195 @@
+.routeLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  transform: translate3d(-112%, 0, 0) skewX(-7deg) scaleX(1.1);
+  background: linear-gradient(
+    90deg,
+    #050506 0 8%,
+    #e10600 8% 28%,
+    #f3f1ec 28% 32%,
+    #e10600 32% 78%,
+    #f3f1ec 78% 82%,
+    #e10600 82% 92%,
+    #050506 92% 100%
+  );
+  box-shadow: 0 0 44px rgba(0, 0, 0, 0.48);
+  will-change: transform;
+}
+
+.routeExit {
+  animation: route-in 300ms cubic-bezier(0.42, 0, 0.18, 1) forwards;
+}
+
+.routeEnter {
+  transform: translate3d(0, 0, 0) skewX(-7deg) scaleX(1.1);
+  animation: route-out 400ms cubic-bezier(0.38, 0, 0.16, 1) forwards;
+}
+
+.routeMark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.14em;
+  transform: translate(-50%, -50%) skewX(7deg);
+  font-family: var(--font-display-source), sans-serif;
+  font-size: clamp(2.7rem, 5vw, 4.9rem);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.routeWord {
+  color: #f3f1ec;
+  text-shadow:
+    0 2px 0 rgba(5, 5, 6, 0.6),
+    0 5px 22px rgba(0, 0, 0, 0.58);
+}
+
+.routeNumber {
+  color: #050506;
+  text-shadow:
+    0 1px 0 rgba(243, 241, 236, 0.28),
+    0 4px 18px rgba(0, 0, 0, 0.28);
+}
+
+.heritagePhoto {
+  isolation: isolate;
+}
+
+.heritagePhoto::after {
+  content: "";
+  position: absolute;
+  inset: -8% -28%;
+  z-index: 4;
+  pointer-events: none;
+  transform: translate3d(-118%, 0, 0) skewX(-10deg);
+  background: linear-gradient(
+    90deg,
+    transparent 0 28%,
+    rgba(225, 6, 0, 0.88) 28% 38%,
+    rgba(243, 241, 236, 0.95) 38% 42%,
+    rgba(5, 5, 6, 0.9) 42% 58%,
+    rgba(225, 6, 0, 0.74) 58% 68%,
+    transparent 68% 100%
+  );
+  animation: heritage-photo-sweep 860ms cubic-bezier(0.55, 0.08, 0.24, 0.96) 180ms both;
+}
+
+.heritagePhotoImage {
+  animation: heritage-photo-settle 920ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 680ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--motion-delay, 0ms);
+  will-change: transform, opacity, clip-path;
+}
+
+.rise {
+  transform: translate3d(0, 28px, 0);
+}
+
+.slideLeft {
+  transform: translate3d(-34px, 0, 0);
+}
+
+.slideRight {
+  transform: translate3d(34px, 0, 0);
+}
+
+.photoWipe {
+  clip-path: polygon(0 0, 0 0, -14% 100%, 0 100%);
+  transform: translate3d(16px, 0, 0);
+}
+
+.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  clip-path: polygon(0 0, 114% 0, 100% 100%, 0 100%);
+}
+
+.startLights {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 30;
+  display: flex;
+  gap: 12px;
+  transform: translate(-50%, -50%);
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(5, 5, 6, 0.88);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.startLightsDone {
+  opacity: 0;
+  transform: translate(-50%, -56%) scale(0.96);
+}
+
+.startLight {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #2b0807;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+  animation: start-light-cycle 1250ms linear both;
+  animation-delay: calc(var(--light-index) * 115ms);
+}
+
+@keyframes route-in {
+  to { transform: translate3d(0, 0, 0) skewX(-7deg) scaleX(1.1); }
+}
+
+@keyframes route-out {
+  to { transform: translate3d(112%, 0, 0) skewX(-7deg) scaleX(1.1); }
+}
+
+@keyframes heritage-photo-sweep {
+  from { transform: translate3d(-118%, 0, 0) skewX(-10deg); opacity: 0; }
+  18% { opacity: 1; }
+  to { transform: translate3d(118%, 0, 0) skewX(-10deg); opacity: 0; }
+}
+
+@keyframes heritage-photo-settle {
+  from { opacity: 0.82; transform: scale(1.035); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes start-light-cycle {
+  0%, 14% { background: #2b0807; box-shadow: none; }
+  18%, 72% { background: #e10600; box-shadow: 0 0 18px rgba(225,6,0,0.62); }
+  76%, 100% { background: #160606; box-shadow: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routeLayer,
+  .reveal,
+  .startLights,
+  .startLight,
+  .heritagePhoto::after,
+  .heritagePhotoImage {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .routeLayer { display: none; }
+  .reveal { opacity: 1; transform: none; clip-path: none; }
+  .startLights { display: none; }
+  .heritagePhoto::after { display: none; }
+  .heritagePhotoImage { opacity: 1 !important; transform: none !important; }
+}

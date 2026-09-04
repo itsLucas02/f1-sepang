@@ -1,0 +1,52 @@
+name: Optimize SEPANG 56 media
+
+on:
+  push:
+    branches:
+      - arena/01a0606c-f1-sepang
+    paths:
+      - scripts/prepare-images.mjs
+      - .github/workflows/optimize-images.yml
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Arena branch
+        uses: actions/checkout@v4
+        with:
+          ref: arena/01a0606c-f1-sepang
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate compressed WebP assets
+        run: npm run optimize:images
+
+      - name: Report optimized media sizes
+        run: |
+          find public/media -type f -printf '%p %k KB\n' | sort
+          du -sh public/media
+
+      - name: Commit generated media
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package-lock.json public/media
+          if git diff --cached --quiet; then
+            echo 'No generated media changes.'
+            exit 0
+          fi
+          git commit -m 'perf: commit compressed WebP media assets'
+          git pull --rebase origin arena/01a0606c-f1-sepang
+          git push origin HEAD:arena/01a0606c-f1-sepang

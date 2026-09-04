@@ -1,108 +1,124 @@
+import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Check } from "lucide-react";
 
 import type { Driver } from "@/content/drivers";
+import { publicAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
 export function DriverCard({
   driver,
+  index,
   selected,
   disabled,
   name,
   onSelect,
 }: {
   driver: Driver;
+  index: number;
   selected: boolean;
   disabled?: boolean;
   name: string;
   onSelect: () => void;
 }) {
   const inputId = `${name}-${driver.id}`;
+  const surnameLength = driver.surname.length;
+  const surnameSize =
+    surnameLength >= 10
+      ? "text-[1.22rem] sm:text-[1.42rem] xl:text-[1.55rem]"
+      : surnameLength >= 8
+        ? "text-[1.38rem] sm:text-[1.62rem] xl:text-[1.75rem]"
+        : "text-[1.55rem] sm:text-[1.8rem] xl:text-[1.95rem]";
 
   return (
-    <label
-      htmlFor={inputId}
-      className={cn(
-        "group relative min-h-40 cursor-pointer overflow-hidden rounded-[3px] border p-5 transition-[transform,border-color,background-color,box-shadow] duration-200 sm:min-h-44 sm:p-6",
-        selected
-          ? "race-select-pop border-race-red bg-[#111113] shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
-          : "border-black/12 bg-white hover:-translate-y-0.5 hover:border-black/35 hover:shadow-[0_10px_26px_rgba(0,0,0,0.08)]",
-        disabled && "cursor-not-allowed opacity-35 hover:translate-y-0 hover:shadow-none",
-      )}
+    <div
+      className="driver-card-enter min-w-0"
+      style={{ "--driver-index": index } as CSSProperties}
     >
-      <input
-        id={inputId}
-        type="radio"
-        name={name}
-        value={driver.id}
-        checked={selected}
-        disabled={disabled}
-        onChange={onSelect}
-        className="peer sr-only"
-      />
-
-      <div
-        aria-hidden="true"
+      <label
+        htmlFor={inputId}
         className={cn(
-          "absolute -right-10 -top-20 h-52 w-32 rotate-[24deg] transition-colors duration-200",
-          selected ? "bg-race-red/14" : "bg-black/[0.025] group-hover:bg-race-red/[0.045]",
-        )}
-      />
-
-      <span
-        className={cn(
-          "relative z-10 block max-w-[72%] font-mono text-[10px] font-medium uppercase tracking-[0.1em] sm:text-[11px]",
-          selected ? "text-white/45" : "text-[#74747a]",
+          "carbon-weave group relative isolate block h-full min-h-[290px] cursor-pointer overflow-hidden border bg-[#0d0d0f] transition-[transform,border-color,box-shadow] duration-250 sm:min-h-[340px] xl:min-h-[390px]",
+          selected
+            ? "race-select-pop border-race-red shadow-[0_0_0_1px_rgba(225,6,0,0.28),0_20px_45px_rgba(0,0,0,0.48)]"
+            : "border-white/18 hover:-translate-y-1 hover:border-white/42 hover:shadow-[0_22px_48px_rgba(0,0,0,0.5)]",
+          disabled &&
+            "cursor-not-allowed opacity-35 hover:translate-y-0 hover:border-white/18 hover:shadow-none",
         )}
       >
-        {driver.team}
-      </span>
+        <input
+          id={inputId}
+          type="radio"
+          name={name}
+          value={driver.id}
+          checked={selected}
+          disabled={disabled}
+          onChange={onSelect}
+          className="peer sr-only"
+        />
 
-      <div className="relative z-10 mt-9">
-        <span
-          className={cn(
-            "block text-sm font-semibold leading-none",
-            selected ? "text-white/62" : "text-[#66666c]",
-          )}
-        >
-          {driver.firstName}
-        </span>
-        <span
-          className={cn(
-            "mt-1 block font-display text-3xl font-extrabold uppercase leading-[0.88] tracking-[-0.02em] sm:text-4xl",
-            selected ? "text-white" : "text-[#111113]",
-          )}
-        >
-          {driver.surname}
-        </span>
-      </div>
+        <div className="absolute inset-x-0 top-0 h-[72%] overflow-hidden bg-[#151517]">
+          <Image
+            src={publicAsset(`/media/drivers/${driver.id}.webp`)}
+            alt={`${driver.firstName} ${driver.surname}`}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 17vw"
+            className="object-cover object-[50%_24%] grayscale-[0.28] contrast-110 saturate-[0.8] transition duration-500 group-hover:scale-[1.025] group-hover:grayscale-[0.12] group-hover:saturate-100"
+          />
+          <div className="absolute inset-0 bg-black/8" aria-hidden="true" />
+          <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#0d0d0f] via-[#0d0d0f]/72 to-transparent" aria-hidden="true" />
+          {driver.media ? (
+            <p className="absolute bottom-3 right-3 max-w-[85%] text-right font-mono text-[7px] uppercase tracking-[0.06em] text-white/30">
+              {driver.media.credit}
+            </p>
+          ) : null}
+        </div>
 
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute -bottom-5 right-2 font-display text-[6.5rem] font-extrabold leading-none tracking-[-0.06em] transition-colors sm:text-[7.5rem]",
-          selected ? "text-race-red/30" : "text-black/[0.055]",
+        <div className="absolute inset-x-0 bottom-0 z-10 p-4 pr-5 sm:p-5 sm:pr-6">
+          <p className="font-mono text-[8px] font-medium uppercase tracking-[0.14em] text-white/45 sm:text-[9px]">
+            {driver.team}
+          </p>
+          <div className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] items-end gap-2.5">
+            <span className="font-display text-3xl font-extrabold italic leading-none text-race-red sm:text-4xl">
+              {driver.number}
+            </span>
+            <div className="min-w-0 pb-0.5 pr-1.5">
+              <span className="block text-[10px] font-semibold leading-none text-white/55 sm:text-xs">
+                {driver.firstName}
+              </span>
+              <span
+                className={cn(
+                  "mt-1 block whitespace-nowrap pr-1 font-display font-extrabold uppercase italic leading-[0.92] tracking-[-0.01em] text-white",
+                  surnameSize,
+                )}
+              >
+                {driver.surname}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {selected ? (
+          <span className="absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-full bg-race-red text-white shadow-[0_8px_18px_rgba(0,0,0,0.38)]">
+            <Check aria-hidden="true" className="size-4" />
+            <span className="sr-only">Selected</span>
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="absolute right-3 top-3 z-20 size-7 rounded-full border border-white/65 bg-black/20 transition-colors group-hover:bg-white/10"
+          />
         )}
-      >
-        {driver.number}
-      </span>
 
-      {selected ? (
-        <span className="absolute right-4 top-4 flex size-7 items-center justify-center bg-race-red text-white">
-          <Check aria-hidden="true" className="size-4" />
-          <span className="sr-only">Selected</span>
-        </span>
-      ) : (
-        <span aria-hidden="true" className="absolute right-5 top-5 size-2 bg-black/15" />
-      )}
-
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute inset-x-0 bottom-0 h-[3px] origin-left bg-race-red transition-transform duration-300",
-          selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
-        )}
-      />
-      <span className="pointer-events-none absolute inset-0 rounded-[3px] peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-black" />
-    </label>
+        <span
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-x-0 bottom-0 z-20 h-[3px] origin-left bg-race-red transition-transform duration-300",
+            selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+          )}
+        />
+        <span className="pointer-events-none absolute inset-0 peer-focus-visible:ring-2 peer-focus-visible:ring-inset peer-focus-visible:ring-white" />
+      </label>
+    </div>
   );
 }

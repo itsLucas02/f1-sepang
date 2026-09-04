@@ -7,41 +7,57 @@
 
   --radius: 0.25rem;
 
-  --background: #0a0a0c;
-  --foreground: #f7f7f5;
-  --card: #111113;
-  --card-foreground: #f7f7f5;
-  --popover: #151517;
-  --popover-foreground: #f7f7f5;
+  --background: #070708;
+  --foreground: #f3f1ec;
+  --card: #0d0d0f;
+  --card-foreground: #f3f1ec;
+  --popover: #111113;
+  --popover-foreground: #f3f1ec;
   --primary: #e10600;
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1d;
-  --secondary-foreground: #f7f7f5;
-  --muted: #202023;
-  --muted-foreground: #85858c;
-  --accent: #202023;
+  --secondary: #141416;
+  --secondary-foreground: #f3f1ec;
+  --muted: #1b1b1e;
+  --muted-foreground: #8d8d93;
+  --accent: #1b1b1e;
   --accent-foreground: #ffffff;
   --destructive: #e10600;
   --destructive-foreground: #ffffff;
-  --border: #2b2b2f;
-  --input: #343439;
-  --ring: #ffffff;
+  --border: #29292d;
+  --input: #333337;
+  --ring: #f3f1ec;
 
   --sepang-header: #050506;
-  --sepang-canvas: #0a0a0c;
-  --sepang-surface-01: #111113;
-  --sepang-surface-02: #171719;
-  --sepang-surface-03: #202023;
-  --sepang-border: #2b2b2f;
-  --sepang-text-primary: #f7f7f5;
-  --sepang-text-secondary: #c7c7cb;
-  --sepang-text-muted: #85858c;
+  --sepang-canvas: #070708;
+  --sepang-surface-01: #0d0d0f;
+  --sepang-surface-02: #121214;
+  --sepang-surface-03: #18181b;
+  --sepang-surface-04: #202024;
+  --sepang-border: #29292d;
+  --sepang-border-strong: #424248;
+  --sepang-text-primary: #f3f1ec;
+  --sepang-text-secondary: #bebdc0;
+  --sepang-text-muted: #85858b;
+
   --sepang-race-red: #e10600;
-  --sepang-stripe-dark: #101012;
-  --sepang-stripe-light: #444449;
+  --sepang-race-red-bright: #f22b25;
+  --sepang-race-red-deep: #8d0804;
+
+  /* Compatibility aliases. Key surfaces no longer use these as decorative brand colours. */
+  --sepang-sunset: #e10600;
+  --sepang-amber: #ffd100;
+  --sepang-teal: #f3f1ec;
+  --sepang-teal-deep: #a7a6aa;
+
+  --sepang-stripe-dark: #111113;
+  --sepang-stripe-light: #56565d;
   --sepang-warning: #ffd100;
   --sepang-warning-text: #0b0b0b;
-  --sepang-disabled: #5d5d62;
+  --sepang-disabled: #505056;
+
+  --sepang-gold: #d8b04c;
+  --sepang-silver: #cfd0d4;
+  --sepang-bronze: #a66d45;
 }
 
 @theme inline {
@@ -74,19 +90,33 @@
   --color-surface-01: var(--sepang-surface-01);
   --color-surface-02: var(--sepang-surface-02);
   --color-surface-03: var(--sepang-surface-03);
+  --color-surface-04: var(--sepang-surface-04);
+  --color-border-strong: var(--sepang-border-strong);
   --color-text-primary: var(--sepang-text-primary);
   --color-text-secondary: var(--sepang-text-secondary);
   --color-text-muted: var(--sepang-text-muted);
+
   --color-race-red: var(--sepang-race-red);
+  --color-race-red-bright: var(--sepang-race-red-bright);
+  --color-race-red-deep: var(--sepang-race-red-deep);
+  --color-sunset: var(--sepang-sunset);
+  --color-amber: var(--sepang-amber);
+  --color-teal: var(--sepang-teal);
+  --color-teal-deep: var(--sepang-teal-deep);
+
   --color-stripe-dark: var(--sepang-stripe-dark);
   --color-stripe-light: var(--sepang-stripe-light);
   --color-warning: var(--sepang-warning);
   --color-warning-foreground: var(--sepang-warning-text);
   --color-disabled: var(--sepang-disabled);
+  --color-gold: var(--sepang-gold);
+  --color-silver: var(--sepang-silver);
+  --color-bronze: var(--sepang-bronze);
 
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
-  --radius-lg: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
 }
 
 * {
@@ -130,29 +160,123 @@ textarea {
 }
 
 :focus-visible {
-  outline: 2px solid #ffffff;
+  outline: 2px solid #f3f1ec;
   outline-offset: 3px;
 }
 
 .race-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.024) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 
 .race-noise {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 0.5px, transparent 0.5px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.055) 0.45px, transparent 0.45px);
   background-size: 6px 6px;
+}
+
+.carbon-weave {
+  background-color: #0a0a0b;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,0.44) 0 1px, transparent 1px 4px);
+}
+
+.speed-hatch {
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.04) 0px,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+}
+
+.kerb-stripe {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--sepang-race-red) 0px,
+    var(--sepang-race-red) 22px,
+    #f3f1ec 22px,
+    #f3f1ec 44px
+  );
+}
+
+.kerb-stripe-thin {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--sepang-race-red) 0px,
+    var(--sepang-race-red) 12px,
+    #f3f1ec 12px,
+    #f3f1ec 24px
+  );
+}
+
+.motorsport-stripe {
+  width: 72px;
+  height: 6px;
+  transform: skewX(-28deg);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--sepang-race-red) 0 11px,
+    transparent 11px 15px,
+    #f3f1ec 15px 26px,
+    transparent 26px 30px
+  );
+}
+
+.motorsport-corner {
+  clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
+  background: repeating-linear-gradient(
+    90deg,
+    #f3f1ec 0 18px,
+    #f3f1ec 18px 28px,
+    var(--sepang-race-red) 28px 46px,
+    var(--sepang-race-red) 46px 56px
+  );
+}
+
+.chequer {
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.14) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.14) 75%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.14) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.14) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+}
+
+/* Compatibility class: now a restrained photographic vignette, not a coloured glow. */
+.sepang-glow {
+  background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 32%, rgba(0,0,0,0.2));
+}
+
+/* Compatibility class: text is now a single deliberate brand colour. */
+.text-gradient-heat {
+  color: var(--sepang-race-red);
+}
+
+.track-topography {
+  background-image:
+    radial-gradient(ellipse at 20% 35%, transparent 0 20%, rgba(255,255,255,0.025) 20.3% 20.7%, transparent 21%),
+    radial-gradient(ellipse at 70% 58%, transparent 0 25%, rgba(255,255,255,0.02) 25.3% 25.7%, transparent 26%),
+    repeating-linear-gradient(0deg, transparent 0 24px, rgba(255,255,255,0.012) 24px 25px);
+}
+
+.photo-vignette {
+  background: linear-gradient(90deg, #070708 0%, rgba(7,7,8,0.93) 24%, rgba(7,7,8,0.42) 58%, rgba(7,7,8,0.08) 100%);
+}
+
+.photo-vignette-mobile {
+  background: linear-gradient(180deg, rgba(7,7,8,0.2) 0%, rgba(7,7,8,0.72) 52%, #070708 100%);
 }
 
 .race-scanline {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.025) 46%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.025) 54%,
+    rgba(255, 255, 255, 0.02) 46%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.02) 54%,
     transparent 100%
   );
   animation: race-scan 4.5s ease-in-out infinite;
@@ -203,9 +327,59 @@ textarea {
   animation: race-select-pop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.rise-in {
+  animation: rise-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.rise-in-1 { animation-delay: 60ms; }
+.rise-in-2 { animation-delay: 130ms; }
+.rise-in-3 { animation-delay: 200ms; }
+.rise-in-4 { animation-delay: 270ms; }
+
+.hero-kenburns {
+  animation: hero-kenburns 26s ease-in-out infinite alternate;
+}
+
+.sheen {
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.28) 42%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sheen:hover::after,
+.sheen:focus-visible::after {
+  transform: translateX(120%);
+}
+
+@keyframes hero-kenburns {
+  from { transform: scale(1.025) translate3d(0, 0, 0); }
+  to { transform: scale(1.075) translate3d(-0.8%, -0.8%, 0); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
 @keyframes hero-light-on {
   0%, 5% { background: #2b0807; box-shadow: none; }
-  9%, 42% { background: #e10600; box-shadow: 0 0 16px rgba(225, 6, 0, 0.48); }
+  9%, 42% { background: #e10600; box-shadow: 0 0 18px rgba(225, 6, 0, 0.52); }
   47%, 100% { background: #210808; box-shadow: none; }
 }
 
@@ -235,8 +409,8 @@ textarea {
 }
 
 @keyframes sepang-marker-pulse {
-  0% { opacity: 0.82; transform: scale(0.72); }
-  70%, 100% { opacity: 0; transform: scale(1.62); }
+  0% { opacity: 0.76; transform: scale(0.78); }
+  70%, 100% { opacity: 0; transform: scale(1.5); }
 }
 
 @keyframes panel-enter {
@@ -267,22 +441,15 @@ textarea {
   .sepang-marker-pulse,
   .race-scanline,
   .panel-enter,
-  .race-select-pop {
+  .race-select-pop,
+  .rise-in,
+  .hero-kenburns {
     animation: none !important;
   }
 
-  .hero-track-draw {
-    stroke-dashoffset: 0;
-    opacity: 0.78;
-  }
-
-  .hero-track-accent {
-    stroke-dashoffset: 0.15;
-    opacity: 0.9;
-  }
-
-  .hero-car-pass {
-    transform: translate3d(44%, 0, 0) scale(0.94);
-    opacity: 0.42;
-  }
+  .rise-in { opacity: 1; transform: none; }
+  .sheen::after { transition: none; }
+  .hero-track-draw { stroke-dashoffset: 0; opacity: 0.78; }
+  .hero-track-accent { stroke-dashoffset: 0.15; opacity: 0.9; }
+  .hero-car-pass { transform: translate3d(44%, 0, 0) scale(0.94); opacity: 0.42; }
 }

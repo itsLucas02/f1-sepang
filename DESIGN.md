@@ -44,25 +44,53 @@ When choosing between “more futuristic” and “more like a polished real-wor
 These values are fixed unless the product owner explicitly changes them.
 
 ```text
-Header / Footer          #13131B
-Canvas / Main Background #1A1A24
-Surface 01               #111118
-Surface 02               #181820
-Surface 03               #22222B
-Border / Divider         #32323C
+Header / Footer          #0A0C11
+Canvas / Main Background #08090C
+Surface 01               #0E1116
+Surface 02               #141920
+Surface 03               #1B212A
+Surface 04               #232B36
+Border / Divider         #262D38
+Border Strong            #38414F
 
-Text Primary             #FFFFFF
-Text Secondary           #B7B7BF
-Text Muted               #777781
+Text Primary             #F5F6F8
+Text Secondary           #B3BCC9
+Text Muted               #7D8794
 
-Race Red                 #E10600
-Header Stripe Dark       #1D1D25
-Header Stripe Light      #50515E
+Race Red                 #E8112D
+Race Red Bright          #FF2D46
+Race Red Deep            #9C0A1E
+
+Sepang Sunset (orange)   #FF7A18
+Sepang Amber             #FFB302
+Sepang Teal              #00E0C6
+Sepang Teal Deep         #06897B
 
 Warning / Toast Yellow   #FFD100
 Warning Text             #0B0B0B
-Disabled                 #60616B
+Disabled                 #414A58
+
+Podium Gold              #FFCF5C
+Podium Silver            #CFD6E0
+Podium Bronze            #D08B52
 ```
+
+### Accent system
+
+`Race Red` remains the dominant brand accent. Two supporting accents, drawn
+from the Sepang dusk (tropical sunset over the circuit) are now approved:
+
+- **Sunset `#FF7A18`** — pairs with red in gradients, hover states, and the
+  `text-gradient-heat` headline treatment. Never used as a large flat fill.
+- **Teal `#00E0C6`** — the *system* accent: focus rings, "ready"/"complete"
+  confirmations, live indicators. It deliberately contrasts red so success and
+  brand emphasis are never confused.
+
+### Dark-only rule
+
+SEPANG 56 is **dark-only**. Light/cream page backgrounds are forbidden — they
+were the source of unreadable dark-on-dark controls. Every surface comes from
+the Surface 01–04 ramp.
 
 ### Distribution
 
@@ -190,14 +218,14 @@ Desktop should exploit width. Mobile must recompose the layout rather than shrin
 
 ## 5. Geometry
 
-Default component radius: `4px`.
+Default component radius: `8px` for cards/containers, `4px` for controls.
 
 ```text
 Small control / chip     2–4px
 Button                   4px
-Card                     4px
-Large scene container    6px max
-Border                   1px #32323C
+Card                     8px
+Large scene container    8px
+Border                   1px #262D38
 ```
 
 Avoid:
@@ -220,9 +248,9 @@ All core application screens must share the same shell unless an explicitly appr
 
 Canonical desktop header:
 
-- background `#13131B`
-- `72px` content height plus optional thin decorative stripe
-- top stripe may use `#1D1D25` and `#50515E`
+- background `#0A0C11` at 85% with backdrop blur
+- `76px` content height plus a 3px red/white kerb stripe
+- kerb stripe uses `.kerb-stripe-thin`
 - left brand: `SEPANG 56`
 - navigation: `LEARN`, `SEPANG`, `PREDICT`, `LEADERBOARD`
 - right: context-appropriate account/action area
@@ -242,11 +270,13 @@ Active navigation uses white text with a restrained `#E10600` underline/state.
 
 ### Footer
 
-Canonical MVP footer is quiet and minimal:
+Canonical MVP footer is quiet and structured:
 
-- background `#13131B`
-- `SEPANG 56`
-- optional `Terms`, `Privacy`, `About`
+- background `#0A0C11`
+- chequered top edge at low opacity
+- `SEPANG 56` brand block plus a one-line product description
+- navigation repeat + circuit facts (`5.543 km`, `56 laps`)
+- an explicit "not affiliated with Formula 1" line
 
 Do not invent fake legal/company identity, `ALL SYSTEMS NOMINAL`, `TECHNICAL SPECS`, or fake circuit-status links.
 
@@ -254,28 +284,51 @@ Do not invent fake legal/company identity, `ALL SYSTEMS NOMINAL`, `TECHNICAL SPE
 
 ## 7. Buttons
 
+**Contrast rule (non-negotiable):** every variant hard-codes *both* its
+background and its text colour. A button must never inherit a foreground
+colour from its parent — that produced the black-on-black "blackout button"
+bug. All states, including `:disabled`, meet at least 4.5:1.
+
 Primary button:
 
 ```text
-Background       #E10600
+Background       linear-gradient(100deg, #E8112D, #FF2D46 52%, #FF7A18 140%)
 Text             #FFFFFF
-Height           44px
-Horizontal pad   20–24px
+Height           44px (default) / 52px (large)
+Horizontal pad   24px / 32px
 Radius           4px
-Font             Titillium Web 700 / 14px / uppercase
+Font             Barlow Condensed 700 / 14px / uppercase / 0.08em
+Shadow           0 6px 20px -6px rgba(232,17,45,0.7)
+Hover            brightness(1.1), -1px translateY, light sheen sweep
 ```
 
 Secondary button:
 
 ```text
-Background       transparent or #111118
-Border           1px #32323C
+Background       #141920
+Border           1px #38414F
 Text             #FFFFFF
-Height           44px
-Radius           4px
+Hover            border #00E0C6 (60%), background #1B212A
 ```
 
-No glow, gradient, or oversized pill treatment.
+Ghost button:
+
+```text
+Background       transparent
+Text             #B3BCC9  ->  #FFFFFF on hover (bg white/8%)
+```
+
+Disabled (all variants):
+
+```text
+Background       #414A58
+Text             #FFFFFF at 65%
+```
+
+Focus ring for every control: `2px #00E0C6`, 2px offset.
+
+A single directional gradient plus a hover sheen is approved for the primary
+CTA. Still no pills, no neon outer glow on idle, no oversized radii.
 
 ---
 
@@ -532,3 +585,35 @@ and:
 > Can a person who knows nothing about F1 still understand the screen?
 
 Both answers must be yes.
+---
+
+## 13. Texture & atmosphere utilities
+
+Defined once in `app/globals.css` and reused rather than re-invented per page.
+
+| Class | Purpose |
+| --- | --- |
+| `.sepang-glow` | Ambient dusk wash (sunset + teal + red radials). Sits behind page content via `PageShell glow`. |
+| `.race-grid` | Faint 56px technical grid. Always paired with `.sepang-glow`. |
+| `.carbon-weave` | CSS-only carbon-fibre twill. For closing/feature bands. |
+| `.speed-hatch` | Angled livery hairlines. |
+| `.kerb-stripe` / `.kerb-stripe-thin` | Red/white kerb edge. Section boundaries and the header top edge. |
+| `.chequer` | Chequered-flag block, low opacity only. |
+| `.text-gradient-heat` | White → sunset → red headline gradient. One per screen, max. |
+| `.rise-in` (+ `-1..-4`) | Staggered entrance for hero content. |
+| `.hero-kenburns` | Slow cinematic push on the hero photograph. |
+| `.sheen` | Light sweep across primary buttons on hover. |
+
+All of the above are disabled under `prefers-reduced-motion: reduce`.
+
+### Page shell
+
+Content pages must use `components/shared/page-shell.tsx` (`PageShell` +
+`PageHeading`) so header, atmosphere, container width, and footer stay
+identical across Learn / Sepang / Leaderboard.
+
+### Hero imagery
+
+`public/hero-sepang.jpg` is a dusk Sepang scene used only on the landing hero.
+It must always sit under a legibility gradient — text is never placed directly
+on the unmodified photograph.

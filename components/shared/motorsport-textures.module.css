@@ -1,0 +1,69 @@
+.carbonPanel {
+  background-color: #09090b;
+  background-image:
+    linear-gradient(27deg, rgba(255,255,255,0.018) 5%, transparent 5% 45%, rgba(255,255,255,0.018) 45% 55%, transparent 55%),
+    linear-gradient(117deg, rgba(0,0,0,0.58) 5%, transparent 5% 45%, rgba(0,0,0,0.58) 45% 55%, transparent 55%);
+  background-size: 10px 10px;
+}
+
+.carbonFade {
+  background-image:
+    linear-gradient(27deg, rgba(255,255,255,0.02) 5%, transparent 5% 45%, rgba(255,255,255,0.02) 45% 55%, transparent 55%),
+    linear-gradient(117deg, rgba(0,0,0,0.5) 5%, transparent 5% 45%, rgba(0,0,0,0.5) 45% 55%, transparent 55%);
+  background-size: 10px 10px;
+  mask-image: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.9) 54%, transparent 100%);
+}
+
+.rubberGrain {
+  background-image:
+    radial-gradient(circle at 20% 25%, rgba(255,255,255,0.035) 0 0.6px, transparent 0.8px),
+    radial-gradient(circle at 70% 65%, rgba(255,255,255,0.025) 0 0.7px, transparent 0.9px),
+    linear-gradient(100deg, rgba(255,255,255,0.012), transparent 38%, rgba(255,255,255,0.018) 68%, transparent);
+  background-size: 7px 7px, 11px 11px, 100% 100%;
+}
+
+.stripeFlag {
+  width: 92px;
+  height: 10px;
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  background: repeating-linear-gradient(
+    90deg,
+    #e10600 0 16px,
+    #f3f1ec 16px 32px,
+    #111113 32px 40px
+  );
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+.stripeFlagSmall {
+  width: 64px;
+  height: 7px;
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  background: repeating-linear-gradient(
+    90deg,
+    #e10600 0 11px,
+    #f3f1ec 11px 22px,
+    transparent 22px 28px
+  );
+}
+
+.stripeBand {
+  background: repeating-linear-gradient(
+    112deg,
+    #e10600 0 34px,
+    #f3f1ec 34px 68px,
+    #0b0b0c 68px 82px
+  );
+}
+
+.petronasEdge {
+  box-shadow: inset 3px 0 0 #00a79d;
+}
+
+.petronasAccent {
+  color: #20c7ba;
+}
+
+.petronasRule {
+  background: #20c7ba;
+}

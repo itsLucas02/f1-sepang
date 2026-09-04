@@ -1,0 +1,44 @@
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sepang-race-red) #080809;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080809;
+  box-shadow: inset 1px 0 0 rgba(243, 241, 236, 0.08);
+}
+
+::-webkit-scrollbar-thumb {
+  min-height: 44px;
+  border: 2px solid #080809;
+  border-radius: 0;
+  background: var(--sepang-race-red);
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(243, 241, 236, 0.14);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sepang-race-red-bright);
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(243, 241, 236, 0.52);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #b30a05;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: #080809;
+}
+
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
