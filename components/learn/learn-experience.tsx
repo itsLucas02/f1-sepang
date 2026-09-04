@@ -92,8 +92,8 @@ export function LearnExperience() {
 
   if (!hydrated) {
     return (
-      <section className="border border-black/10 bg-white p-6 sm:p-8">
-        <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#77777d]">
+      <section className="rounded-lg border border-white/10 bg-surface-01 p-6 sm:p-8">
+        <p className="font-mono text-xs uppercase tracking-[0.14em] text-text-muted">
           Preparing your race-ready path…
         </p>
       </section>
@@ -106,17 +106,17 @@ export function LearnExperience() {
         <div className="max-w-3xl">
           <div className="flex items-center gap-3">
             <span className="h-0.5 w-9 bg-race-red" />
-            <p className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-[#68686e]">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-text-muted">
               F1 Familiarity Check
             </p>
           </div>
           <h1
             id="familiarity-title"
-            className="mt-5 font-display text-6xl font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-[#111113] sm:text-7xl"
+            className="mt-5 font-display text-5xl font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl"
           >
             How familiar are you with F1?
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-7 text-[#55555b]">
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-text-secondary">
             Pick the closest fit. This only changes which lessons we recommend — nothing is locked.
           </p>
         </div>
@@ -133,7 +133,7 @@ export function LearnExperience() {
           ))}
         </fieldset>
 
-        <div className="mt-8 flex flex-col-reverse gap-3 border-t border-black/12 pt-6 sm:flex-row sm:justify-end">
+        <div className="mt-10 flex flex-col-reverse gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-end">
           {knowledgeLevel ? (
             <Button
               type="button"
@@ -209,18 +209,18 @@ export function LearnExperience() {
 
   return (
     <div>
-      <section className="flex flex-col gap-6 border-b border-black/12 pb-8 sm:flex-row sm:items-end sm:justify-between">
+      <section className="flex flex-col gap-6 border-b border-white/10 pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
             <span className="h-0.5 w-9 bg-race-red" />
-            <p className="font-mono text-xs font-medium uppercase tracking-[0.12em] text-[#68686e]">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-text-muted">
               Learn / Race School
             </p>
           </div>
-          <h1 className="mt-5 font-display text-6xl font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-[#111113] sm:text-7xl">
+          <h1 className="mt-5 font-display text-5xl font-extrabold uppercase leading-[0.86] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
             Your Race Ready Path
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-7 text-[#55555b]">
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-text-secondary">
             Six short lessons cover the F1 basics that matter on race day. Your recommended path is highlighted below.
           </p>
         </div>
@@ -242,17 +242,18 @@ export function LearnExperience() {
           <RaceReadyMoment fan={knowledgeLevel === "fan"} />
         </div>
       ) : (
-        <section className="mt-8 overflow-hidden border border-black/10 bg-[#111113] p-6 text-white sm:p-8">
-          <div className="flex items-end justify-between gap-6">
+        <section className="relative mt-8 overflow-hidden rounded-lg border border-white/10 bg-surface-02 p-6 text-white sm:p-8">
+          <span aria-hidden="true" className="absolute -right-24 -top-24 size-64 rounded-full bg-race-red/15 blur-3xl" />
+          <div className="relative flex items-end justify-between gap-6">
             <div>
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-white/45">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-text-muted">
                 Recommended progress
               </p>
               <p className="mt-2 font-display text-3xl font-bold uppercase text-white">
                 {completedRecommendedCount} / {recommendedLessonIds.length} complete
               </p>
             </div>
-            <span className="font-mono text-xs text-white/45">
+            <span className="font-mono text-xs text-text-secondary">
               {Math.round(
                 (completedRecommendedCount / recommendedLessonIds.length) * 100,
               )}%
@@ -264,10 +265,10 @@ export function LearnExperience() {
             aria-valuemin={0}
             aria-valuemax={recommendedLessonIds.length}
             aria-valuenow={completedRecommendedCount}
-            className="mt-5 h-1.5 overflow-hidden bg-white/12"
+            className="relative mt-5 h-2 overflow-hidden rounded-full bg-white/10"
           >
             <div
-              className="h-full bg-race-red transition-[width] duration-200"
+              className="h-full rounded-full bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] shadow-[0_0_12px_rgba(232,17,45,0.6)] transition-[width] duration-500"
               style={{
                 width: `${(completedRecommendedCount / recommendedLessonIds.length) * 100}%`,
               }}
@@ -279,12 +280,12 @@ export function LearnExperience() {
       <section aria-labelledby="lesson-list-title" className="mt-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-[#77777d]">
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-race-red">
               All lessons
             </p>
             <h2
               id="lesson-list-title"
-              className="mt-2 font-display text-4xl font-bold uppercase leading-none text-[#111113]"
+              className="mt-3 font-display text-4xl font-bold uppercase leading-none text-white"
             >
               Learn at your pace
             </h2>
@@ -301,7 +302,7 @@ export function LearnExperience() {
           ) : null}
         </div>
 
-        <div className="mt-6 divide-y divide-black/10 border-y border-black/12">
+        <div className="mt-6 overflow-hidden rounded-lg border border-white/10 bg-surface-01 divide-y divide-white/8">
           {LESSONS.map((lesson) => {
             const completed = completedLessonIds.includes(lesson.id);
             const recommended = recommendedSet.has(lesson.id);
@@ -311,25 +312,25 @@ export function LearnExperience() {
                 key={lesson.id}
                 type="button"
                 onClick={() => setActiveLessonId(lesson.id)}
-                className="group grid min-h-24 w-full grid-cols-[auto_1fr_auto] items-center gap-4 py-5 text-left transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-black sm:gap-6 sm:px-4"
+                className="group grid min-h-24 w-full grid-cols-[auto_1fr_auto] items-center gap-4 px-5 py-5 text-left transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal sm:gap-6 sm:px-6"
               >
-                <span className="font-mono text-xs font-medium text-race-red">
+                <span className="font-mono text-sm font-medium text-race-red">
                   {lesson.id}
                 </span>
                 <span>
-                  <span className="block font-display text-xl font-bold uppercase leading-none text-[#111113] sm:text-2xl">
+                  <span className="block font-display text-xl font-bold uppercase leading-none text-white sm:text-2xl">
                     {lesson.shortTitle}
                   </span>
-                  <span className="mt-2 block text-sm text-[#77777d]">
+                  <span className="mt-2 block text-sm text-text-muted">
                     {recommended ? "Recommended for you" : "Optional lesson"}
                   </span>
                 </span>
                 <span
                   className={cn(
-                    "flex size-8 items-center justify-center border",
+                    "flex size-9 shrink-0 items-center justify-center rounded-sm border transition-colors",
                     completed
-                      ? "border-race-red text-race-red"
-                      : "border-black/15 text-[#77777d] group-hover:text-[#111113]",
+                      ? "border-race-red bg-race-red/10 text-race-red"
+                      : "border-white/15 text-text-muted group-hover:border-white/35 group-hover:text-white",
                   )}
                 >
                   {completed ? (

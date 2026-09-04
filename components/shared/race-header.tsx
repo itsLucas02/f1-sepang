@@ -19,22 +19,20 @@ type RaceHeaderProps = {
 
 export function RaceHeader({ activeHref }: RaceHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#101016]/95 backdrop-blur-md">
-      <div className="h-[3px] bg-[#1d1d25]" aria-hidden="true">
-        <div className="h-full w-28 bg-race-red" />
-      </div>
-
-      <SiteContainer className="flex h-14 items-center justify-between gap-6 md:h-[72px]">
+    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#050506]/96 backdrop-blur-lg">
+      <SiteContainer className="flex h-16 items-center justify-between gap-5 md:h-[68px]">
         <Link
           href="/"
           aria-label={`${SITE_NAME} home`}
-          className="group flex items-baseline gap-1 font-display text-2xl font-extrabold uppercase tracking-[0.025em] text-white"
+          className="group inline-flex items-baseline gap-2 font-display text-2xl font-extrabold uppercase italic leading-none tracking-[-0.02em] text-white sm:text-[1.7rem]"
         >
-          <span>SEPANG</span>
-          <span className="text-race-red transition-colors group-hover:text-white">56</span>
+          <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
+            SEPANG
+          </span>
+          <span className="text-race-red">56</span>
         </Link>
 
-        <nav aria-label="Primary navigation" className="hidden items-stretch md:flex">
+        <nav aria-label="Primary navigation" className="hidden h-full items-stretch md:flex">
           {NAV_ITEMS.map((item) => {
             const isActive = item.href === activeHref;
 
@@ -44,21 +42,29 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "relative flex h-[72px] items-center px-5 text-xs font-bold uppercase tracking-[0.08em] text-text-secondary transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
-                  isActive &&
-                    "text-white after:absolute after:inset-x-5 after:bottom-0 after:h-[3px] after:bg-race-red",
+                  "group relative flex h-full items-center px-5 font-display text-[12px] font-bold uppercase tracking-[0.16em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white",
+                  isActive ? "text-white" : "text-text-secondary hover:text-white",
                 )}
               >
                 {item.label}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute inset-x-4 bottom-0 h-[3px] origin-center bg-race-red transition-transform duration-300",
+                    isActive
+                      ? "nav-active-line scale-x-100"
+                      : "scale-x-0 group-hover:scale-x-100",
+                  )}
+                />
               </Link>
             );
           })}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <span className="h-px w-7 bg-white/20" aria-hidden="true" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
-            Race ready
+          <span className="motorsport-stripe block scale-75 origin-right" aria-hidden="true" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
+            Sepang / MY
           </span>
         </div>
 
@@ -68,7 +74,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
               <button
                 type="button"
                 aria-label="Open navigation"
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[4px] border border-white/15 bg-[#15151c] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center border border-white/15 bg-[#0d0d0f] text-white transition-colors hover:border-white/35 hover:bg-[#171719] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
                 <Menu aria-hidden="true" className="size-5" />
               </button>
@@ -79,16 +85,21 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 Primary navigation
               </SheetDescription>
               <nav aria-label="Mobile navigation" className="mt-10">
-                {NAV_ITEMS.map((item) => (
+                {NAV_ITEMS.map((item, index) => (
                   <SheetClose asChild key={item.href}>
                     <Link
                       href={item.href}
                       aria-current={item.href === activeHref ? "page" : undefined}
                       className={cn(
-                        "block min-h-11 border-b border-border px-1 py-4 text-base font-bold uppercase tracking-[0.05em] text-text-secondary transition-colors hover:text-white focus-visible:outline-none focus-visible:text-white",
-                        item.href === activeHref && "border-l-2 border-l-race-red pl-3 text-white",
+                        "flex min-h-14 items-center gap-4 border-b border-border px-1 py-4 font-display text-lg font-bold uppercase tracking-[0.08em] transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none",
+                        item.href === activeHref
+                          ? "border-l-2 border-l-race-red pl-3 text-white"
+                          : "text-text-secondary",
                       )}
                     >
+                      <span className="font-mono text-[10px] tracking-[0.14em] text-race-red">
+                        0{index + 1}
+                      </span>
                       {item.label}
                     </Link>
                   </SheetClose>
@@ -98,6 +109,8 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           </Sheet>
         </div>
       </SiteContainer>
+
+      <div className="motorsport-corner pointer-events-none absolute right-0 top-0 hidden h-3 w-28 md:block" aria-hidden="true" />
     </header>
   );
 }

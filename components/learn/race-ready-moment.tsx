@@ -5,23 +5,23 @@ import { Button } from "@/components/ui/button";
 
 export function RaceReadyMoment({ fan = false }: { fan?: boolean }) {
   return (
-    <section className="relative overflow-hidden rounded-md border border-border bg-surface-01 p-6 sm:p-8">
+    <section className="relative overflow-hidden rounded-lg border border-teal/25 bg-surface-02 p-6 sm:p-8">
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 left-0 w-1 bg-race-red"
+        className="absolute inset-y-0 left-0 w-1 bg-[linear-gradient(180deg,var(--sepang-teal),var(--sepang-teal-deep))]"
       />
       <div
         aria-hidden="true"
-        className="absolute -bottom-10 right-3 font-display text-[9rem] font-extrabold leading-none text-white/[0.035] sm:text-[12rem]"
+        className="absolute -bottom-10 right-3 font-display text-[9rem] font-extrabold leading-none text-white/[0.045] sm:text-[12rem]"
       >
         56
       </div>
 
       <div className="relative z-10 max-w-2xl">
-        <span className="inline-flex size-10 items-center justify-center border border-race-red text-race-red">
+        <span className="inline-flex size-11 items-center justify-center rounded-md border border-teal/40 bg-teal/10 text-teal">
           <Check aria-hidden="true" className="size-5" />
         </span>
-        <p className="mt-6 font-mono text-xs font-medium uppercase tracking-[0.12em] text-race-red">
+        <p className="mt-6 font-mono text-xs font-medium uppercase tracking-[0.16em] text-teal">
           Race Ready
         </p>
         <h2 className="mt-3 font-display text-4xl font-extrabold uppercase leading-none text-white sm:text-5xl">
@@ -33,7 +33,7 @@ export function RaceReadyMoment({ fan = false }: { fan?: boolean }) {
             : "The basics are covered. Next, see where those ideas matter around Sepang."}
         </p>
         <div className="mt-7">
-          <Button asChild className="w-full sm:w-auto">
+          <Button asChild size="large" className="w-full sm:w-auto">
             <Link href="/sepang">
               Meet Sepang
               <ArrowRight aria-hidden="true" className="size-4" />
