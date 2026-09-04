@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +13,7 @@ import { RaceFlowHeader } from "@/components/shared/race-flow-header";
 import { Button } from "@/components/ui/button";
 import { DRIVERS, getDriver, isDriverId } from "@/content/drivers";
 import { PREDICTION_QUESTIONS } from "@/content/predictions";
+import { publicAsset } from "@/lib/assets";
 import {
   DEFAULT_PREDICTION_DRAFT,
   PREDICTION_DEADLINE,
@@ -26,6 +28,8 @@ import {
   type PredictionAnswer,
 } from "@/lib/predictions";
 
+type TransitionDirection = "forward" | "back";
+
 export function PredictionExperience() {
   const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
@@ -35,6 +39,8 @@ export function PredictionExperience() {
   const [showIntro, setShowIntro] = useState(false);
   const [returnToSummary, setReturnToSummary] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [transitionDirection, setTransitionDirection] =
+    useState<TransitionDirection>("forward");
 
   useEffect(() => {
     const stored = parsePersistedPredictionDraft(
@@ -107,6 +113,7 @@ export function PredictionExperience() {
       return;
     }
 
+    setTransitionDirection("back");
     setDraft((current) => ({
       ...current,
       currentQuestion: current.currentQuestion - 1,
@@ -129,6 +136,7 @@ export function PredictionExperience() {
       return;
     }
 
+    setTransitionDirection("forward");
     setDraft((current) => ({
       ...current,
       currentQuestion: current.currentQuestion + 1,
@@ -138,7 +146,12 @@ export function PredictionExperience() {
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-canvas">
-        <RaceFlowHeader onBack={() => router.push("/sepang")} />
+        <RaceFlowHeader
+          onBack={() => router.push("/sepang")}
+          backLabel="Back to Sepang"
+          exitHref="/sepang"
+          exitLabel="Exit predictions"
+        />
         <main className="mx-auto min-h-[calc(100vh-56px)] max-w-6xl px-5 py-12 sm:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
             Loading your picks…
@@ -151,23 +164,29 @@ export function PredictionExperience() {
   if (locked) {
     return (
       <div className="min-h-screen bg-canvas">
-        <RaceFlowHeader onBack={() => router.push("/")} />
-        <main className="mx-auto flex min-h-[calc(100vh-56px)] max-w-5xl items-center px-5 py-12 sm:px-8">
-          <section className="w-full overflow-hidden border border-white/10 bg-[#111113] p-7 sm:p-12">
+        <RaceFlowHeader
+          onBack={() => router.push("/")}
+          backLabel="Back home"
+          exitHref="/sepang"
+          exitLabel="Exit predictions"
+        />
+        <main className="relative mx-auto flex min-h-[calc(100vh-56px)] max-w-6xl items-center overflow-hidden px-5 py-12 sm:px-8">
+          <div className="speed-hatch pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
+          <section className="relative w-full border border-white/14 bg-[#0d0d0f] p-7 sm:p-12">
             <div className="flex items-center gap-3">
               <LockKeyhole aria-hidden="true" className="size-5 text-race-red" />
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-race-red">
                 Predictions locked
               </p>
             </div>
-            <h1 className="mt-6 max-w-3xl font-display text-6xl font-extrabold uppercase leading-[0.84] text-white sm:text-7xl">
+            <h1 className="mt-6 max-w-3xl font-display text-5xl font-extrabold uppercase italic leading-[0.84] text-white sm:text-6xl lg:text-7xl">
               The grid is closed.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-7 text-text-secondary">
+            <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
               The race deadline has passed, so prediction answers are now read-only.
             </p>
             <div className="mt-9">
-              <Button asChild>
+              <Button asChild size="large" className="rounded-none">
                 <Link href="/predict/summary">View Your Picks</Link>
               </Button>
             </div>
@@ -182,6 +201,7 @@ export function PredictionExperience() {
       <PredictionIntro
         onBack={goBack}
         onStart={() => {
+          setTransitionDirection("forward");
           setDraft((current) => ({ ...current, hasSeenIntro: true }));
           setShowIntro(false);
         }}
@@ -194,10 +214,13 @@ export function PredictionExperience() {
       <RaceFlowHeader
         onBack={goBack}
         backLabel={returnToSummary ? "Back to prediction summary" : "Previous step"}
+        exitHref="/sepang"
+        exitLabel="Exit predictions"
       />
 
       <PredictionStep
         key={question.id}
+        direction={transitionDirection}
         progress={`${String(question.index).padStart(2, "0")} / 08`}
         heading={question.heading}
         helper={question.helper}
@@ -208,8 +231,8 @@ export function PredictionExperience() {
         {question.kind === "driver" ? (
           <fieldset>
             <legend className="sr-only">Choose one driver</legend>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">
-              {DRIVERS.map((driver) => {
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
+              {DRIVERS.map((driver, index) => {
                 const selected = answer === driver.id;
                 const unavailable = unavailableDriverIds.includes(driver.id);
 
@@ -217,6 +240,7 @@ export function PredictionExperience() {
                   <DriverCard
                     key={driver.id}
                     driver={driver}
+                    index={index}
                     name={question.id}
                     selected={selected}
                     disabled={unavailable && !selected}
@@ -247,10 +271,9 @@ export function PredictionExperience() {
         )}
 
         {selectedDriver ? (
-          <div className="mt-5 flex items-center gap-3 border-t border-black/10 pt-4">
-            <span className="size-2 bg-race-red" aria-hidden="true" />
-            <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[#77777d]">
-              Current call: <span className="text-[#111113]">{selectedDriver.firstName} {selectedDriver.surname}</span>
+          <div className="circuit-detail-swap mt-6 flex items-center gap-3 border-l-2 border-race-red bg-[#0d0d0f] px-4 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/45 sm:text-[10px]">
+              Current call: <span className="font-semibold text-white">{selectedDriver.firstName} {selectedDriver.surname}</span>
             </p>
           </div>
         ) : null}
@@ -267,52 +290,59 @@ function PredictionIntro({
   onStart: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-[#080809]">
-      <RaceFlowHeader onBack={onBack} backLabel="Back to Sepang" />
-      <main className="race-grid relative min-h-[calc(100vh-56px)] overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="absolute -right-10 top-10 font-display text-[18rem] font-extrabold leading-none tracking-[-0.08em] text-white/[0.03] sm:text-[28rem] lg:text-[38rem]"
-        >
-          08
+    <div className="min-h-screen bg-canvas">
+      <RaceFlowHeader
+        onBack={onBack}
+        backLabel="Back to Sepang"
+        exitHref="/sepang"
+        exitLabel="Exit predictions"
+      />
+      <main className="relative min-h-[calc(100vh-56px)] overflow-hidden bg-[#050506]">
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[60%]">
+          <Image
+            src={publicAsset("/media/prediction/intro.webp")}
+            alt="Formula-style cars racing at Sepang"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="hero-kenburns object-cover object-[64%_center] grayscale-[0.12] contrast-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050506] via-[#050506]/66 to-black/10" aria-hidden="true" />
         </div>
-        <div
-          aria-hidden="true"
-          className="absolute right-[8%] top-[18%] h-72 w-72 rounded-full bg-race-red/12 blur-[110px]"
-        />
+        <div className="race-noise pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
 
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
-          <section className="lg:col-span-7">
-            <div className="flex items-center gap-3">
-              <span className="h-0.5 w-9 bg-race-red" aria-hidden="true" />
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-white/52">
+        <div className="relative mx-auto grid max-w-[1280px] gap-12 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-12 lg:items-end lg:py-20">
+          <section className="prediction-step-forward lg:col-span-7">
+            <div className="flex items-center gap-4">
+              <span className="motorsport-stripe block" aria-hidden="true" />
+              <p className="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">
                 Prediction grid
               </p>
             </div>
-            <h1 className="mt-5 max-w-3xl font-display text-7xl font-extrabold uppercase leading-[0.82] tracking-[-0.04em] text-white sm:text-8xl lg:text-[7.5rem]">
+            <h1 className="mt-6 max-w-3xl font-display text-6xl font-extrabold uppercase italic leading-[0.8] tracking-[-0.045em] text-white sm:text-7xl lg:text-[7rem]">
               Eight calls.
               <span className="block text-race-red">One race.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-7 text-white/64 sm:text-xl sm:leading-8">
-              Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving.
+            <p className="mt-7 max-w-xl text-lg leading-8 text-white/65 sm:text-xl">
+              Pick the podium and five race outcomes. Go one call at a time, change anything before the deadline, and review the whole grid before saving. Your progress stays saved if you leave and come back.
             </p>
-            <Button type="button" onClick={onStart} className="mt-9 min-w-48">
+            <Button type="button" size="large" onClick={onStart} className="sheen mt-9 min-w-52 rounded-none uppercase tracking-[0.05em]">
               Start Picking
               <ArrowRight aria-hidden="true" className="size-4" />
             </Button>
           </section>
 
-          <section className="lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
-            <div className="border-t-2 border-white/75">
+          <section className="prediction-step-forward lg:col-span-4 lg:col-start-9" aria-label="Eight prediction calls">
+            <div className="border border-white/14 bg-[#09090b]/92 p-2">
               {PREDICTION_QUESTIONS.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/12 py-3.5"
+                  className="grid grid-cols-[auto_1fr] items-center gap-4 border-b border-white/8 px-3 py-3.5 last:border-b-0"
                 >
                   <span className="font-mono text-[10px] text-race-red">
                     {String(item.index).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-lg font-bold uppercase text-white/82">
+                  <span className="font-display text-lg font-bold uppercase italic text-white">
                     {item.summaryLabel}
                   </span>
                 </div>
