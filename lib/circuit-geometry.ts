@@ -234,6 +234,80 @@ export function createSpeedTrace() {
   });
 }
 
+/**
+ * Trackside marker posts. They give the onboard camera a sense of speed and
+ * stop the circuit reading as a line floating in a void.
+ */
+export function createTracksidePosts() {
+  const posts: {
+    position: [number, number, number];
+    rotation: number;
+    accent: boolean;
+  }[] = [];
+  const spacing = 9;
+
+  for (let index = 0; index < COUNT; index += spacing) {
+    const point = POINTS[index];
+    const normal = TRACK_NORMALS[index];
+    const next = POINTS[wrapIndex(index + 1)];
+    const rotation = Math.atan2(next.z - point.z, next.x - point.x);
+    const lateral = APRON_WIDTH / 2 - 0.02;
+    const side = Math.floor(index / spacing) % 2 === 0 ? 1 : -1;
+
+    posts.push({
+      position: [
+        point.x + normal.x * lateral * side,
+        0,
+        point.z + normal.z * lateral * side,
+      ],
+      rotation,
+      accent: isCorner(index),
+    });
+  }
+
+  return posts;
+}
+
+/** Radial ground wash so the circuit sits on terrain instead of a void. */
+export function createGroundTexture() {
+  const size = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const context = canvas.getContext("2d");
+
+  if (context) {
+    context.fillStyle = "#08090c";
+    context.fillRect(0, 0, size, size);
+
+    const gradient = context.createRadialGradient(
+      size / 2,
+      size / 2,
+      size * 0.05,
+      size / 2,
+      size / 2,
+      size * 0.52,
+    );
+    gradient.addColorStop(0, "#161b23");
+    gradient.addColorStop(0.55, "#0f131a");
+    gradient.addColorStop(1, "#08090c");
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, size, size);
+
+    // Faint speckle so the ground is not a flat wash.
+    context.globalAlpha = 0.045;
+    for (let index = 0; index < 2600; index += 1) {
+      context.fillStyle = index % 3 === 0 ? "#5c6675" : "#4d5766";
+      context.fillRect(Math.random() * size, Math.random() * size, 1.5, 1.5);
+    }
+    context.globalAlpha = 1;
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 /** Chequered start/finish texture, generated on the client. */
 export function createChequeredTexture() {
   const size = 64;

@@ -82,12 +82,21 @@ The 3D circuit is a raised slab, not a line. Proportions live in
 
 | Layer | Width (scene units) | Colour |
 | --- | --- | --- |
-| Ground apron | 0.62 | `#0C0F14` |
-| Slab side walls | — (0.09 tall) | `#0F1218` |
-| Asphalt top face | 0.34 | `#242832` |
-| Painted edge lines | 0.022 each side | `#E9E7E1` at 72% |
+| Ground plane | 38 x 38 | radial wash `#161B23` → `#08090C` |
+| Run-off apron | 0.62 | `#1A1F27` |
+| Slab side walls | — (0.09 tall) | `#0E1218` |
+| Asphalt top face | 0.34 | `#363C47` |
+| Painted edge lines | 0.022 each side | `#ECEAE4` at 80% |
 | Kerbing (corners only) | 0.06 each side | red / bone, alternating |
 | Racing line | 0.05 | speed ramp |
+| Trackside posts | every ~70 m | `#8B95A4`, red on corners |
+
+**Everything in the circuit model is unlit** (`meshBasicMaterial`). Lit dark
+surfaces are crushed to black by the renderer's tone mapping, which previously
+left the asphalt invisible while the unlit kerbs stayed vivid — the track read
+as stripes floating in a void. Lights in the scene exist only for the car.
+
+Camera field of view carries the mode: 34° overview, 38° corner, 62° onboard.
 
 Orientation rule: the source SVG's **y axis maps to scene +z**. Negating it
 mirrors Sepang — the layout still looks plausible but is wrong, and it is

@@ -14,7 +14,9 @@ import {
   createEdgeLine,
   createKerbs,
   createSlabWall,
+  createGroundTexture,
   createSpeedTrace,
+  createTracksidePosts,
   cornerPose as cornerPoseAt,
   directionAtProgress,
   positionAtProgress,
@@ -53,30 +55,31 @@ function TrackSurface() {
 
   return (
     <group>
-      {/* ground apron the slab sits on */}
+      {/* run-off apron: the paved shoulder the slab sits on */}
       <mesh geometry={geometries.apron}>
-        <meshBasicMaterial color="#0c0f14" />
+        <meshBasicMaterial color="#1a1f27" />
       </mesh>
 
       {/* slab sides give the circuit real thickness */}
       <mesh geometry={geometries.wallLeft}>
-        <meshStandardMaterial color="#0f1218" roughness={1} />
+        <meshBasicMaterial color="#0e1218" />
       </mesh>
       <mesh geometry={geometries.wallRight}>
-        <meshStandardMaterial color="#0f1218" roughness={1} />
+        <meshBasicMaterial color="#0e1218" />
       </mesh>
 
-      {/* asphalt */}
+      {/* asphalt. Unlit on purpose: tone mapping crushes dark lit surfaces to
+          black, which left the circuit invisible against the background. */}
       <mesh geometry={geometries.asphalt}>
-        <meshStandardMaterial color="#242832" roughness={0.95} metalness={0.05} />
+        <meshBasicMaterial color="#363c47" />
       </mesh>
 
       {/* painted edges */}
       <mesh geometry={geometries.edgeLeft}>
-        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.72} />
+        <meshBasicMaterial color="#eceae4" transparent opacity={0.8} />
       </mesh>
       <mesh geometry={geometries.edgeRight}>
-        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.72} />
+        <meshBasicMaterial color="#eceae4" transparent opacity={0.8} />
       </mesh>
 
       {/* kerbing on the corners */}
@@ -89,8 +92,45 @@ function TrackSurface() {
 
       {/* speed-coloured racing line */}
       <mesh geometry={geometries.trace}>
-        <meshBasicMaterial vertexColors transparent opacity={0.95} depthWrite={false} />
+        <meshBasicMaterial vertexColors transparent opacity={0.92} depthWrite={false} />
       </mesh>
+    </group>
+  );
+}
+
+/** Ground plane + faint site grid, so the circuit sits on terrain. */
+function Ground() {
+  const texture = useMemo(() => createGroundTexture(), []);
+
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  return (
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
+        <planeGeometry args={[38, 38]} />
+        <meshBasicMaterial map={texture} />
+      </mesh>
+      <gridHelper args={[38, 38, "#20262f", "#141920"]} position={[0, -0.015, 0]} />
+    </group>
+  );
+}
+
+/** Marker posts along the run-off, for orientation and a sense of speed. */
+function TracksidePosts() {
+  const posts = useMemo(() => createTracksidePosts(), []);
+
+  return (
+    <group>
+      {posts.map((post, index) => (
+        <mesh
+          key={index}
+          position={[post.position[0], 0.085, post.position[2]]}
+          rotation={[0, -post.rotation, 0]}
+        >
+          <boxGeometry args={[0.018, 0.17, 0.05]} />
+          <meshBasicMaterial color={post.accent ? "#E8112D" : "#8b95a4"} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -225,9 +265,9 @@ function HotspotMarkers({
             >
               <circleGeometry args={[0.075, 24]} />
               <meshBasicMaterial
-                color={isSelected ? "#E8112D" : "#0b0c0f"}
+                color={isSelected ? "#E8112D" : "#0d1015"}
                 transparent
-                opacity={isSelected ? 1 : 0.9}
+                opacity={isSelected ? 0.85 : 0.5}
               />
             </mesh>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
@@ -470,6 +510,24 @@ function HotLapRunner({
   );
 }
 
+const OVERVIEW_FOV = 34;
+const CORNER_FOV = 38;
+const CHASE_FOV = 62;
+
+/** Eases the camera's field of view; onboard is wide, overview is tight. */
+function applyFov(camera: THREE.Camera, fov: number, immediate: boolean) {
+  const perspective = camera as THREE.PerspectiveCamera;
+
+  if (!perspective.isPerspectiveCamera || Math.abs(perspective.fov - fov) < 0.05) {
+    return;
+  }
+
+  perspective.fov = immediate
+    ? fov
+    : perspective.fov + (fov - perspective.fov) * 0.12;
+  perspective.updateProjectionMatrix();
+}
+
 const OVERVIEW_POSITION = new THREE.Vector3(0, 13, 9.9);
 const OVERVIEW_TARGET = new THREE.Vector3(0, 0, 0.35);
 
@@ -539,6 +597,10 @@ function CameraRig({
   useFrame(() => {
     const orbit = controls.current;
 
+    if (cameraMode !== "chase") {
+      applyFov(camera, cameraMode === "corner" ? CORNER_FOV : OVERVIEW_FOV, reduceMotion);
+    }
+
     if (cameraMode === "chase") {
       if (orbit) orbit.enabled = false;
 
@@ -546,14 +608,15 @@ function CameraRig({
       positionAtProgress(progress, scratch.current);
       directionAtProgress(progress, scratchDirection.current);
 
+      // Onboard: close behind the roll hoop, low, looking well down the road.
       const desired = scratch.current
         .clone()
-        .addScaledVector(scratchDirection.current, -0.62)
-        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.3, 0));
+        .addScaledVector(scratchDirection.current, -0.34)
+        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.145, 0));
       const lookAt = scratch.current
         .clone()
-        .addScaledVector(scratchDirection.current, 0.5)
-        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.04, 0));
+        .addScaledVector(scratchDirection.current, 1.5)
+        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.05, 0));
 
       if (!chaseReady.current) {
         chasePosition.current.copy(desired);
@@ -568,6 +631,7 @@ function CameraRig({
       camera.position.copy(chasePosition.current);
       camera.lookAt(chaseTarget.current);
       target.current.copy(chaseTarget.current);
+      applyFov(camera, CHASE_FOV, reduceMotion);
 
       if (playing) invalidate();
       return;
@@ -646,20 +710,18 @@ export default function SepangCircuitScene({
       camera={{ position: [0, 13, 9.9], fov: 34, near: 0.05, far: 160 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
-      <color attach="background" args={["#07080a"]} />
-      <fog attach="fog" args={["#07080a", 26, 70]} />
+      <color attach="background" args={["#08090c"]} />
+      <fog attach="fog" args={["#10161f", 14, 52]} />
 
-      <ambientLight intensity={0.85} />
-      <hemisphereLight args={["#3d4757", "#08090c", 0.7]} />
-      <directionalLight position={[4, 8, 5]} intensity={1.15} color="#fff3e6" />
-      <directionalLight position={[-6, 4, -4]} intensity={0.35} color="#4d6b8f" />
+      {/* The circuit is unlit; these light the car only. */}
+      <ambientLight intensity={1.35} />
+      <hemisphereLight args={["#56617a", "#0b0d12", 1]} />
+      <directionalLight position={[4, 8, 5]} intensity={1.9} color="#fff3e6" />
+      <directionalLight position={[-6, 4, -4]} intensity={0.6} color="#5d80aa" />
 
-      <gridHelper
-        args={[60, 60, "#171b22", "#0f1217"]}
-        position={[0, -0.05, 0]}
-      />
-
+      <Ground />
       <TrackSurface />
+      <TracksidePosts />
       <StartLine />
       <SectorMarkers />
       <CornerDots />

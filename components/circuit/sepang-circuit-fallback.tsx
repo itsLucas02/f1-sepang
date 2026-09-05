@@ -156,7 +156,7 @@ export function SepangCircuitMap({
         </defs>
 
         {/* run-off apron, painted edges, asphalt */}
-        <path d={TRACK_PATH} stroke="#0c0f14" strokeWidth="0.62" strokeLinejoin="round" />
+        <path d={TRACK_PATH} stroke="#1a1f27" strokeWidth="0.62" strokeLinejoin="round" />
         <path
           d={TRACK_PATH}
           stroke="#e9e7e1"
@@ -164,7 +164,7 @@ export function SepangCircuitMap({
           strokeWidth="0.38"
           strokeLinejoin="round"
         />
-        <path d={TRACK_PATH} stroke="#242832" strokeWidth="0.33" strokeLinejoin="round" />
+        <path d={TRACK_PATH} stroke="#343a45" strokeWidth="0.33" strokeLinejoin="round" />
 
         {/* speed trace */}
         <g filter="url(#sepang-trace-glow)" strokeLinecap="round" strokeWidth="0.055">
