@@ -240,8 +240,8 @@ textarea {
   background-size: 6px 6px;
 }
 
-/* Borrowed from the approved alternative's film-grain treatment: a faint,
-   moving texture over the landing page, distinct from the section-local dots. */
+/* Film grain is always a background layer. Content creates the mask: an opaque
+   editorial surface hides it; open sections let it breathe behind the layout. */
 .race-grain {
   pointer-events: none;
   position: absolute;
@@ -249,9 +249,9 @@ textarea {
   z-index: 0;
   width: 200%;
   height: 200%;
-  opacity: 0.05;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain-shift 0.9s steps(4) infinite;
+  animation: grain-shift 2.4s steps(3) infinite;
 }
 
 @keyframes grain-shift {
@@ -424,6 +424,23 @@ textarea {
 .rise-in-3 { animation-delay: 200ms; }
 .rise-in-4 { animation-delay: 270ms; }
 
+.hero-stage {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0);
+  animation: hero-stage-in 900ms cubic-bezier(0.16, 1, 0.3, 1) 3500ms both;
+}
+
+.hero-stage-eyebrow { animation-delay: 3500ms; }
+.hero-stage-title { animation-delay: 3580ms; }
+.hero-stage-sepang { animation-delay: 3700ms; }
+.hero-stage-copy { animation-delay: 3840ms; }
+.hero-stage-actions { animation-delay: 3940ms; }
+.hero-stage-stats { animation-delay: 4060ms; }
+
+.hero-release {
+  animation: hero-release-shake 550ms ease-out 3500ms both;
+}
+
 .hero-kenburns {
   animation: hero-kenburns 26s ease-in-out infinite alternate;
 }
@@ -458,6 +475,19 @@ textarea {
 @keyframes rise-in {
   from { opacity: 0; transform: translate3d(0, 18px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes hero-stage-in {
+  from { opacity: 0; transform: translate3d(0, 34px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes hero-release-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-5px, 0, 0); }
+  45% { transform: translate3d(4px, 0, 0); }
+  65% { transform: translate3d(-3px, 0, 0); }
+  85% { transform: translate3d(2px, 0, 0); }
 }
 
 @keyframes hero-light-on {
@@ -526,12 +556,16 @@ textarea {
   .panel-enter,
   .race-select-pop,
   .rise-in,
+  .hero-stage,
+  .hero-release,
   .hero-kenburns,
   .race-grain {
     animation: none !important;
   }
 
   .rise-in { opacity: 1; transform: none; }
+  .hero-stage { opacity: 1; transform: none; }
+  .hero-release { transform: none; }
   .sheen::after { transition: none; }
   .hero-track-draw { stroke-dashoffset: 0; opacity: 0.78; }
   .hero-track-accent { stroke-dashoffset: 0.15; opacity: 0.9; }
@@ -551,8 +585,8 @@ textarea {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
     rgba(8, 9, 12, 0.72);
-  backdrop-filter: blur(16px) saturate(1.25);
-  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(6px) saturate(1.15);
+  -webkit-backdrop-filter: blur(6px) saturate(1.15);
   box-shadow:
     0 18px 44px rgba(0, 0, 0, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.09);

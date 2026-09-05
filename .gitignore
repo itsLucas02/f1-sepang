@@ -25,6 +25,9 @@ pnpm-debug.log*
 # vercel
 .vercel
 
+# Source copy retained locally; the landing page serves the optimized WebP.
+/public/media/hero/f1-cgpt-image.png
+
 # typescript
 *.tsbuildinfo
 
@@ -34,3 +37,6 @@ pnpm-debug.log*
 # Local code-discovery cache and working brief
 /.codebase-memory
 /docs/bounty-brief.md
+/.playwright-cli
+
+.vercel
