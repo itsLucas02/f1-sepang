@@ -1,294 +1,669 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { Line } from "@react-three/drei";
+import { Html, OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
-import { HOTSPOT_ORDER, type HotspotId } from "@/content/sepang";
+import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
+import { SEPANG_HOTSPOT_PROGRESS } from "@/lib/sepang-geometry";
 import {
-  SEPANG_HOTSPOT_PROGRESS,
-  SEPANG_TRACK_SVG,
-} from "@/lib/sepang-geometry";
+  createChequeredTexture,
+  createKerbs,
+  createRibbon,
+  cornerPose as cornerPoseAt,
+  directionAtProgress,
+  positionAtProgress,
+  RUNOFF_WIDTH,
+  TRACE_WIDTH,
+  TRACK_WIDTH,
+} from "@/lib/circuit-geometry";
+import {
+  SEPANG_HOT_LAP,
+  SEPANG_SECTOR_COLORS,
+  speedColor,
+} from "@/lib/sepang-telemetry";
+import { sampleAtTime } from "@/lib/telemetry";
+import type { HotLapCamera } from "@/lib/use-hot-lap";
 
-type TrackData = {
-  curve: THREE.CatmullRomCurve3;
-  points: THREE.Vector3[];
-};
+const TRAIL_SEGMENTS = 44;
+const TRAIL_SPAN = 0.055;
 
-function buildTrackData(): TrackData {
-  const loader = new SVGLoader();
-  const parsed = loader.parse(SEPANG_TRACK_SVG);
-  const svgPoints = parsed.paths.flatMap((path) =>
-    path.subPaths.flatMap((subPath) => subPath.getSpacedPoints(760)),
-  );
+function TrackSurface() {
+  const geometries = useMemo(() => {
+    const minSpeed = SEPANG_HOT_LAP.minSpeed;
+    const maxSpeed = SEPANG_HOT_LAP.topSpeed;
 
-  const bounds = new THREE.Box2().setFromPoints(svgPoints);
-  const center = bounds.getCenter(new THREE.Vector2());
-  const size = bounds.getSize(new THREE.Vector2());
-  const scale = 10.25 / Math.max(size.x, size.y);
-
-  const points = svgPoints.map(
-    (point) =>
-      new THREE.Vector3(
-        (point.x - center.x) * scale,
-        0,
-        -(point.y - center.y) * scale,
-      ),
-  );
-
-  if (points.length > 1 && points[0].distanceTo(points.at(-1)!) < 0.02) {
-    points.pop();
-  }
-
-  const curve = new THREE.CatmullRomCurve3(points, true, "centripetal", 0.05);
-
-  return {
-    curve,
-    points: curve.getSpacedPoints(900),
-  };
-}
-
-function makeCameraPose(curve: THREE.CatmullRomCurve3, hotspot: HotspotId) {
-  if (hotspot === "main-straight") {
     return {
-      position: new THREE.Vector3(0, 8.8, 7.4),
-      target: new THREE.Vector3(0, 0, 0),
+      runoff: createRibbon({ width: RUNOFF_WIDTH, y: -0.012 }),
+      outline: createRibbon({ width: TRACK_WIDTH + 0.028, y: -0.002 }),
+      asphalt: createRibbon({ width: TRACK_WIDTH, y: 0 }),
+      kerbs: createKerbs(),
+      trace: createRibbon({
+        width: TRACE_WIDTH,
+        y: 0.014,
+        color: (index) =>
+          speedColor(SEPANG_HOT_LAP.samples[index].speed, minSpeed, maxSpeed),
+      }),
     };
-  }
+  }, []);
 
-  const t = SEPANG_HOTSPOT_PROGRESS[hotspot];
-  const target = curve.getPointAt(t);
-  const tangent = curve.getTangentAt(t).normalize();
-  const normal = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
-  const position = target
-    .clone()
-    .add(normal.multiplyScalar(1.65))
-    .add(tangent.multiplyScalar(-0.35))
-    .add(new THREE.Vector3(0, 6.35, 2.15));
-
-  return { position, target };
-}
-
-function CameraRig({
-  curve,
-  selectedHotspot,
-  reduceMotion,
-}: {
-  curve: THREE.CatmullRomCurve3;
-  selectedHotspot: HotspotId;
-  reduceMotion: boolean;
-}) {
-  const { camera, invalidate } = useThree();
-  const currentTarget = useRef(new THREE.Vector3());
-  const fromPosition = useRef(new THREE.Vector3());
-  const fromTarget = useRef(new THREE.Vector3());
-  const toPosition = useRef(new THREE.Vector3());
-  const toTarget = useRef(new THREE.Vector3());
-  const startedAt = useRef(0);
-  const animating = useRef(false);
-
-  useEffect(() => {
-    const next = makeCameraPose(curve, selectedHotspot);
-
-    if (reduceMotion) {
-      camera.position.copy(next.position);
-      currentTarget.current.copy(next.target);
-      camera.lookAt(next.target);
-      invalidate();
-      return;
-    }
-
-    fromPosition.current.copy(camera.position);
-    fromTarget.current.copy(currentTarget.current);
-    toPosition.current.copy(next.position);
-    toTarget.current.copy(next.target);
-    startedAt.current = performance.now();
-    animating.current = true;
-    invalidate();
-  }, [camera, curve, invalidate, reduceMotion, selectedHotspot]);
-
-  useFrame(() => {
-    if (!animating.current) {
-      return;
-    }
-
-    const raw = Math.min((performance.now() - startedAt.current) / 880, 1);
-    const eased = raw < 0.5
-      ? 4 * raw * raw * raw
-      : 1 - Math.pow(-2 * raw + 2, 3) / 2;
-
-    camera.position.lerpVectors(fromPosition.current, toPosition.current, eased);
-    currentTarget.current.lerpVectors(fromTarget.current, toTarget.current, eased);
-    camera.lookAt(currentTarget.current);
-
-    if (raw < 1) {
-      invalidate();
-    } else {
-      animating.current = false;
-    }
-  });
-
-  return null;
-}
-
-function SegmentFocus({
-  curve,
-  selectedHotspot,
-}: {
-  curve: THREE.CatmullRomCurve3;
-  selectedHotspot: HotspotId;
-}) {
-  const { invalidate } = useThree();
-  const sweepMarker = useRef<THREE.Mesh>(null);
-  const startedAt = useRef(0);
-  const animating = useRef(true);
-
-  const points = useMemo(() => {
-    const center = SEPANG_HOTSPOT_PROGRESS[selectedHotspot];
-    return Array.from({ length: 42 }, (_, index) => {
-      const offset = (index / 41 - 0.5) * 0.075;
-      return curve.getPointAt((center + offset + 1) % 1);
-    });
-  }, [curve, selectedHotspot]);
-
-  const sweepCurve = useMemo(
-    () => new THREE.CatmullRomCurve3(points, false, "centripetal", 0.04),
-    [points],
+  useEffect(
+    () => () => {
+      Object.values(geometries).forEach((geometry) => geometry.dispose());
+    },
+    [geometries],
   );
-
-  useEffect(() => {
-    startedAt.current = performance.now();
-    animating.current = true;
-    if (sweepMarker.current) {
-      sweepMarker.current.visible = true;
-      sweepMarker.current.position.copy(sweepCurve.getPointAt(0));
-    }
-    invalidate();
-  }, [invalidate, selectedHotspot, sweepCurve]);
-
-  useFrame(() => {
-    if (!animating.current || !sweepMarker.current) {
-      return;
-    }
-
-    const progress = Math.min((performance.now() - startedAt.current) / 720, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    sweepMarker.current.position.copy(sweepCurve.getPointAt(eased));
-
-    if (progress < 1) {
-      invalidate();
-    } else {
-      sweepMarker.current.visible = false;
-      animating.current = false;
-    }
-  });
-
-  return (
-    <group position={[0, 0.035, 0]}>
-      <Line
-        points={points}
-        color="#E10600"
-        lineWidth={9}
-        transparent
-        opacity={0.98}
-      />
-      <mesh ref={sweepMarker} position={sweepCurve.getPointAt(0)}>
-        <sphereGeometry args={[0.085, 20, 20]} />
-        <meshBasicMaterial color="#FFFFFF" />
-      </mesh>
-    </group>
-  );
-}
-
-function CircuitModel({
-  curve,
-  points,
-  selectedHotspot,
-}: {
-  curve: THREE.CatmullRomCurve3;
-  points: THREE.Vector3[];
-  selectedHotspot: HotspotId;
-}) {
-  const closedPoints = useMemo(() => [...points, points[0]], [points]);
-  const selectedPoint = curve.getPointAt(SEPANG_HOTSPOT_PROGRESS[selectedHotspot]);
 
   return (
     <group>
-      <mesh position={[0, -0.12, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[24, 24]} />
-        <meshBasicMaterial color="#09090B" />
+      <mesh geometry={geometries.runoff}>
+        <meshBasicMaterial color="#0d1014" />
       </mesh>
-
-      <group position={[0, 0.01, 0]}>
-        <Line
-          points={closedPoints}
-          color="#000000"
-          lineWidth={15}
+      <mesh geometry={geometries.outline}>
+        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.5} />
+      </mesh>
+      <mesh geometry={geometries.asphalt}>
+        <meshStandardMaterial color="#191c22" roughness={0.94} metalness={0.04} />
+      </mesh>
+      <mesh geometry={geometries.kerbs}>
+        <meshBasicMaterial vertexColors transparent opacity={0.92} />
+      </mesh>
+      <mesh geometry={geometries.trace}>
+        <meshBasicMaterial
+          vertexColors
           transparent
-          opacity={0.5}
+          opacity={0.9}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
         />
-        <Line points={closedPoints} color="#F2F1ED" lineWidth={11} />
-        <Line points={closedPoints} color="#141416" lineWidth={7.2} />
-      </group>
+      </mesh>
+    </group>
+  );
+}
 
-      <SegmentFocus curve={curve} selectedHotspot={selectedHotspot} />
+function StartLine() {
+  const texture = useMemo(() => createChequeredTexture(), []);
+  const { position, rotation } = useMemo(() => {
+    const point = positionAtProgress(0);
+    const direction = directionAtProgress(0);
+    return {
+      position: [point.x, 0.016, point.z] as const,
+      rotation: [-Math.PI / 2, 0, -Math.atan2(direction.z, direction.x)] as const,
+    };
+  }, []);
 
-      {HOTSPOT_ORDER.filter((hotspot) => hotspot !== selectedHotspot).map((hotspot) => {
-        const point = curve.getPointAt(SEPANG_HOTSPOT_PROGRESS[hotspot]);
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  return (
+    <mesh position={position} rotation={rotation}>
+      <planeGeometry args={[0.075, TRACK_WIDTH]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
+  );
+}
+
+function SectorMarkers() {
+  const markers = useMemo(
+    () =>
+      SEPANG_HOT_LAP.sectorBounds.map((bound, index) => {
+        const progress = index === 2 ? 0.0005 : bound;
+        const point = positionAtProgress(progress);
+        const direction = directionAtProgress(progress);
+        return {
+          key: `sector-${index}`,
+          color: SEPANG_SECTOR_COLORS[index],
+          position: [point.x, 0.018, point.z] as const,
+          rotation: [-Math.PI / 2, 0, -Math.atan2(direction.z, direction.x)] as const,
+        };
+      }),
+    [],
+  );
+
+  return (
+    <group>
+      {markers.map((marker) => (
+        <mesh key={marker.key} position={marker.position} rotation={marker.rotation}>
+          <planeGeometry args={[0.016, TRACK_WIDTH + 0.09]} />
+          <meshBasicMaterial color={marker.color} transparent opacity={0.85} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function CornerDots() {
+  const dots = useMemo(
+    () =>
+      SEPANG_HOT_LAP.corners.map((corner) => {
+        const point = positionAtProgress(corner.progress);
+        return {
+          key: `corner-${corner.number}`,
+          position: [point.x, 0.02, point.z] as const,
+          radius: 0.022 + corner.severity * 0.014,
+        };
+      }),
+    [],
+  );
+
+  return (
+    <group>
+      {dots.map((dot) => (
+        <mesh key={dot.key} position={dot.position} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[dot.radius, 16]} />
+          <meshBasicMaterial color="#f2f1ed" transparent opacity={0.36} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function HotspotMarkers({
+  selectedHotspot,
+  onSelect,
+}: {
+  selectedHotspot: HotspotId;
+  onSelect?: (hotspot: HotspotId) => void;
+}) {
+  const pulse = useRef<THREE.Mesh>(null);
+  const { invalidate } = useThree();
+
+  const markers = useMemo(
+    () =>
+      HOTSPOT_ORDER.map((id) => {
+        const point = positionAtProgress(SEPANG_HOTSPOT_PROGRESS[id]);
+        return { id, hotspot: getHotspot(id), position: point.clone() };
+      }),
+    [],
+  );
+
+  useFrame(({ clock }) => {
+    if (!pulse.current) {
+      return;
+    }
+
+    const t = (clock.getElapsedTime() % 1.6) / 1.6;
+    const scale = 0.6 + t * 1.5;
+    pulse.current.scale.setScalar(scale);
+    const material = pulse.current.material as THREE.MeshBasicMaterial;
+    material.opacity = 0.55 * (1 - t);
+    invalidate();
+  });
+
+  return (
+    <group>
+      {markers.map((marker) => {
+        const isSelected = marker.id === selectedHotspot;
+
         return (
-          <mesh
-            key={hotspot}
-            position={[point.x, 0.045, point.z]}
-            rotation={[-Math.PI / 2, 0, 0]}
-          >
-            <circleGeometry args={[0.035, 18]} />
-            <meshBasicMaterial color="#F2F1ED" transparent opacity={0.6} />
-          </mesh>
+          <group key={marker.id} position={[marker.position.x, 0.03, marker.position.z]}>
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSelect?.(marker.id);
+              }}
+              onPointerOver={() => {
+                document.body.style.cursor = "pointer";
+              }}
+              onPointerOut={() => {
+                document.body.style.cursor = "";
+              }}
+            >
+              <circleGeometry args={[0.11, 24]} />
+              <meshBasicMaterial
+                color={isSelected ? "#E8112D" : "#0b0c0f"}
+                transparent
+                opacity={isSelected ? 1 : 0.9}
+              />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
+              <ringGeometry args={[0.11, 0.135, 28]} />
+              <meshBasicMaterial color={isSelected ? "#ffffff" : "#8f97a4"} />
+            </mesh>
+
+            {isSelected ? (
+              <mesh ref={pulse} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]}>
+                <ringGeometry args={[0.12, 0.17, 30]} />
+                <meshBasicMaterial color="#E8112D" transparent opacity={0.4} />
+              </mesh>
+            ) : null}
+
+            <Html
+              position={[0, 0.16, 0]}
+              center
+              distanceFactor={9}
+              zIndexRange={[24, 0]}
+              wrapperClass="pointer-events-none"
+            >
+              <span
+                className={
+                  isSelected
+                    ? "scene-label scene-label-active"
+                    : "scene-label"
+                }
+              >
+                {marker.hotspot.shortLabel}
+              </span>
+            </Html>
+          </group>
         );
       })}
+    </group>
+  );
+}
 
-      <group position={[selectedPoint.x, 0.055, selectedPoint.z]}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.14, 0.205, 42]} />
-          <meshBasicMaterial color="#E10600" transparent opacity={0.95} />
+function RaceCar({ carRef }: { carRef: React.RefObject<THREE.Group | null> }) {
+  return (
+    <group ref={carRef}>
+      <group scale={[1, 1, 1]}>
+        {/* floor shadow / presence */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.006, 0]}>
+          <circleGeometry args={[0.13, 20]} />
+          <meshBasicMaterial color="#E8112D" transparent opacity={0.22} depthWrite={false} />
         </mesh>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
-          <circleGeometry args={[0.065, 28]} />
-          <meshBasicMaterial color="#FFFFFF" />
+
+        {/* chassis */}
+        <mesh position={[0, 0.026, 0]}>
+          <boxGeometry args={[0.045, 0.026, 0.17]} />
+          <meshStandardMaterial
+            color="#E8112D"
+            emissive="#5c0410"
+            emissiveIntensity={0.6}
+            roughness={0.34}
+            metalness={0.32}
+          />
         </mesh>
+
+        {/* nose */}
+        <mesh position={[0, 0.022, 0.115]} rotation={[Math.PI / 2, 0, 0]}>
+          <coneGeometry args={[0.021, 0.09, 12]} />
+          <meshStandardMaterial color="#f4f3ef" roughness={0.4} metalness={0.2} />
+        </mesh>
+
+        {/* engine cover */}
+        <mesh position={[0, 0.045, -0.03]}>
+          <boxGeometry args={[0.026, 0.022, 0.08]} />
+          <meshStandardMaterial color="#101216" roughness={0.5} />
+        </mesh>
+
+        {/* front wing */}
+        <mesh position={[0, 0.012, 0.155]}>
+          <boxGeometry args={[0.1, 0.006, 0.026]} />
+          <meshStandardMaterial color="#f4f3ef" roughness={0.45} />
+        </mesh>
+
+        {/* rear wing */}
+        <mesh position={[0, 0.055, -0.086]}>
+          <boxGeometry args={[0.086, 0.03, 0.008]} />
+          <meshStandardMaterial
+            color="#E8112D"
+            emissive="#3d030b"
+            emissiveIntensity={0.8}
+            roughness={0.4}
+          />
+        </mesh>
+
+        {/* wheels */}
+        {[
+          [0.052, 0.019, 0.095],
+          [-0.052, 0.019, 0.095],
+          [0.056, 0.021, -0.062],
+          [-0.056, 0.021, -0.062],
+        ].map(([x, y, z]) => (
+          <mesh key={`${x}-${z}`} position={[x, y, z]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[0.021, 0.021, 0.018, 14]} />
+            <meshStandardMaterial color="#0b0c0e" roughness={0.85} />
+          </mesh>
+        ))}
       </group>
     </group>
   );
 }
 
-export function SepangCircuitScene({
-  selectedHotspot,
-  reduceMotion = false,
+function SpeedTrail({ progressRef }: { progressRef: React.RefObject<number> }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  const geometry = useMemo(() => {
+    const vertexCount = (TRAIL_SEGMENTS + 1) * 2;
+    const positions = new Float32Array(vertexCount * 3);
+    const colors = new Float32Array(vertexCount * 4);
+
+    for (let index = 0; index <= TRAIL_SEGMENTS; index += 1) {
+      const fade = 1 - index / TRAIL_SEGMENTS;
+      const offset = index * 8;
+      const tint = [1, 0.92, 0.86];
+
+      for (let side = 0; side < 2; side += 1) {
+        colors[offset + side * 4] = tint[0];
+        colors[offset + side * 4 + 1] = tint[1];
+        colors[offset + side * 4 + 2] = tint[2];
+        colors[offset + side * 4 + 3] = fade * fade * 0.85;
+      }
+    }
+
+    const indices: number[] = [];
+    for (let index = 0; index < TRAIL_SEGMENTS; index += 1) {
+      const base = index * 2;
+      indices.push(base, base + 1, base + 3, base, base + 3, base + 2);
+    }
+
+    const buffer = new THREE.BufferGeometry();
+    buffer.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    buffer.setAttribute("color", new THREE.BufferAttribute(colors, 4));
+    buffer.setIndex(indices);
+    return buffer;
+  }, []);
+
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
+  useFrame(() => {
+    const attribute = geometry.getAttribute("position") as THREE.BufferAttribute;
+    const array = attribute.array as Float32Array;
+    const head = progressRef.current;
+    const point = new THREE.Vector3();
+    const direction = new THREE.Vector3();
+
+    for (let index = 0; index <= TRAIL_SEGMENTS; index += 1) {
+      const t = index / TRAIL_SEGMENTS;
+      const progress = head - t * TRAIL_SPAN;
+      positionAtProgress(progress, point);
+      directionAtProgress(progress, direction);
+
+      const halfWidth = (0.03 * (1 - t)) + 0.004;
+      const nx = -direction.z * halfWidth;
+      const nz = direction.x * halfWidth;
+      const offset = index * 6;
+
+      array[offset] = point.x + nx;
+      array[offset + 1] = 0.022;
+      array[offset + 2] = point.z + nz;
+      array[offset + 3] = point.x - nx;
+      array[offset + 4] = 0.022;
+      array[offset + 5] = point.z - nz;
+    }
+
+    attribute.needsUpdate = true;
+    geometry.computeBoundingSphere();
+  });
+
+  return (
+    <mesh ref={meshRef} geometry={geometry}>
+      <meshBasicMaterial
+        vertexColors
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
+  );
+}
+
+function HotLapRunner({
+  timeRef,
+  progressRef,
+  playing,
+  seekVersion,
 }: {
-  selectedHotspot: HotspotId;
-  reduceMotion?: boolean;
+  timeRef: React.RefObject<number>;
+  progressRef: React.RefObject<number>;
+  playing: boolean;
+  seekVersion: number;
 }) {
-  const trackData = useMemo(() => buildTrackData(), []);
+  const carRef = useRef<THREE.Group>(null);
+  const { invalidate } = useThree();
+  const position = useRef(new THREE.Vector3());
+  const direction = useRef(new THREE.Vector3());
+  const roll = useRef(0);
+
+  const syncCar = () => {
+    const sample = sampleAtTime(SEPANG_HOT_LAP, timeRef.current);
+    progressRef.current = sample.progress;
+
+    if (!carRef.current) {
+      return;
+    }
+
+    positionAtProgress(sample.progress, position.current);
+    directionAtProgress(sample.progress, direction.current);
+
+    carRef.current.position.set(position.current.x, 0, position.current.z);
+    carRef.current.rotation.y = Math.atan2(direction.current.x, direction.current.z);
+
+    const targetRoll =
+      Math.min(0.22, sample.curvature * 6.5) * (sample.speed / SEPANG_HOT_LAP.topSpeed);
+    roll.current += (targetRoll - roll.current) * 0.15;
+    carRef.current.rotation.z = -roll.current;
+  };
+
+  useEffect(() => {
+    syncCar();
+    invalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seekVersion, invalidate]);
+
+  useFrame(() => {
+    syncCar();
+    if (playing) {
+      invalidate();
+    }
+  });
+
+  return (
+    <group>
+      <SpeedTrail progressRef={progressRef} />
+      <RaceCar carRef={carRef} />
+    </group>
+  );
+}
+
+const OVERVIEW_POSITION = new THREE.Vector3(0, 14.6, 10.6);
+const OVERVIEW_TARGET = new THREE.Vector3(0, 0, 0);
+
+function cornerPose(hotspot: HotspotId) {
+  return cornerPoseAt(SEPANG_HOTSPOT_PROGRESS[hotspot]);
+}
+
+function CameraRig({
+  cameraMode,
+  selectedHotspot,
+  progressRef,
+  reduceMotion,
+  playing,
+}: {
+  cameraMode: HotLapCamera;
+  selectedHotspot: HotspotId;
+  progressRef: React.RefObject<number>;
+  reduceMotion: boolean;
+  playing: boolean;
+}) {
+  const { camera, invalidate } = useThree();
+  const controls = useRef<React.ComponentRef<typeof OrbitControls>>(null);
+  const target = useRef(new THREE.Vector3());
+  const from = useRef(new THREE.Vector3());
+  const fromTarget = useRef(new THREE.Vector3());
+  const to = useRef(new THREE.Vector3());
+  const toTarget = useRef(new THREE.Vector3());
+  const startedAt = useRef(0);
+  const tweening = useRef(false);
+  const chaseReady = useRef(false);
+  const chasePosition = useRef(new THREE.Vector3());
+  const chaseTarget = useRef(new THREE.Vector3());
+  const scratch = useRef(new THREE.Vector3());
+  const scratchDirection = useRef(new THREE.Vector3());
+
+  useEffect(() => {
+    const pose =
+      cameraMode === "corner"
+        ? cornerPose(selectedHotspot)
+        : { position: OVERVIEW_POSITION.clone(), target: OVERVIEW_TARGET.clone() };
+
+    if (cameraMode === "chase") {
+      tweening.current = false;
+      chaseReady.current = false;
+      invalidate();
+      return;
+    }
+
+    if (reduceMotion) {
+      camera.position.copy(pose.position);
+      target.current.copy(pose.target);
+      camera.lookAt(pose.target);
+      controls.current?.target.copy(pose.target);
+      invalidate();
+      return;
+    }
+
+    from.current.copy(camera.position);
+    fromTarget.current.copy(target.current);
+    to.current.copy(pose.position);
+    toTarget.current.copy(pose.target);
+    startedAt.current = performance.now();
+    tweening.current = true;
+    invalidate();
+  }, [camera, cameraMode, invalidate, reduceMotion, selectedHotspot]);
+
+  useFrame(() => {
+    const orbit = controls.current;
+
+    if (cameraMode === "chase") {
+      if (orbit) orbit.enabled = false;
+
+      const progress = progressRef.current;
+      positionAtProgress(progress, scratch.current);
+      directionAtProgress(progress, scratchDirection.current);
+
+      const desired = scratch.current
+        .clone()
+        .addScaledVector(scratchDirection.current, -0.62)
+        .add(new THREE.Vector3(0, 0.34, 0));
+      const lookAt = scratch.current
+        .clone()
+        .addScaledVector(scratchDirection.current, 0.5)
+        .add(new THREE.Vector3(0, 0.05, 0));
+
+      if (!chaseReady.current) {
+        chasePosition.current.copy(desired);
+        chaseTarget.current.copy(lookAt);
+        chaseReady.current = true;
+      } else {
+        const ease = reduceMotion ? 1 : 0.12;
+        chasePosition.current.lerp(desired, ease);
+        chaseTarget.current.lerp(lookAt, ease);
+      }
+
+      camera.position.copy(chasePosition.current);
+      camera.lookAt(chaseTarget.current);
+      target.current.copy(chaseTarget.current);
+
+      if (playing) invalidate();
+      return;
+    }
+
+    if (tweening.current) {
+      if (orbit) orbit.enabled = false;
+
+      const raw = Math.min((performance.now() - startedAt.current) / 950, 1);
+      const eased =
+        raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+
+      camera.position.lerpVectors(from.current, to.current, eased);
+      target.current.lerpVectors(fromTarget.current, toTarget.current, eased);
+      camera.lookAt(target.current);
+      orbit?.target.copy(target.current);
+
+      if (raw < 1) {
+        invalidate();
+      } else {
+        tweening.current = false;
+        if (orbit && cameraMode === "trackside") {
+          orbit.enabled = true;
+        }
+      }
+      return;
+    }
+
+    if (orbit) {
+      orbit.enabled = cameraMode === "trackside";
+    }
+  });
+
+  return (
+    <OrbitControls
+      ref={controls}
+      makeDefault
+      enablePan={false}
+      enableDamping
+      dampingFactor={0.08}
+      rotateSpeed={0.55}
+      zoomSpeed={0.7}
+      minDistance={2.4}
+      maxDistance={18}
+      minPolarAngle={0.18}
+      maxPolarAngle={1.32}
+    />
+  );
+}
+
+export type SepangCircuitSceneProps = {
+  selectedHotspot: HotspotId;
+  cameraMode: HotLapCamera;
+  timeRef: React.RefObject<number>;
+  playing: boolean;
+  seekVersion: number;
+  reduceMotion?: boolean;
+  onSelectHotspot?: (hotspot: HotspotId) => void;
+};
+
+export default function SepangCircuitScene({
+  selectedHotspot,
+  cameraMode,
+  timeRef,
+  playing,
+  seekVersion,
+  reduceMotion = false,
+  onSelectHotspot,
+}: SepangCircuitSceneProps) {
+  const progressRef = useRef(0);
 
   return (
     <Canvas
-      frameloop="demand"
-      dpr={[1, 1.6]}
-      camera={{ position: [0, 8.8, 7.4], fov: 36, near: 0.1, far: 100 }}
+      frameloop={playing || cameraMode === "chase" ? "always" : "demand"}
+      dpr={[1, 1.75]}
+      camera={{ position: [0, 14.6, 10.6], fov: 34, near: 0.05, far: 160 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
-      <color attach="background" args={["#09090B"]} />
-      <CircuitModel
-        curve={trackData.curve}
-        points={trackData.points}
-        selectedHotspot={selectedHotspot}
+      <color attach="background" args={["#07080a"]} />
+      <fog attach="fog" args={["#07080a", 26, 70]} />
+
+      <ambientLight intensity={0.85} />
+      <hemisphereLight args={["#3d4757", "#08090c", 0.7]} />
+      <directionalLight position={[4, 8, 5]} intensity={1.15} color="#fff3e6" />
+      <directionalLight position={[-6, 4, -4]} intensity={0.35} color="#4d6b8f" />
+
+      <gridHelper
+        args={[60, 60, "#171b22", "#0f1217"]}
+        position={[0, -0.05, 0]}
       />
+
+      <TrackSurface />
+      <StartLine />
+      <SectorMarkers />
+      <CornerDots />
+      <HotspotMarkers selectedHotspot={selectedHotspot} onSelect={onSelectHotspot} />
+      <HotLapRunner
+        timeRef={timeRef}
+        progressRef={progressRef}
+        playing={playing}
+        seekVersion={seekVersion}
+      />
+
       <CameraRig
-        curve={trackData.curve}
+        cameraMode={cameraMode}
         selectedHotspot={selectedHotspot}
+        progressRef={progressRef}
         reduceMotion={reduceMotion}
+        playing={playing}
       />
     </Canvas>
   );

@@ -24,6 +24,7 @@ Read these before changing product behavior or UI:
 - `docs/design-direction.md`
 - `docs/threejs-experience.md`
 - `docs/stitch-design-brief.md`
+- `docs/visual-language.md`
 
 ## Implementation phase
 
@@ -115,7 +116,18 @@ Do not implement:
 - generic prediction-question engine
 - automated race-result ingestion
 
-Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, telemetry, `ALL SYSTEMS NOMINAL`, technical-spec links, `LIVE TELEMETRY ACTIVE`, fake entry speed/G-force, or telemetry CTAs are real features. They are not.
+Do not infer that decorative Stitch labels such as `LIVE TIMING`, `CIRCUIT: OPEN`, countdowns, coordinates, `ALL SYSTEMS NOMINAL`, technical-spec links, `LIVE TELEMETRY ACTIVE`, fake entry speed/G-force, or telemetry CTAs are real features. They are not.
+
+### Approved exception — the derived hot lap
+
+The Sepang explorer ships one **simulated hot lap** derived from the circuit
+geometry (`lib/telemetry.ts`, `lib/circuit-geometry.ts`, `lib/sepang-telemetry.ts`).
+Speed, gear, pedal traces, lap time and sector splits come from that
+deterministic model and are always labelled as simulated. This is approved
+product scope and is documented in `docs/threejs-experience.md`.
+
+It must never be presented as live timing, and it must never gate a product
+action.
 
 ## Design authority and Stitch outputs
 

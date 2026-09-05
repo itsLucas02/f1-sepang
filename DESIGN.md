@@ -86,6 +86,14 @@ from the Sepang dusk (tropical sunset over the circuit) are now approved:
   confirmations, live indicators. It deliberately contrasts red so success and
   brand emphasis are never confused.
 
+### Implementation note
+
+`app/globals.css` now carries these exact token values. Race Red is
+`#E8112D`, the system accent Teal is `#00E0C6`, and the surface ramp is the
+cool near-black listed above. Components should consume the Tailwind tokens
+(`bg-surface-01`, `text-race-red`, `ring-teal`, ...) rather than re-hardcoding
+hex values.
+
 ### Dark-only rule
 
 SEPANG 56 is **dark-only**. Light/cream page backgrounds are forbidden — they

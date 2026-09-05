@@ -14,20 +14,16 @@ export const SEPANG_TRACK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox
 
 // Progress values follow the real lap direction around the canonical SVG path.
 // They are used for camera targets and the selected-segment focus treatment.
+// Values were re-anchored to the braking/apex minima of the derived hot lap
+// (see lib/telemetry.ts) so the camera, the map markers and the telemetry
+// readouts all point at the same piece of asphalt.
 export const SEPANG_HOTSPOT_PROGRESS: Record<HotspotId, number> = {
-  "main-straight": 0.06,
-  t1: 0.175,
-  t4: 0.47,
-  t9: 0.755,
-  t15: 0.97,
+  "main-straight": 0.055,
+  t1: 0.167,
+  t4: 0.336,
+  t9: 0.618,
+  t15: 0.978,
 };
 
-// Coordinates are in the cropped CC0 SVG viewBox after its original transforms.
-// They keep the 2D fallback hotspot markers aligned with the same canonical path.
-export const SEPANG_HOTSPOT_SVG_POINTS: Record<HotspotId, readonly [number, number]> = {
-  "main-straight": [498.8, 354.9],
-  t1: [630.2, 487.7],
-  t4: [118.7, 215.9],
-  t9: [619.7, 240.8],
-  t15: [204.0, 127.4],
-};
+// Start/finish line position on the canonical path.
+export const SEPANG_START_PROGRESS = 0;
