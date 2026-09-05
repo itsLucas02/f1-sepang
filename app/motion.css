@@ -141,9 +141,13 @@
   z-index: 60;
   opacity: 0;
   transform: translate3d(-108%, 0, 0) skewX(-8deg) scaleX(1.12);
-  background:
-    repeating-linear-gradient(90deg, #f3f1ec 0 34px, #050506 34px 68px),
-    #050506;
+  /* Chequered flag sweep. */
+  background-color: #050506;
+  background-image:
+    linear-gradient(45deg, #f3f1ec 25%, transparent 25%, transparent 75%, #f3f1ec 75%),
+    linear-gradient(45deg, #f3f1ec 25%, transparent 25%, transparent 75%, #f3f1ec 75%);
+  background-size: 64px 64px;
+  background-position: 0 0, 32px 32px;
   animation: finish-sweep 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 

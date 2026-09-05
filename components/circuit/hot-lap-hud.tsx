@@ -80,8 +80,8 @@ export function HotLapGauge({ controller }: { controller: HotLapController }) {
           <defs>
             <linearGradient id="speed-gradient" x1="0" y1="1" x2="1" y2="0">
               <stop offset="0%" stopColor="#E8112D" />
-              <stop offset="55%" stopColor="#FF7A18" />
-              <stop offset="100%" stopColor="#FFB302" />
+              <stop offset="72%" stopColor="#FF6C7C" />
+              <stop offset="100%" stopColor="#F6F6F0" />
             </linearGradient>
           </defs>
         </svg>
@@ -113,7 +113,7 @@ export function HotLapGauge({ controller }: { controller: HotLapController }) {
 
         <div className="flex gap-1.5">
           {[
-            { ref: throttleRef, tint: "bg-teal", label: "T" },
+            { ref: throttleRef, tint: "bg-timing-green", label: "T" },
             { ref: brakeRef, tint: "bg-race-red", label: "B" },
           ].map((pedal) => (
             <div key={pedal.label} className="flex flex-col items-center gap-1">
@@ -200,7 +200,10 @@ export function HotLapTiming({ controller }: { controller: HotLapController }) {
             <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-white/40">
               S{index + 1}
             </p>
-            <p className="font-mono text-[11px] text-white/85 tabular-nums">
+            <p
+              className="font-mono text-[11px] tabular-nums"
+              style={{ color: SEPANG_SECTOR_COLORS[index] }}
+            >
               {formatSectorTime(split)}
             </p>
           </div>
@@ -275,7 +278,7 @@ export function HotLapControls({
         <div className="pointer-events-none absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-white/12">
           <span
             ref={fillRef}
-            className="block h-full w-full origin-left bg-[linear-gradient(90deg,#E8112D,#FF7A18,#FFB302)]"
+            className="block h-full w-full origin-left bg-race-red"
             style={{ transform: "scaleX(0)" }}
           />
         </div>

@@ -45,23 +45,56 @@ If a page needs a new decorative treatment, add it here first.
 
 ---
 
-## 3. Instrumentation language
+## 3. Colour doctrine
+
+The theme is the sport's own graphic language, not a mood board.
+
+**Rule 1 — no decorative gradients.** Broadcast and team graphics are hard
+edged: flat fills, sharp diagonals, one accent. Colour ramps are permitted only
+for (a) photographic scrims and (b) data heat, never for type, rules, bars,
+underlines or chrome. The old red→sunset headline ramp and the red→orange→amber
+progress bars were removed for this reason.
+
+**Rule 2 — one red.** Race Red `#E8112D` is the only brand colour. It marks the
+active thing and nothing else.
+
+**Rule 3 — the timing palette is data, not decoration.** F1 timing screens speak
+in three colours, and so do we:
+
+| Colour | Token | Meaning |
+| --- | --- | --- |
+| Purple `#B026FF` | `timing-purple` | Fastest — the quickest sector of the lap |
+| Green `#00D26A` | `timing-green` | Live / best / throttle |
+| Yellow `#FFD800` | `timing-yellow` | Slower / caution |
+
+Sector colours are **derived, not assigned**: `SEPANG_SECTOR_COLORS` ranks the
+three sector times and hands out purple, green and yellow accordingly. If the
+model changes, the colours follow the data.
+
+**Rule 4 — chequer, not stripes.** Red-and-white repeating diagonals read as a
+barber pole. The finish-line motifs (`.kerb-stripe`, `.kerb-stripe-thin`,
+`.chequer`) are chequered flag blocks in bone on near-black. Red/white kerbing
+survives only in the 3D scene, where it is the actual track furniture.
+
+The speed ramp is deep red → race red → coral → bone. No orange.
+
+## 4. Instrumentation language
 
 Anything that displays derived lap data follows the same rules:
 
 - numbers are mono or display-italic, always `tabular-nums`
 - units are 8–9px mono in `text-white/40`
 - the label "simulated" or "derived" is always visible in the same panel
-- sector identity colours are fixed: **S1 sunset `#FF7A18`**, **S2 teal `#00E0C6`**, **S3 amber `#FFB302`**
-- the speed ramp runs red `#E8112D` → sunset `#FF7A18` → amber `#FFB302` → bone `#F6F6F0`
-- throttle is teal, braking is race red — everywhere, without exception
+- sector colours are ranked from the data (purple / green / yellow), never fixed
+- the speed ramp runs `#7C0A1A` → `#E8112D` → `#FF6C7C` → bone `#F6F6F0`
+- throttle is timing green, braking is race red — everywhere, without exception
 
 Team identity colours (`content/drivers.ts`) are accents only: a 3px stripe, a
 car number, a hover wash. Never a large flat fill.
 
 ---
 
-## 4. Motion budget
+## 5. Motion budget
 
 - Entrances: 320–520ms, `cubic-bezier(0.22, 1, 0.36, 1)`, one axis only.
 - Hover: 200–300ms, max 3px lift, no scale above 1.06 on imagery.
@@ -75,7 +108,7 @@ car number, a hover wash. Never a large flat fill.
 
 ---
 
-## 5. The circuit model
+## 6. The circuit model
 
 The 3D circuit is a raised slab, not a line. Proportions live in
 `lib/circuit-geometry.ts` and the 2D map mirrors them:
@@ -102,11 +135,11 @@ Orientation rule: the source SVG's **y axis maps to scene +z**. Negating it
 mirrors Sepang — the layout still looks plausible but is wrong, and it is
 guarded by a signed-area test in `lib/circuit-geometry.test.ts`.
 
-## 6. Accessibility guardrails
+## 7. Accessibility guardrails
 
 - The 3D scene is decorative: it carries `role="img"` plus a text description,
   and every hotspot it exposes is also reachable from `CircuitHotspotTabs`.
-- Focus rings are teal (`--sepang-teal`) at 2px with a 3px offset.
+- Focus rings are timing green (`--sepang-teal`, now `#00D26A`) at 2px with a 3px offset.
 - Controls in overlays keep a 40px minimum hit area.
 - Colour is never the only signal: selected states also change border, label
   weight, or add a check mark.
