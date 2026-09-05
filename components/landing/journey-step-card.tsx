@@ -53,7 +53,7 @@ export function JourneyStepCard({
       />
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 -z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)]"
+        className="absolute inset-x-0 top-0 -z-10 h-px bg-white/20"
       />
 
       <span

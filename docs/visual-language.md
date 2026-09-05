@@ -45,7 +45,23 @@ If a page needs a new decorative treatment, add it here first.
 
 ---
 
-## 3. Colour doctrine
+## 3. Typography
+
+Formula 1's own type system, in the same roles the sport uses:
+
+| Role | Family | Fallback |
+| --- | --- | --- |
+| Display / headings / numerals | **Formula1** (Regular, Bold, Black) | Barlow Condensed → Arial Narrow |
+| Oversized statements | **Formula1 Wide** (`--font-wide`) | Formula1 → Barlow Condensed |
+| Body copy | **Titillium Web** — F1's own body face | Helvetica Neue → Arial |
+| Data, timing, units | IBM Plex Mono, always `tabular-nums` | ui-monospace |
+
+The Formula1 faces are licensed and are not vendored here. `app/globals.css`
+declares the `@font-face` rules and `npm run fonts:install` places licensed
+copies in `public/fonts`; absent them the stack silently falls back, so the
+build never depends on proprietary files.
+
+## 4. Colour doctrine
 
 The theme is the sport's own graphic language, not a mood board.
 
@@ -71,14 +87,14 @@ Sector colours are **derived, not assigned**: `SEPANG_SECTOR_COLORS` ranks the
 three sector times and hands out purple, green and yellow accordingly. If the
 model changes, the colours follow the data.
 
-**Rule 4 — chequer, not stripes.** Red-and-white repeating diagonals read as a
+**Rule 4 — chequer, not stripes.**  Red-and-white repeating diagonals read as a
 barber pole. The finish-line motifs (`.kerb-stripe`, `.kerb-stripe-thin`,
 `.chequer`) are chequered flag blocks in bone on near-black. Red/white kerbing
 survives only in the 3D scene, where it is the actual track furniture.
 
 The speed ramp is deep red → race red → coral → bone. No orange.
 
-## 4. Instrumentation language
+## 5. Instrumentation language
 
 Anything that displays derived lap data follows the same rules:
 
@@ -94,7 +110,7 @@ car number, a hover wash. Never a large flat fill.
 
 ---
 
-## 5. Motion budget
+## 6. Motion budget
 
 - Entrances: 320–520ms, `cubic-bezier(0.22, 1, 0.36, 1)`, one axis only.
 - Hover: 200–300ms, max 3px lift, no scale above 1.06 on imagery.
@@ -108,7 +124,7 @@ car number, a hover wash. Never a large flat fill.
 
 ---
 
-## 6. The circuit model
+## 7. The circuit model
 
 The 3D circuit is a raised slab, not a line. Proportions live in
 `lib/circuit-geometry.ts` and the 2D map mirrors them:
@@ -135,7 +151,7 @@ Orientation rule: the source SVG's **y axis maps to scene +z**. Negating it
 mirrors Sepang — the layout still looks plausible but is wrong, and it is
 guarded by a signed-area test in `lib/circuit-geometry.test.ts`.
 
-## 7. Accessibility guardrails
+## 8. Accessibility guardrails
 
 - The 3D scene is decorative: it carries `role="img"` plus a text description,
   and every hotspot it exposes is also reachable from `CircuitHotspotTabs`.
