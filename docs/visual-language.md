@@ -1,0 +1,85 @@
+# SEPANG 56 — Visual Language Addendum
+
+This document extends `DESIGN.md`. It records the surface, depth and
+instrumentation primitives introduced with the hot-lap work so pages stop
+inventing their own one-off treatments.
+
+`DESIGN.md` remains authoritative for colour, type and layout tokens.
+
+---
+
+## 1. Depth model
+
+SEPANG 56 is flat by default and gains depth only where the UI is *instrumental*
+— overlays that float above the circuit, controls that sit above content.
+
+Three levels only:
+
+| Level | Use | Treatment |
+| --- | --- | --- |
+| Base | Page sections | Surface 01–02, 1px `--sepang-border`, no shadow |
+| Raised | Editorial cards, driver cards | `.surface-card`: top edge highlight, hover lift of 3px, long soft shadow |
+| Floating | Telemetry overlays, transport controls, tooltips | `.glass-panel`: blurred dark glass, inner top highlight, deep shadow |
+
+Do not stack more than two levels in one composition.
+
+---
+
+## 2. Shared CSS primitives
+
+Defined once in `app/globals.css`:
+
+- `.glass-panel` — frosted instrument panel (blur 16px, dark tint, inset highlight).
+- `.surface-card` — raised editorial card with lit top edge and hover lift.
+- `.edge-accent` — red→sunset underline that wipes in on hover/focus-within.
+- `.live-dot` — teal system indicator with a pulsing ring. Teal, never red.
+- `.scene-label` — mono chip used for labels rendered inside the WebGL scene.
+- `.hot-lap-scrub` — range-input skin for the lap transport.
+- `.marquee` / `.marquee-slow` — ticker band; pauses on hover, disabled under reduced motion.
+- `.scroll-rail` — reading progress rail pinned under the sticky header.
+- `.ambient-wash` — very low-opacity red/sunset/teal radial wash behind sections.
+- `.rule-glow` — divider with a bright centre.
+- `.text-gradient-heat` — headline treatment, race red bleeding into sunset.
+
+If a page needs a new decorative treatment, add it here first.
+
+---
+
+## 3. Instrumentation language
+
+Anything that displays derived lap data follows the same rules:
+
+- numbers are mono or display-italic, always `tabular-nums`
+- units are 8–9px mono in `text-white/40`
+- the label "simulated" or "derived" is always visible in the same panel
+- sector identity colours are fixed: **S1 sunset `#FF7A18`**, **S2 teal `#00E0C6`**, **S3 amber `#FFB302`**
+- the speed ramp runs red `#E8112D` → sunset `#FF7A18` → amber `#FFB302` → bone `#F6F6F0`
+- throttle is teal, braking is race red — everywhere, without exception
+
+Team identity colours (`content/drivers.ts`) are accents only: a 3px stripe, a
+car number, a hover wash. Never a large flat fill.
+
+---
+
+## 4. Motion budget
+
+- Entrances: 320–520ms, `cubic-bezier(0.22, 1, 0.36, 1)`, one axis only.
+- Hover: 200–300ms, max 3px lift, no scale above 1.06 on imagery.
+- Camera moves in 3D: 950ms eased, or instant under reduced motion.
+- Continuous animation is allowed only for: the hot lap, the ticker, the live
+  dot, and the hero Ken Burns. Everything else animates on interaction.
+- High-frequency values (speed, gear, lap clock, scrub position) are written
+  straight to the DOM from `requestAnimationFrame`. Never re-render React at
+  frame rate.
+- Every continuous animation must stop under `prefers-reduced-motion: reduce`.
+
+---
+
+## 5. Accessibility guardrails
+
+- The 3D scene is decorative: it carries `role="img"` plus a text description,
+  and every hotspot it exposes is also reachable from `CircuitHotspotTabs`.
+- Focus rings are teal (`--sepang-teal`) at 2px with a 3px offset.
+- Controls in overlays keep a 40px minimum hit area.
+- Colour is never the only signal: selected states also change border, label
+  weight, or add a check mark.

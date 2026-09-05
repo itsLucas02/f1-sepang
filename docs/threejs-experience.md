@@ -66,11 +66,45 @@ Preferred characteristics:
 - restrained kerb/edge cues where useful
 - subtle ground plane / terrain abstraction
 - neutral dark/gray track treatment
-- Race Red `#E10600` only for selected hotspot/segment emphasis
+- Race Red `#E8112D` only for selected hotspot/segment emphasis
+- a speed-coloured racing line (red -> sunset -> amber -> near white) as the one
+  permitted graphic layer on top of the asphalt
 - clear labels where they improve orientation
 - premium dark presentation consistent with `DESIGN.md`
 
 Do not use neon/cyan glowing track lines or a sci-fi telemetry aesthetic.
+
+### Approved addition — the derived hot lap
+
+The Explorer runs a single **simulated hot lap** around the circuit. This is an
+approved part of Scene 2, not a new scene.
+
+What it is:
+
+- one deterministic lap derived from the canonical circuit geometry by
+  `lib/telemetry.ts` (curvature -> cornering limit -> traction pass -> braking
+  pass), rendered by `lib/circuit-geometry.ts`
+- a stylised car that drives the centreline with a short speed trail
+- speed, gear, throttle/brake, elapsed time and three sector splits shown in a
+  restrained instrument overlay
+- transport controls: play/pause, restart, scrub, 0.5x/1x/2x
+- three camera modes: Overview (orbit), Onboard (chase), Corner (hotspot focus)
+
+What it is **not**:
+
+- not live timing, not a real session, not a lap of a real driver
+- not a wagering, fantasy or strategy tool
+- not a source of product state — it stays a presentation layer
+
+Rules:
+
+- every surface that shows lap numbers must label them as **simulated /
+  derived**, exactly as the UI does today
+- the model must stay deterministic and unit tested (`lib/telemetry.test.ts`,
+  `lib/circuit-geometry.test.ts`)
+- the lap must never gate a product action; Learn, Sepang and Predict work with
+  it paused, absent, or without WebGL
+- the 2D map fallback runs the same lap from the same data
 
 ### Approved MVP hotspots
 
@@ -121,11 +155,13 @@ Zoom/pan/rotate controls are optional, not required. Only add them if they mater
 Do not add Stitch-generated pseudo-controls such as:
 
 - `LIVE TRACK STATUS`
-- fake lap time
 - fake track temperature
 - coordinates
-- sector timing
-- fake telemetry dashboards
+- invented telemetry dashboards presented as real data
+
+Lap time and sector timing are permitted **only** as the derived hot lap
+described above, and only when labelled as simulated. Fabricated numbers that
+imply a live session remain forbidden.
 
 ### Rules
 

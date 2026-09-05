@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
+import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { SiteContainer } from "@/components/shared/site-container";
 import {
   Sheet,
@@ -19,7 +20,7 @@ type RaceHeaderProps = {
 
 export function RaceHeader({ activeHref }: RaceHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#050506]/96 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#0a0c11]/92 backdrop-blur-xl">
       <SiteContainer className="flex h-16 items-center justify-between gap-5 md:h-[68px]">
         <Link
           href="/"
@@ -62,10 +63,11 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <span className="motorsport-stripe block scale-75 origin-right" aria-hidden="true" />
+          <span className="live-dot" aria-hidden="true" />
           <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
             Sepang / MY
           </span>
+          <span className="motorsport-stripe block origin-right scale-75" aria-hidden="true" />
         </div>
 
         <div className="md:hidden">
@@ -111,6 +113,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
       </SiteContainer>
 
       <div className="motorsport-corner pointer-events-none absolute right-0 top-0 hidden h-3 w-28 md:block" aria-hidden="true" />
+      <ScrollProgress />
     </header>
   );
 }

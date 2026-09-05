@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import type { SepangHotspot } from "@/content/sepang";
 import { publicAsset } from "@/lib/assets";
 import type { TourMode } from "@/lib/sepang";
+import { SEPANG_HOTSPOT_TELEMETRY } from "@/lib/sepang-telemetry";
 import { cn } from "@/lib/utils";
 
 type CircuitInfoPanelProps = {
@@ -29,12 +30,13 @@ export function CircuitInfoPanel({
   variant = "desktop",
 }: CircuitInfoPanelProps) {
   const mobile = variant === "mobile";
+  const telemetry = SEPANG_HOTSPOT_TELEMETRY[hotspot.id];
 
   return (
     <aside
       className={cn(
         `relative flex flex-col overflow-hidden bg-[#0a0a0c] text-foreground ${textures.carbonPanel}`,
-        mobile ? "min-h-0" : "h-[610px] border border-white/14",
+        mobile ? "min-h-0" : "h-[680px] border border-white/14",
       )}
     >
       <figure
@@ -90,6 +92,38 @@ export function CircuitInfoPanel({
             {hotspot.title}
           </h2>
         </div>
+
+        <dl className="mt-4 grid shrink-0 grid-cols-3 gap-px overflow-hidden border border-white/10 bg-white/10">
+          {[
+            {
+              label: "Apex speed",
+              value: Math.round(telemetry.speed),
+              unit: "km/h",
+            },
+            { label: "Gear", value: telemetry.gear, unit: "" },
+            {
+              label: telemetry.brake > 0.05 ? "Braking" : "Throttle",
+              value: Math.round(
+                (telemetry.brake > 0.05 ? telemetry.brake : telemetry.throttle) * 100,
+              ),
+              unit: "%",
+            },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-[#0b0d11] px-3 py-2.5">
+              <dt className="font-mono text-[8px] uppercase tracking-[0.12em] text-white/38">
+                {stat.label}
+              </dt>
+              <dd className="mt-1 font-display text-xl font-extrabold italic leading-none text-white tabular-nums">
+                {stat.value}
+                {stat.unit ? (
+                  <span className="ml-0.5 font-mono text-[8px] not-italic text-white/40">
+                    {stat.unit}
+                  </span>
+                ) : null}
+              </dd>
+            </div>
+          ))}
+        </dl>
 
         <div className="mt-4 shrink-0 border-t border-white/10 pt-4">
           <p className="text-sm leading-6 text-white/68 xl:text-[15px] xl:leading-6">

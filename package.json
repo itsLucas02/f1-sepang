@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "optimize:images": "node scripts/prepare-images.mjs"
+    "optimize:images": "node scripts/prepare-images.mjs",
+    "generate:track": "node scripts/generate-track-points.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.23",

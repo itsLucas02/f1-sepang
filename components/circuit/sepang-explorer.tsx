@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, MapPin, Timer, Trophy } from "lucide-react";
 
 import { CircuitHotspotTabs } from "@/components/circuit/circuit-hotspot-tabs";
+import { LapTelemetryChart } from "@/components/circuit/lap-telemetry-chart";
 import { CircuitInfoPanel } from "@/components/circuit/circuit-info-panel";
 import { CircuitMobileSheet } from "@/components/circuit/circuit-mobile-sheet";
 import { SepangCircuitStage } from "@/components/circuit/sepang-circuit-stage";
@@ -12,6 +13,8 @@ import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { Button } from "@/components/ui/button";
 import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
 import { publicAsset } from "@/lib/assets";
+import { SEPANG_LAP_STATS } from "@/lib/sepang-telemetry";
+import { formatLapTime } from "@/lib/telemetry";
 import {
   DEFAULT_SEPANG_STATE,
   SEPANG_STORAGE_KEY,
@@ -220,7 +223,10 @@ export function SepangExplorer() {
 
       <section className="mt-8 grid gap-5 lg:grid-cols-12 lg:items-start">
         <div className="min-w-0 lg:col-span-8">
-          <SepangCircuitStage selectedHotspot={state.selectedHotspot} />
+          <SepangCircuitStage
+            selectedHotspot={state.selectedHotspot}
+            onSelectHotspot={selectHotspot}
+          />
           <div className="mt-4">
             <CircuitHotspotTabs
               selectedHotspot={state.selectedHotspot}
@@ -250,6 +256,64 @@ export function SepangExplorer() {
         hasNextHotspot={nextGuidedHotspot !== null}
         onNextHotspot={goToNextHotspot}
       />
+
+      <section
+        aria-labelledby="lap-analysis-title"
+        className="mt-8 overflow-hidden border border-white/12 bg-[#0b0d11]"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-5 border-b border-white/10 p-5 sm:p-7">
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="live-dot" aria-hidden="true" />
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+                Lap analysis / simulated
+              </p>
+            </div>
+            <h2
+              id="lap-analysis-title"
+              className="mt-3 font-display text-3xl font-extrabold uppercase italic leading-none text-white sm:text-4xl"
+            >
+              One lap, corner by corner
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-white/58">
+              Where a car is flat out, where it has to stop, and how the three
+              timing sectors split the lap. The trace is modelled from the real
+              circuit geometry — hover it to read any point on the lap.
+            </p>
+          </div>
+
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4 lg:gap-x-10">
+            {[
+              { label: "Sim lap", value: formatLapTime(SEPANG_LAP_STATS.lapTime), unit: "" },
+              { label: "Top speed", value: String(SEPANG_LAP_STATS.topSpeed), unit: "km/h" },
+              { label: "Slowest corner", value: String(SEPANG_LAP_STATS.slowestCorner), unit: "km/h" },
+              {
+                label: "Full throttle",
+                value: String(Math.round(SEPANG_LAP_STATS.fullThrottleShare * 100)),
+                unit: "%",
+              },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <dd className="font-display text-2xl font-extrabold italic leading-none text-white tabular-nums sm:text-3xl">
+                  {stat.value}
+                  {stat.unit ? (
+                    <span className="ml-1 font-mono text-[9px] not-italic text-white/40">
+                      {stat.unit}
+                    </span>
+                  ) : null}
+                </dd>
+                <dt className="mt-1.5 font-mono text-[8px] uppercase tracking-[0.14em] text-white/38">
+                  {stat.label}
+                </dt>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div className="p-4 sm:p-6">
+          <LapTelemetryChart />
+        </div>
+      </section>
 
       <section className="mt-8 grid overflow-hidden border border-white/14 bg-[#09090b] lg:grid-cols-12">
         <ScrollReveal className="lg:col-span-8" variant="photo-wipe">

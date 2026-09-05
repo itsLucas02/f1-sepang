@@ -30,49 +30,59 @@ export function JourneyStepCard({
     <Link
       href={href}
       className={cn(
-        "group relative isolate flex min-h-[390px] flex-col overflow-hidden border border-black/10 bg-[#faf9f6] text-[#111113] shadow-[0_18px_42px_rgba(0,0,0,0.08)] transition-[transform,border-color,box-shadow] duration-300",
-        "hover:-translate-y-1.5 hover:border-race-red/50 hover:shadow-[0_28px_54px_rgba(0,0,0,0.13)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black",
+        "group relative isolate flex min-h-[420px] flex-col justify-end overflow-hidden border border-white/10 bg-[#0b0d11] transition-[transform,border-color,box-shadow] duration-500",
+        "hover:-translate-y-1.5 hover:border-race-red/45 hover:shadow-[0_36px_70px_-30px_rgba(0,0,0,0.95)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal focus-visible:ring-offset-2 focus-visible:ring-offset-canvas",
+        "edge-accent",
         className,
       )}
     >
-      <div className="relative z-10 flex flex-1 flex-col p-6 sm:p-7">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-end gap-3">
-            <span className="font-display text-5xl font-extrabold italic leading-none tracking-[-0.05em] text-race-red">
-              {number}
-            </span>
-            <h3 className="pb-1 font-display text-2xl font-extrabold uppercase italic leading-none tracking-[-0.02em] sm:text-3xl">
-              {title}
-            </h3>
-          </div>
-          <ArrowRight
-            aria-hidden="true"
-            className="mt-2 size-5 text-race-red transition-transform duration-300 group-hover:translate-x-1"
-          />
-        </div>
+      <Image
+        src={publicAsset(imageSrc)}
+        alt=""
+        aria-hidden="true"
+        fill
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, 25vw"
+        className="-z-10 object-cover opacity-45 grayscale-[0.35] transition duration-700 group-hover:scale-[1.06] group-hover:opacity-70 group-hover:grayscale-0"
+        style={{ objectPosition: imagePosition }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(8,9,12,0.55)_0%,rgba(8,9,12,0.78)_42%,rgba(8,9,12,0.97)_100%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 -z-10 h-px bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)]"
+      />
 
-        <div className="mt-4 h-px w-12 bg-race-red" aria-hidden="true" />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-3 right-3 font-display text-[7rem] font-extrabold italic leading-none tracking-[-0.07em] text-white/[0.07] transition-colors duration-500 group-hover:text-white/[0.12]"
+      >
+        {number}
+      </span>
 
-        <Icon aria-hidden="true" className="mt-6 size-7 stroke-[1.6] text-[#242426]" />
-        <p className="mt-4 max-w-[28ch] text-sm leading-6 text-[#55555a]">
+      <div className="relative flex flex-col p-6 sm:p-7">
+        <span className="inline-flex size-10 items-center justify-center border border-white/15 bg-white/[0.05] text-white/80 transition-colors duration-300 group-hover:border-race-red/60 group-hover:bg-race-red/15 group-hover:text-white">
+          <Icon aria-hidden="true" className="size-4.5 stroke-[1.7]" />
+        </span>
+
+        <h3 className="mt-5 font-display text-3xl font-extrabold uppercase italic leading-none tracking-[-0.03em] text-white">
+          {title}
+        </h3>
+
+        <p className="mt-3 max-w-[30ch] text-sm leading-6 text-white/60">
           {description}
         </p>
-      </div>
 
-      <div className="relative h-36 overflow-hidden border-t border-black/8 sm:h-40">
-        <Image
-          src={publicAsset(imageSrc)}
-          alt=""
-          aria-hidden="true"
-          fill
-          loading="lazy"
-          sizes="(max-width: 768px) 100vw, 25vw"
-          className="object-cover grayscale-[0.15] transition duration-500 group-hover:scale-[1.035] group-hover:grayscale-0"
-          style={{ objectPosition: imagePosition }}
-        />
-        <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
-        <div className="kerb-stripe-thin absolute inset-x-0 bottom-0 h-1.5" aria-hidden="true" />
+        <span className="mt-6 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/55 transition-colors duration-300 group-hover:text-white">
+          Enter
+          <ArrowRight
+            aria-hidden="true"
+            className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5"
+          />
+        </span>
       </div>
     </Link>
   );
