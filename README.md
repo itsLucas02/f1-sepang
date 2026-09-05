@@ -7,7 +7,7 @@ SEPANG 56 is a beginner-first Formula 1 web experience built around the prospect
 1. **Learn** — understand the minimum F1 concepts needed to enjoy a race.
 2. **Understand Sepang** — explore the circuit and the places that matter most.
 3. **Make predictions** — make eight race picks using what you just learned.
-4. **Compete with friends** — compare scores through global and private leaderboards.
+4. **Compete with the community** — compare scores on one global leaderboard.
 
 This repository is the working source of truth for the Kracked Devs Formula 1 Sepang bounty project.
 
@@ -118,7 +118,7 @@ The exported routes are:
 /predict/summary
 ```
 
-Backend-only actions such as Google sign-in, official prediction submission, leagues, and persisted leaderboards are intentionally unavailable in this temporary deployment mode.
+Backend-only actions such as Google sign-in, official prediction submission, and the persisted global leaderboard are intentionally unavailable in this temporary deployment mode.
 
 ## Backend setup for the later VPS deployment
 
@@ -171,7 +171,7 @@ SEPANG 56 should feel like an interactive current-generation motorsport experien
 - Tailwind CSS
 - shadcn/ui and Radix primitives for accessible interaction behavior
 - Three.js, React Three Fiber, and Drei for explicitly approved 3D scenes
-- Supabase for the later authenticated predictions, leagues, and leaderboard backend
+- Supabase for the later authenticated predictions and global leaderboard backend
 - static/local content for lessons and Sepang educational content where practical
 
 ### UI engineering principle
@@ -212,7 +212,7 @@ Prefer:
 - simple JSON prediction answers over generic question engines
 - one configured race deadline over scheduling systems
 - one deterministic scoring function over a rules engine
-- one membership table over a social platform
+- one global leaderboard over league membership infrastructure
 - Google OAuth only over multi-provider auth
 
 ## Design references

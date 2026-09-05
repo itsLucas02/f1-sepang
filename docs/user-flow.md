@@ -62,13 +62,11 @@ RACE DEADLINE
    ↓
 LOCKED
    ↓
-CREATE LEAGUE / JOIN LEAGUE / GLOBAL BOARD
-   ↓
 RACE RESULTS ENTERED
    ↓
 SCORE /25
    ↓
-GLOBAL + PRIVATE LEADERBOARDS
+GLOBAL LEADERBOARD
 ```
 
 Auth happens late, after the user has already received value and created predictions.
@@ -282,43 +280,21 @@ Ties remain ties and use competition ranking:
 
 ---
 
-## League & leaderboard flow — finalized
+## Global leaderboard flow — finalized
 
 Source of truth: `docs/league-leaderboard-standard.md`.
 
-### Create
-
 ```text
-CREATE LEAGUE
+SUBMITTED PICKS
   ↓
-Enter league name
+RACE RESULTS ENTERED ONCE
   ↓
-Generate unique code/link
+SCORE /25
   ↓
-Creator joins automatically
-  ↓
-LEAGUE LEADERBOARD
+GLOBAL LEADERBOARD
 ```
 
-### Join
-
-```text
-ENTER CODE / OPEN INVITE
-  ↓
-Auth if needed
-  ↓
-Join once
-  ↓
-LEAGUE LEADERBOARD
-```
-
-A user may belong to multiple leagues.
-
-A league is only a membership filter over the same prediction score. Do not duplicate scores per league.
-
-Global leaderboard uses the same scores and may appear alongside **My Leagues**.
-
-No league chat, feed, custom scoring, moderation system, seasons, logos, roles, or social-network features.
+The global leaderboard uses each user's one authoritative prediction score. There are no private leagues, memberships, join codes, invite links, or league routes.
 
 ---
 
@@ -337,8 +313,6 @@ No auth required for:
 Auth required for:
 
 - Save / Submit Picks
-- Create League
-- Join League
 
 MVP provider:
 
@@ -360,8 +334,6 @@ Minimal persisted model:
 ```text
 profiles
 prediction_submissions
-leagues
-league_members
 race_results
 ```
 
@@ -378,7 +350,6 @@ Use normal small Supabase RLS policies. Prediction deadline enforcement must exi
 /predict
 /predict/summary
 /leaderboard
-/league/[code]
 /auth/callback
 ```
 
@@ -390,7 +361,7 @@ Do not add dashboard, admin, profile, settings, league-settings, or other routes
 
 Do not force onboarding again.
 
-Returning users may go directly to Learn, Sepang, Predict, Leaderboard, or a league.
+Returning users may go directly to Learn, Sepang, Predict, or Leaderboard.
 
 The app can surface existing progress/status inside those flows without requiring a dedicated dashboard.
 
@@ -432,7 +403,6 @@ deadlineAt
 
 ```ts
 score
-leagueMemberships
 ranking
 ```
 

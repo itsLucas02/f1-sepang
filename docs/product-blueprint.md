@@ -129,14 +129,10 @@ Source of truth: `docs/league-leaderboard-standard.md`.
 
 Users can:
 
-- create a private league by entering a name
-- receive a unique join code/share link
-- join a league by code/link
-- belong to multiple leagues
-- compare the same prediction score across private leagues
-- view a global leaderboard
+- view one global community leaderboard
+- compare the one score from their submitted picks with everyone else
 
-Private/friends competition remains the primary social use case.
+Competition remains one shared community board.
 
 No chat, feed, reactions, roles, seasons, custom scoring, moderation system, or social-network features belong in MVP.
 
@@ -149,8 +145,6 @@ Users can browse Learn, Sepang, make all eight predictions, and reach Prediction
 Auth is required only for:
 
 - saving/submitting picks
-- creating a league
-- joining a league
 
 MVP auth:
 
@@ -161,8 +155,6 @@ Minimal persisted tables:
 ```text
 profiles
 prediction_submissions
-leagues
-league_members
 race_results
 ```
 
@@ -182,10 +174,9 @@ race_results
 10. If needed, Google authentication occurs and returns them to their picks.
 11. Submitted picks remain editable until the common race deadline.
 12. Picks become read-only at the deadline.
-13. User creates or joins private leagues.
-14. After the race, the eight official result answers are entered once.
-15. Predictions are scored out of 25.
-16. Global and private league leaderboards show the final rankings.
+13. After the race, the eight official result answers are entered once.
+14. Predictions are scored out of 25.
+15. One global leaderboard shows the final rankings.
 
 ---
 
@@ -220,6 +211,6 @@ Give SEPANG 56 to someone who has never watched F1. They should be able to:
 - identify the key places to watch at Sepang
 - make eight understandable predictions
 - save/edit those predictions before the deadline
-- compare a scored result with friends in a private league
+- compare a scored result on the global community leaderboard
 
 If those outcomes work cleanly on desktop and mobile, the MVP is doing its job.

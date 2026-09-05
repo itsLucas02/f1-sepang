@@ -25,8 +25,6 @@ Authentication is **not required** for:
 Authentication **is required** when the user attempts to:
 
 - save/submit picks
-- create a league
-- join a league
 
 ---
 
@@ -98,7 +96,7 @@ completed_lessons
 visited_hotspots
 ```
 
-Predictions, league membership, and scores must be persisted because they affect competition.
+Predictions and scores must be persisted because they affect competition.
 
 ---
 
@@ -134,30 +132,6 @@ updated_at
 The answer object contains the eight finalized prediction keys from `docs/prediction-flow-standard.md`.
 
 Do not create a generic `prediction_questions` table or one row per answer unless a concrete implementation need appears.
-
-### `leagues`
-
-```text
-id
-name
-code
-owner_id
-created_at
-```
-
-### `league_members`
-
-```text
-league_id
-user_id
-joined_at
-```
-
-Unique membership constraint:
-
-```text
-league_id + user_id
-```
 
 ### `race_results`
 
@@ -208,9 +182,6 @@ At minimum:
 
 - users can read/update their own profile
 - users can read/write their own prediction submission before the deadline
-- authenticated users can create leagues
-- authenticated users can join leagues
-- league membership cannot be duplicated
 - race results are not writable by normal users
 
 Keep policies small and explicit.
@@ -225,7 +196,7 @@ Use:
 /auth/callback
 ```
 
-Preserve a small return destination so auth can send users back to the action they were performing, especially Prediction Summary and league invite routes.
+Preserve a small return destination so auth can send users back to Prediction Summary.
 
 Do not build a general-purpose account portal for MVP.
 
