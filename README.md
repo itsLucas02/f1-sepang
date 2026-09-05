@@ -23,6 +23,32 @@ The core public-demo flow is implemented through predictions:
 - Phase 3 — Sepang guided/free explorer, five hotspots, local progress, 2D fallback, and React Three Fiber scene
 - Phase 4 — eight-question anonymous prediction flow, local draft persistence, podium validation, and summary/editing
 - Phase 5 — Supabase SSR auth and authenticated prediction persistence are implemented but temporarily parked while the public demo is deployed as a static site
+- Phase 6 — the derived **hot lap**: a deterministic, physics-lite lap of Sepang
+  driving the WebGL circuit scene, the 2D map fallback and the telemetry overlay
+
+### The hot lap
+
+`Understand Sepang` now runs a simulated lap built from the circuit's real
+geometry:
+
+- `lib/telemetry.ts` turns the canonical centreline into a speed profile
+  (curvature → cornering limit → traction pass → braking pass), then derives
+  gear, throttle, braking, sector splits and corner apexes
+- `lib/circuit-geometry.ts` builds the track ribbon, kerbing and speed-coloured
+  racing line consumed by the React Three Fiber scene
+- the overlay shows speed, gear, pedal traces, elapsed time and S1/S2/S3, with
+  play/pause, scrub, replay speed and Overview / Onboard / Corner cameras
+- the same lap runs on the lightweight SVG map when WebGL is unavailable, and on
+  the landing page teaser
+
+Everything is deterministic and unit tested — it is explicitly labelled as
+simulated and is never presented as live timing.
+
+Regenerate the track polyline after changing the source geometry:
+
+```bash
+npm run generate:track
+```
 
 The temporary GitHub Pages build is intentionally frontend-only. Landing, Learn, Sepang, Predictions, and Prediction Summary work without a backend and persist browser progress with `localStorage`.
 

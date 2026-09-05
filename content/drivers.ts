@@ -243,6 +243,28 @@ export const DRIVERS = [
   },
 ] as const;
 
+/**
+ * Team identity colours, used for accents only (never as large flat fills).
+ * Approximate liveries — this is a fan project and does not use team assets.
+ */
+export const TEAM_COLORS: Record<string, string> = {
+  Mercedes: "#00D7B6",
+  Ferrari: "#E8112D",
+  McLaren: "#FF8000",
+  "Red Bull Racing": "#3671C6",
+  Williams: "#64C4FF",
+  "Aston Martin": "#229971",
+  Alpine: "#0093CC",
+  "Haas F1 Team": "#B6BABD",
+  "Racing Bulls": "#6692FF",
+  Audi: "#52E252",
+  Cadillac: "#C9B27C",
+};
+
+export function teamColor(team: string) {
+  return TEAM_COLORS[team] ?? "#B3BCC9";
+}
+
 export type Driver = (typeof DRIVERS)[number];
 export type DriverId = Driver["id"];
 

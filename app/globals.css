@@ -7,57 +7,57 @@
 
   --radius: 0.25rem;
 
-  --background: #070708;
-  --foreground: #f3f1ec;
-  --card: #0d0d0f;
-  --card-foreground: #f3f1ec;
-  --popover: #111113;
-  --popover-foreground: #f3f1ec;
-  --primary: #e10600;
+  --background: #08090c;
+  --foreground: #f5f6f8;
+  --card: #0e1116;
+  --card-foreground: #f5f6f8;
+  --popover: #141920;
+  --popover-foreground: #f5f6f8;
+  --primary: #e8112d;
   --primary-foreground: #ffffff;
-  --secondary: #141416;
-  --secondary-foreground: #f3f1ec;
-  --muted: #1b1b1e;
-  --muted-foreground: #8d8d93;
-  --accent: #1b1b1e;
+  --secondary: #141920;
+  --secondary-foreground: #f5f6f8;
+  --muted: #1b212a;
+  --muted-foreground: #7d8794;
+  --accent: #1b212a;
   --accent-foreground: #ffffff;
-  --destructive: #e10600;
+  --destructive: #e8112d;
   --destructive-foreground: #ffffff;
-  --border: #29292d;
-  --input: #333337;
-  --ring: #f3f1ec;
+  --border: #262d38;
+  --input: #38414f;
+  --ring: #00e0c6;
 
-  --sepang-header: #050506;
-  --sepang-canvas: #070708;
-  --sepang-surface-01: #0d0d0f;
-  --sepang-surface-02: #121214;
-  --sepang-surface-03: #18181b;
-  --sepang-surface-04: #202024;
-  --sepang-border: #29292d;
-  --sepang-border-strong: #424248;
-  --sepang-text-primary: #f3f1ec;
-  --sepang-text-secondary: #bebdc0;
-  --sepang-text-muted: #85858b;
+  --sepang-header: #0a0c11;
+  --sepang-canvas: #08090c;
+  --sepang-surface-01: #0e1116;
+  --sepang-surface-02: #141920;
+  --sepang-surface-03: #1b212a;
+  --sepang-surface-04: #232b36;
+  --sepang-border: #262d38;
+  --sepang-border-strong: #38414f;
+  --sepang-text-primary: #f5f6f8;
+  --sepang-text-secondary: #b3bcc9;
+  --sepang-text-muted: #7d8794;
 
-  --sepang-race-red: #e10600;
-  --sepang-race-red-bright: #f22b25;
-  --sepang-race-red-deep: #8d0804;
+  --sepang-race-red: #e8112d;
+  --sepang-race-red-bright: #ff2d46;
+  --sepang-race-red-deep: #9c0a1e;
 
-  /* Compatibility aliases. Key surfaces no longer use these as decorative brand colours. */
-  --sepang-sunset: #e10600;
-  --sepang-amber: #ffd100;
-  --sepang-teal: #f3f1ec;
-  --sepang-teal-deep: #a7a6aa;
+  /* Sepang dusk accents. Sunset pairs with red; teal is the system accent. */
+  --sepang-sunset: #ff7a18;
+  --sepang-amber: #ffb302;
+  --sepang-teal: #00e0c6;
+  --sepang-teal-deep: #06897b;
 
   --sepang-stripe-dark: #111113;
   --sepang-stripe-light: #56565d;
   --sepang-warning: #ffd100;
   --sepang-warning-text: #0b0b0b;
-  --sepang-disabled: #505056;
+  --sepang-disabled: #414a58;
 
-  --sepang-gold: #d8b04c;
-  --sepang-silver: #cfd0d4;
-  --sepang-bronze: #a66d45;
+  --sepang-gold: #ffcf5c;
+  --sepang-silver: #cfd6e0;
+  --sepang-bronze: #d08b52;
 }
 
 @theme inline {
@@ -160,7 +160,7 @@ textarea {
 }
 
 :focus-visible {
-  outline: 2px solid #f3f1ec;
+  outline: 2px solid var(--sepang-teal);
   outline-offset: 3px;
 }
 
@@ -250,9 +250,17 @@ textarea {
   background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 32%, rgba(0,0,0,0.2));
 }
 
-/* Compatibility class: text is now a single deliberate brand colour. */
+/* Headline heat treatment: race red bleeding into the Sepang sunset. */
 .text-gradient-heat {
-  color: var(--sepang-race-red);
+  background: linear-gradient(
+    100deg,
+    var(--sepang-race-red) 0%,
+    var(--sepang-race-red-bright) 38%,
+    var(--sepang-sunset) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .track-topography {
@@ -452,4 +460,232 @@ textarea {
   .hero-track-draw { stroke-dashoffset: 0; opacity: 0.78; }
   .hero-track-accent { stroke-dashoffset: 0.15; opacity: 0.9; }
   .hero-car-pass { transform: translate3d(44%, 0, 0) scale(0.94); opacity: 0.42; }
+}
+
+/* ==========================================================================
+   Premium surface + instrumentation primitives
+   Added with the hot-lap telemetry work. See DESIGN.md §"Surfaces & depth".
+   ========================================================================== */
+
+/* Frosted instrument panel used for telemetry overlays and floating controls. */
+.glass-panel {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    rgba(8, 9, 12, 0.72);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.glass-panel > * {
+  pointer-events: auto;
+}
+
+/* Raised editorial card with a lit top edge. */
+.surface-card {
+  position: relative;
+  border: 1px solid var(--sepang-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%),
+    var(--sepang-surface-01);
+  transition:
+    border-color 260ms ease,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.surface-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  opacity: 0.5;
+  transition: opacity 260ms ease;
+}
+
+.surface-card:hover {
+  border-color: var(--sepang-border-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 26px 60px -28px rgba(0, 0, 0, 0.9);
+}
+
+.surface-card:hover::before {
+  opacity: 1;
+}
+
+/* Red edge that wipes in on hover — used by journey/driver cards. */
+.edge-accent::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--sepang-race-red), var(--sepang-sunset));
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.edge-accent:hover::after,
+.edge-accent:focus-within::after {
+  transform: scaleX(1);
+}
+
+/* System "live" indicator. Teal, never red — red is reserved for the brand. */
+.live-dot {
+  position: relative;
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--sepang-teal);
+  box-shadow: 0 0 10px rgba(0, 224, 198, 0.7);
+}
+
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid var(--sepang-teal);
+  animation: live-pulse 2s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  0% { opacity: 0.55; transform: scale(0.65); }
+  75%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+/* Floating labels rendered inside the WebGL scene. */
+.scene-label {
+  display: inline-block;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
+  background: rgba(8, 9, 12, 0.82);
+  color: rgba(245, 246, 248, 0.75);
+  font-family: var(--font-mono-source), monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+
+.scene-label-active {
+  border-color: var(--sepang-race-red);
+  background: var(--sepang-race-red);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(232, 17, 45, 0.4);
+}
+
+/* Hot-lap scrub slider: the visible track is drawn behind the input. */
+.hot-lap-scrub {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.hot-lap-scrub::-webkit-slider-runnable-track {
+  height: 22px;
+  background: transparent;
+}
+
+.hot-lap-scrub::-moz-range-track {
+  height: 22px;
+  background: transparent;
+}
+
+.hot-lap-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: 4.5px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  background: var(--sepang-race-red);
+  box-shadow: 0 0 0 3px rgba(232, 17, 45, 0.22);
+  transition: transform 160ms ease;
+}
+
+.hot-lap-scrub::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  background: var(--sepang-race-red);
+  box-shadow: 0 0 0 3px rgba(232, 17, 45, 0.22);
+}
+
+.hot-lap-scrub:hover::-webkit-slider-thumb {
+  transform: scale(1.18);
+}
+
+.hot-lap-scrub:focus-visible {
+  outline: none;
+}
+
+.hot-lap-scrub:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(0, 224, 198, 0.5);
+}
+
+/* Scrolling ticker band. */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 42s linear infinite;
+}
+
+.marquee-slow {
+  animation-duration: 68s;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Reading-progress rail under the sticky header. */
+.scroll-rail {
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--sepang-race-red), var(--sepang-sunset) 70%, var(--sepang-amber));
+}
+
+/* Subtle ambient wash behind hero/section content. */
+.ambient-wash {
+  background:
+    radial-gradient(60% 70% at 12% 0%, rgba(232, 17, 45, 0.12), transparent 62%),
+    radial-gradient(50% 60% at 88% 12%, rgba(255, 122, 24, 0.09), transparent 60%),
+    radial-gradient(70% 60% at 50% 100%, rgba(0, 224, 198, 0.05), transparent 65%);
+}
+
+/* Thin instrument divider with a bright centre. */
+.rule-glow {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee,
+  .live-dot::after {
+    animation: none !important;
+  }
+
+  .surface-card:hover {
+    transform: none;
+  }
 }

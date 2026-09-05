@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Flag, MapPinned, Trophy } from "lucide-react";
 
+import { HotLapPreview } from "@/components/landing/hot-lap-preview";
 import { JourneyStepCard } from "@/components/landing/journey-step-card";
 import { MalaysiaF1Heritage } from "@/components/landing/malaysia-f1-heritage";
 import { StartLightIntro } from "@/components/landing/start-light-intro";
+import { CountUp } from "@/components/shared/count-up";
 import { RaceFooter } from "@/components/shared/race-footer";
 import { RaceHeader } from "@/components/shared/race-header";
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
@@ -53,10 +55,21 @@ const JOURNEY_STEPS = [
 ] as const;
 
 const HERO_STATS = [
-  { value: "56", label: "Race laps" },
-  { value: "15", label: "Corners" },
-  { value: "5.543", label: "KM lap" },
-  { value: "8", label: "Race picks" },
+  { value: 56, decimals: 0, label: "Race laps" },
+  { value: 15, decimals: 0, label: "Corners" },
+  { value: 5.543, decimals: 3, label: "KM lap" },
+  { value: 8, decimals: 0, label: "Race picks" },
+] as const;
+
+const TICKER_ITEMS = [
+  "Sepang International Circuit",
+  "5.543 km · 15 turns · 56 laps",
+  "First Grand Prix 1999",
+  "Race lap record 1:34.223",
+  "Two DRS straights",
+  "Tropical heat · 30°C+ track temps",
+  "Turn 9 hairpin · slowest point of the lap",
+  "Eight race picks · 25 points",
 ] as const;
 
 const HERO_IMAGE = publicAsset("/media/hero/hero-sepang.webp");
@@ -167,7 +180,9 @@ export default function HomePage() {
               {HERO_STATS.map((stat, index) => (
                 <div key={stat.label} className="relative px-5 py-5 sm:px-6 lg:px-7 lg:py-6">
                   {index > 0 ? <span className="absolute inset-y-5 left-0 hidden w-px bg-white/16 sm:block" aria-hidden="true" /> : null}
-                  <dd className="font-display text-4xl font-extrabold italic leading-none text-white lg:text-5xl">{stat.value}</dd>
+                  <dd className="font-display text-4xl font-extrabold italic leading-none text-white lg:text-5xl">
+                    <CountUp value={stat.value} decimals={stat.decimals} />
+                  </dd>
                   <dt className="mt-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55 sm:text-[10px]">{stat.label}</dt>
                 </div>
               ))}
@@ -177,18 +192,52 @@ export default function HomePage() {
           <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-1.5`} aria-hidden="true" />
         </section>
 
-        <section className="bg-[#f2f0eb] text-[#111113]">
-          <SiteContainer className="py-16 sm:py-20 lg:py-24">
+        {/* Ticker band */}
+        <section
+          aria-hidden="true"
+          className="relative overflow-hidden border-y border-white/8 bg-[#0b0d11] py-3"
+        >
+          <div className="marquee marquee-slow">
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex shrink-0 items-center">
+                {TICKER_ITEMS.map((item) => (
+                  <span
+                    key={`${copy}-${item}`}
+                    className="flex items-center whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.2em] text-white/40"
+                  >
+                    {item}
+                    <span className="mx-6 inline-block h-1 w-1 rotate-45 bg-race-red" />
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Hot lap */}
+        <section className="relative overflow-hidden border-b border-white/8 bg-[#08090c]">
+          <div className="ambient-wash pointer-events-none absolute inset-0" aria-hidden="true" />
+          <SiteContainer className="relative py-16 sm:py-20 lg:py-24">
+            <ScrollReveal variant="rise">
+              <HotLapPreview />
+            </ScrollReveal>
+          </SiteContainer>
+        </section>
+
+        <section className="relative overflow-hidden border-b border-white/8 bg-canvas">
+          <div className="ambient-wash pointer-events-none absolute inset-0" aria-hidden="true" />
+          <div className="race-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+          <SiteContainer className="relative py-16 sm:py-20 lg:py-24">
             <div className="grid gap-10 lg:grid-cols-[250px_1fr] xl:grid-cols-[280px_1fr]">
               <ScrollReveal variant="slide-left">
                 <div>
                   <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">Your race weekend</p>
-                  <h2 className="mt-4 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] sm:text-6xl">
+                  <h2 className="mt-4 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] text-white sm:text-6xl">
                     Four steps
-                    <span className="block">to race day</span>
+                    <span className="block text-gradient-heat">to race day</span>
                   </h2>
                   <div className="mt-6 h-px w-16 bg-race-red" aria-hidden="true" />
-                  <p className="mt-6 max-w-[25ch] text-base leading-7 text-[#5d5d62]">
+                  <p className="mt-6 max-w-[25ch] text-base leading-7 text-white/55">
                     Everything you need to go from rookie to race-weekend ready.
                   </p>
                 </div>
