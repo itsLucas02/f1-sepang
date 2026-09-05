@@ -20,7 +20,7 @@ export function RaceFooter() {
             <div className="flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="h-7 w-[3px] skew-x-[-16deg] bg-[linear-gradient(180deg,var(--sepang-race-red),var(--sepang-sunset))]"
+                className="h-7 w-[3px] skew-x-[-16deg] bg-race-red"
               />
               <span className="flex items-baseline gap-1.5 font-display text-2xl font-extrabold uppercase leading-none text-white">
                 SEPANG <span className="text-race-red">56</span>

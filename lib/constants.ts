@@ -21,8 +21,9 @@ export const DESIGN_TOKENS = {
   textMuted: "#7D8794",
   raceRed: "#E8112D",
   raceRedBright: "#FF2D46",
-  sunset: "#FF7A18",
-  amber: "#FFB302",
+  timingPurple: "#B026FF",
+  timingGreen: "#00D26A",
+  timingYellow: "#FFD800",
   teal: "#00E0C6",
   warning: "#FFD100",
 } as const;
