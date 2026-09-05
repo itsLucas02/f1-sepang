@@ -82,6 +82,8 @@ type SepangCircuitMapProps = {
   timeRef?: React.RefObject<number>;
   onSelectHotspot?: (hotspot: HotspotId) => void;
   showCar?: boolean;
+  /** Stops the decorative car loop while the containing preview is off-screen. */
+  animateCar?: boolean;
   className?: string;
   /** Renders the compact version used for inline previews. */
   compact?: boolean;
@@ -92,6 +94,7 @@ export function SepangCircuitMap({
   timeRef,
   onSelectHotspot,
   showCar = true,
+  animateCar = showCar,
   className,
   compact = false,
 }: SepangCircuitMapProps) {
@@ -108,7 +111,7 @@ export function SepangCircuitMap({
   );
 
   useEffect(() => {
-    if (!showCar || !timeRef) {
+    if (!showCar || !timeRef || !animateCar) {
       return;
     }
 
@@ -131,7 +134,7 @@ export function SepangCircuitMap({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [showCar, timeRef]);
+  }, [animateCar, showCar, timeRef]);
 
   return (
     <div className={cn("absolute inset-0 overflow-hidden bg-[#07080a]", className)}>

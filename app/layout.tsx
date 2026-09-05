@@ -5,8 +5,6 @@ import {
   Titillium_Web,
 } from "next/font/google";
 
-import { RouteTransition } from "@/components/shared/route-transition";
-
 import "./globals.css";
 import "./motion.css";
 import "./scrollbar.css";
@@ -52,7 +50,7 @@ export default function RootLayout({
       className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
     >
       <body className="min-h-screen bg-canvas font-sans text-foreground antialiased">
-        <RouteTransition>{children}</RouteTransition>
+        {children}
       </body>
     </html>
   );

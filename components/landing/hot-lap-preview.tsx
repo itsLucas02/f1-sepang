@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Pause, Play } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SepangCircuitMap } from "@/components/circuit/sepang-circuit-fallback";
 import { Button } from "@/components/ui/button";
@@ -17,18 +17,44 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
  */
 export function HotLapPreview() {
   const reduced = useReducedMotion();
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [inViewport, setInViewport] = useState(false);
+  const [autoplay, setAutoplay] = useState(true);
   const controller = useHotLapController(SEPANG_HOT_LAP, {
-    autoPlay: true,
+    autoPlay: false,
     reducedMotion: reduced,
   });
+  const { pause, play } = controller;
   const speedRef = useRef<HTMLSpanElement>(null);
   const timeDisplayRef = useRef<HTMLSpanElement>(null);
   const sectorRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    let frame = 0;
+    const node = previewRef.current;
+    if (!node) {
+      return;
+    }
 
-    const tick = () => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInViewport(entry.isIntersecting),
+      { rootMargin: "180px 0px", threshold: 0 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (inViewport && autoplay && !reduced) {
+      play();
+      return;
+    }
+
+    pause();
+  }, [autoplay, inViewport, pause, play, reduced]);
+
+  useEffect(() => {
+    const render = () => {
       const sample = sampleAtTime(SEPANG_HOT_LAP, controller.timeRef.current);
 
       if (speedRef.current) {
@@ -46,16 +72,26 @@ export function HotLapPreview() {
               : 3;
         sectorRef.current.textContent = `S${sector}`;
       }
+    };
 
+    render();
+    if (!inViewport || !controller.playing) {
+      return;
+    }
+
+    let frame = 0;
+
+    const tick = () => {
+      render();
       frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [controller.timeRef]);
+  }, [controller.playing, controller.timeRef, inViewport]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+    <div ref={previewRef} className="grid gap-8 lg:grid-cols-12 lg:items-center">
       <div className="lg:col-span-5">
         <div className="flex items-center gap-3">
           <span className="live-dot" aria-hidden="true" />
@@ -104,7 +140,7 @@ export function HotLapPreview() {
           </Button>
           <button
             type="button"
-            onClick={controller.toggle}
+            onClick={() => setAutoplay((current) => !current)}
             className="inline-flex min-h-11 items-center gap-2 border border-white/18 bg-white/[0.03] px-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/70 transition-colors hover:border-white/45 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
           >
             {controller.playing ? (
@@ -123,6 +159,7 @@ export function HotLapPreview() {
             selectedHotspot="main-straight"
             timeRef={controller.timeRef}
             showCar
+            animateCar={inViewport && controller.playing}
             compact
           />
 

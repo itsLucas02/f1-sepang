@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { SiteContainer } from "@/components/shared/site-container";
+import textures from "@/components/shared/motorsport-textures.module.css";
 import {
   Sheet,
   SheetClose,
@@ -20,7 +21,7 @@ type RaceHeaderProps = {
 
 export function RaceHeader({ activeHref }: RaceHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#0a0c11]/92 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#0a0c11]/96">
       <SiteContainer className="flex h-16 items-center justify-between gap-5 md:h-[68px]">
         <Link
           href="/"
@@ -30,9 +31,8 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
             SEPANG
           </span>
-          <span className="inline-flex items-center bg-race-red px-1.5 pb-[3px] pt-[1px] leading-none text-white">
-            56
-          </span>
+          <span className={textures.brandFlag} aria-hidden="true" />
+          <span>56</span>
         </Link>
 
         <nav aria-label="Primary navigation" className="hidden h-full items-stretch md:flex">
@@ -66,7 +66,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
 
         <div className="hidden items-center gap-4 md:flex">
           <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
-            <span className="live-dot" aria-hidden="true" />
+            <span className="h-1.5 w-6 bg-race-red" aria-hidden="true" />
             Sepang
           </span>
           <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
