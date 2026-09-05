@@ -16,6 +16,7 @@ const displayFont = Barlow_Condensed({
   weight: ["600", "700", "800"],
   variable: "--font-display-source",
   display: "swap",
+  fallback: ["Arial Narrow", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
 });
 
 const bodyFont = Titillium_Web({
@@ -23,6 +24,7 @@ const bodyFont = Titillium_Web({
   weight: ["400", "600", "700"],
   variable: "--font-body-source",
   display: "swap",
+  fallback: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
 });
 
 const monoFont = IBM_Plex_Mono({
@@ -30,6 +32,7 @@ const monoFont = IBM_Plex_Mono({
   weight: ["400", "500"],
   variable: "--font-mono-source",
   display: "swap",
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
 });
 
 export const metadata: Metadata = {
