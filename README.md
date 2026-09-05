@@ -50,6 +50,16 @@ Regenerate the track polyline after changing the source geometry:
 npm run generate:track
 ```
 
+Because the WebGL scene cannot be screenshotted in CI, the same geometry can be
+rendered offline — it projects the real meshes through the real camera with
+three's math and writes a PNG to `.preview/`:
+
+```bash
+npm run preview:scene            # composed overview
+npm run preview:scene corner     # hotspot camera
+npm run preview:scene chase 0.06 # onboard camera at 6% lap progress
+```
+
 The temporary GitHub Pages build is intentionally frontend-only. Landing, Learn, Sepang, Predictions, and Prediction Summary work without a backend and persist browser progress with `localStorage`.
 
 The production backend will be restored later for a VPS-backed Next.js deployment. The parked server-only integration lives under `backend/next/`.
