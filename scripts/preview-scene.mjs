@@ -7,19 +7,29 @@ import { writeFileSync } from "node:fs";
 import sharp from "sharp";
 import * as THREE from "three";
 
-import {
+// Some tsx/esbuild versions expose TS modules only through `default` when they
+// are imported from an .mjs file, so normalise both shapes.
+const load = async (specifier) => {
+  const loaded = await import(specifier);
+  return loaded.default && !loaded.createStrip && !loaded.SEPANG_HOTSPOT_PROGRESS
+    ? loaded.default
+    : loaded;
+};
+
+const {
   createApron,
   createAsphalt,
   createEdgeLine,
   createKerbs,
   createSlabWall,
   createSpeedTrace,
+  createTracksidePosts,
   cornerPose,
   directionAtProgress,
   positionAtProgress,
   SLAB_HEIGHT,
-} from "../lib/circuit-geometry.ts";
-import { SEPANG_HOTSPOT_PROGRESS } from "../lib/sepang-geometry.ts";
+} = await load("../lib/circuit-geometry.ts");
+const { SEPANG_HOTSPOT_PROGRESS } = await load("../lib/sepang-geometry.ts");
 
 const WIDTH = 1100;
 const HEIGHT = 660;
@@ -31,18 +41,23 @@ function makeCamera() {
   const camera = new THREE.PerspectiveCamera(34, WIDTH / HEIGHT, 0.05, 160);
 
   if (MODE === "corner") {
+    camera.fov = 38;
     const pose = cornerPose(SEPANG_HOTSPOT_PROGRESS.t15);
     camera.position.copy(pose.position);
     camera.lookAt(pose.target);
   } else if (MODE === "chase") {
+    camera.fov = 62;
     const point = positionAtProgress(CAR_PROGRESS);
     const direction = directionAtProgress(CAR_PROGRESS);
     camera.position
       .copy(point)
-      .addScaledVector(direction, -0.62)
-      .add(new THREE.Vector3(0, 0.34, 0));
+      .addScaledVector(direction, -0.34)
+      .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.145, 0));
     camera.lookAt(
-      point.clone().addScaledVector(direction, 0.5).add(new THREE.Vector3(0, 0.05, 0)),
+      point
+        .clone()
+        .addScaledVector(direction, 1.5)
+        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.05, 0)),
     );
   } else {
     camera.position.set(0, 13.0, 9.9);
@@ -118,48 +133,88 @@ function addRibbon(geometry, fill, opacity = 1, colored = false) {
   }
 }
 
-// ground grid
-for (let i = -20; i <= 20; i += 2) {
+// ground plane, approximated as tiles shaded by distance from the circuit
+const GROUND = 19;
+for (let x = -GROUND; x < GROUND; x += 1) {
+  for (let z = -GROUND; z < GROUND; z += 1) {
+    const distance = Math.hypot(x + 0.5, z + 0.5) / GROUND;
+    const level = Math.max(0, 1 - distance * 1.9);
+    const channel = (base, peak) => Math.round(base + (peak - base) * level);
+    pushQuad(
+      [
+        new THREE.Vector3(x, -0.02, z),
+        new THREE.Vector3(x + 1, -0.02, z),
+        new THREE.Vector3(x + 1, -0.02, z + 1),
+        new THREE.Vector3(x, -0.02, z + 1),
+      ],
+      `rgb(${channel(8, 22)} ${channel(9, 27)} ${channel(12, 35)})`,
+    );
+  }
+}
+
+// faint site grid
+for (let i = -GROUND; i <= GROUND; i += 1) {
   pushQuad(
     [
-      new THREE.Vector3(-20, -0.05, i),
-      new THREE.Vector3(20, -0.05, i),
-      new THREE.Vector3(20, -0.05, i + 0.02),
-      new THREE.Vector3(-20, -0.05, i + 0.02),
+      new THREE.Vector3(-GROUND, -0.015, i),
+      new THREE.Vector3(GROUND, -0.015, i),
+      new THREE.Vector3(GROUND, -0.015, i + 0.012),
+      new THREE.Vector3(-GROUND, -0.015, i + 0.012),
     ],
-    "#171b22",
+    "#20262f",
   );
   pushQuad(
     [
-      new THREE.Vector3(i, -0.05, -20),
-      new THREE.Vector3(i, -0.05, 20),
-      new THREE.Vector3(i + 0.02, -0.05, 20),
-      new THREE.Vector3(i + 0.02, -0.05, -20),
+      new THREE.Vector3(i, -0.015, -GROUND),
+      new THREE.Vector3(i, -0.015, GROUND),
+      new THREE.Vector3(i + 0.012, -0.015, GROUND),
+      new THREE.Vector3(i + 0.012, -0.015, -GROUND),
     ],
-    "#171b22",
+    "#20262f",
   );
 }
 
-addRibbon(createApron(), "#0c0f14");
-addRibbon(createSlabWall(1), "#0f1218");
-addRibbon(createSlabWall(-1), "#0f1218");
-addRibbon(createAsphalt(), "#242832");
-addRibbon(createEdgeLine(1), "#e9e7e1", 0.72);
-addRibbon(createEdgeLine(-1), "#e9e7e1", 0.72);
+addRibbon(createApron(), "#1a1f27");
+addRibbon(createSlabWall(1), "#0e1218");
+addRibbon(createSlabWall(-1), "#0e1218");
+addRibbon(createAsphalt(), "#363c47");
+addRibbon(createEdgeLine(1), "#eceae4", 0.8);
+addRibbon(createEdgeLine(-1), "#eceae4", 0.8);
 addRibbon(createKerbs(1), "#ffffff", 1, true);
 addRibbon(createKerbs(-1), "#ffffff", 1, true);
 addRibbon(createSpeedTrace(), "#ffffff", 0.95, true);
 
+// trackside marker posts
+for (const post of createTracksidePosts()) {
+  const [x, , z] = post.position;
+  const height = 0.17;
+  const half = 0.025;
+  const sin = Math.sin(-post.rotation);
+  const cos = Math.cos(-post.rotation);
+  const dx = cos * half;
+  const dz = -sin * half;
+
+  pushQuad(
+    [
+      new THREE.Vector3(x - dx, 0.0, z - dz),
+      new THREE.Vector3(x + dx, 0.0, z + dz),
+      new THREE.Vector3(x + dx, height, z + dz),
+      new THREE.Vector3(x - dx, height, z - dz),
+    ],
+    post.accent ? "#E8112D" : "#8b95a4",
+  );
+}
+
 // hotspot markers
 for (const progress of Object.values(SEPANG_HOTSPOT_PROGRESS)) {
   const point = positionAtProgress(progress);
-  const size = 0.11;
+  const size = 0.075;
   pushQuad(
     [
-      new THREE.Vector3(point.x - size, SLAB_HEIGHT + 0.02, point.z - size),
-      new THREE.Vector3(point.x + size, SLAB_HEIGHT + 0.02, point.z - size),
-      new THREE.Vector3(point.x + size, SLAB_HEIGHT + 0.02, point.z + size),
-      new THREE.Vector3(point.x - size, SLAB_HEIGHT + 0.02, point.z + size),
+      new THREE.Vector3(point.x - size, SLAB_HEIGHT + 0.012, point.z - size),
+      new THREE.Vector3(point.x + size, SLAB_HEIGHT + 0.012, point.z - size),
+      new THREE.Vector3(point.x + size, SLAB_HEIGHT + 0.012, point.z + size),
+      new THREE.Vector3(point.x - size, SLAB_HEIGHT + 0.012, point.z + size),
     ],
     "#E8112D",
   );
@@ -187,7 +242,7 @@ for (const progress of Object.values(SEPANG_HOTSPOT_PROGRESS)) {
 polygons.sort((a, b) => b.depth - a.depth);
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}">
-<rect width="100%" height="100%" fill="#07080a"/>
+<rect width="100%" height="100%" fill="#08090c"/>
 ${polygons
   .map(
     (polygon) =>
