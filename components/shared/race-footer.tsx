@@ -6,7 +6,6 @@ import { NAV_ITEMS, SITE_NAME } from "@/lib/constants";
 export function RaceFooter() {
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-white/8 bg-header">
-      <div className="chequer absolute inset-x-0 top-0 h-4 opacity-25" aria-hidden="true" />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -bottom-24 right-[-4%] font-display text-[14rem] font-extrabold leading-none tracking-[-0.06em] text-white/[0.025] sm:text-[20rem]"
