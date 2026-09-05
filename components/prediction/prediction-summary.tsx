@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Check, LockKeyhole, Pencil } from "lucide-react";
 
 import { PredictionCard } from "@/components/prediction/prediction-card";
@@ -21,8 +21,11 @@ import {
   type PersistedPredictionDraft,
   type PredictionAnswer,
 } from "@/lib/predictions";
+import { createClient } from "@/lib/supabase/client";
 
 const FINISH_SWEEP_SESSION_KEY = "sepang56.prediction-finish-sweep";
+const PENDING_PREDICTION_SAVE_KEY = "sepang56.predictions.pendingSave";
+const PENDING_DISPLAY_NAME_KEY = "sepang56.predictions.displayName";
 
 function formatAnswer(answer: PredictionAnswer | undefined) {
   if (isDriverId(answer)) {
@@ -61,6 +64,11 @@ export function PredictionSummary() {
   );
   const [locked, setLocked] = useState(false);
   const [showFinishSweep, setShowFinishSweep] = useState(false);
+  const [saveState, setSaveState] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const [saveMessage, setSaveMessage] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
     const stored = parsePersistedPredictionDraft(
@@ -68,6 +76,7 @@ export function PredictionSummary() {
     );
 
     setDraft(stored);
+    setDisplayName(window.sessionStorage.getItem(PENDING_DISPLAY_NAME_KEY) ?? "");
     setLocked(isPredictionLocked(PREDICTION_DEADLINE));
     setHydrated(true);
   }, []);
@@ -110,6 +119,75 @@ export function PredictionSummary() {
 
   const complete = isPredictionComplete(draft.answers);
   const deadlineLabel = formatDeadline(PREDICTION_DEADLINE);
+
+  const savePicks = useCallback(async () => {
+    if (!complete || locked) {
+      return;
+    }
+
+    if (displayName.trim().length < 2) {
+      setSaveState("error");
+      setSaveMessage("Choose a display name between 2 and 24 characters.");
+      return;
+    }
+
+    setSaveState("saving");
+    setSaveMessage("");
+    window.sessionStorage.setItem(PENDING_DISPLAY_NAME_KEY, displayName);
+
+    try {
+      const response = await fetch("/api/predictions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers: draft.answers, displayName }),
+      });
+
+      if (response.status === 401) {
+        window.sessionStorage.setItem(PENDING_PREDICTION_SAVE_KEY, "1");
+        const { error } = await createClient().auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback?next=/predict/summary`,
+          },
+        });
+
+        if (error) {
+          window.sessionStorage.removeItem(PENDING_PREDICTION_SAVE_KEY);
+          throw error;
+        }
+
+        return;
+      }
+
+      const payload = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Unable to save your picks.");
+      }
+
+      window.sessionStorage.removeItem(PENDING_PREDICTION_SAVE_KEY);
+      window.sessionStorage.removeItem(PENDING_DISPLAY_NAME_KEY);
+      setSaveState("saved");
+      setSaveMessage("Picks saved. You can edit and save again before the deadline.");
+    } catch (error) {
+      setSaveState("error");
+      setSaveMessage(
+        error instanceof Error ? error.message : "Unable to save your picks.",
+      );
+    }
+  }, [complete, displayName, draft.answers, locked]);
+
+  useEffect(() => {
+    if (
+      !hydrated ||
+      !complete ||
+      locked ||
+      window.sessionStorage.getItem(PENDING_PREDICTION_SAVE_KEY) !== "1"
+    ) {
+      return;
+    }
+
+    void savePicks();
+  }, [complete, hydrated, locked, savePicks]);
 
   function editQuestion(index: number) {
     if (locked) {
@@ -169,7 +247,7 @@ export function PredictionSummary() {
                 {locked
                   ? "The race deadline has passed. Your calls are now read-only."
                   : complete
-                    ? "Your eight demo picks are complete and saved on this device. Edit any row, or finish the demo without changing your selections."
+                    ? "Your eight picks are complete. Save them with Google to enter the community leaderboard."
                     : "Review the grid. Every answered row can still be changed before you finish your picks."}
               </p>
             </div>
@@ -249,7 +327,7 @@ export function PredictionSummary() {
             })}
           </section>
 
-          <div className="mt-7 flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
                 {deadlineLabel ? `Deadline: ${deadlineLabel}` : "Demo mode / saved on this device"}
@@ -258,6 +336,29 @@ export function PredictionSummary() {
                 <p className="mt-1 max-w-xl text-sm text-text-secondary">
                   Leaving this screen does not clear your picks. They remain in this browser until you change them.
                 </p>
+              ) : null}
+              {saveMessage ? (
+                <p
+                  role="status"
+                  className={`mt-1 max-w-xl text-sm ${saveState === "error" ? "text-race-red" : "text-text-secondary"}`}
+                >
+                  {saveMessage}
+                </p>
+              ) : null}
+              {!locked && complete ? (
+                <label className="mt-2 block max-w-sm">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+                    Public display name (shown on the global grid)
+                  </span>
+                  <input
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    maxLength={24}
+                    autoComplete="nickname"
+                    placeholder="How racers will see you"
+                    className="mt-2 min-h-11 w-full border border-white/20 bg-black/20 px-3 text-white outline-none transition-colors placeholder:text-text-muted focus:border-race-red"
+                  />
+                </label>
               ) : null}
             </div>
 
@@ -271,9 +372,28 @@ export function PredictionSummary() {
                   <Button asChild variant="secondary" className="w-full sm:w-auto">
                     <Link href="/sepang">Explore Sepang</Link>
                   </Button>
-                  <Button asChild className="w-full sm:w-auto">
-                    <Link href="/">Finish Demo</Link>
-                  </Button>
+                  {!locked ? (
+                    <Button
+                      type="button"
+                      className="w-full sm:w-auto"
+                      disabled={
+                        saveState === "saving" ||
+                        saveState === "saved" ||
+                        displayName.trim().length < 2
+                      }
+                      onClick={() => void savePicks()}
+                    >
+                      {saveState === "saving"
+                        ? "Saving picks…"
+                        : saveState === "saved"
+                          ? "Picks saved"
+                          : "Save picks with Google"}
+                    </Button>
+                  ) : (
+                    <Button asChild className="w-full sm:w-auto">
+                      <Link href="/">Back home</Link>
+                    </Button>
+                  )}
                 </>
               )}
             </div>

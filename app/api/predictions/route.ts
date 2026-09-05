@@ -6,27 +6,9 @@ import {
   isValidPredictionSubmission,
   parsePredictionAnswers,
 } from "@/lib/predictions";
+import { parseDisplayName } from "@/lib/profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-
-function getDisplayName(user: {
-  email?: string;
-  user_metadata?: Record<string, unknown>;
-}) {
-  const metadata = user.user_metadata ?? {};
-  const fullName = metadata.full_name;
-  const name = metadata.name;
-
-  if (typeof fullName === "string" && fullName.trim()) {
-    return fullName.trim();
-  }
-
-  if (typeof name === "string" && name.trim()) {
-    return name.trim();
-  }
-
-  return user.email?.split("@")[0] ?? "Racer";
-}
 
 function getAvatarUrl(user: { user_metadata?: Record<string, unknown> }) {
   const metadata = user.user_metadata ?? {};
@@ -101,6 +83,7 @@ export async function POST(request: Request) {
       ? (body as Record<string, unknown>)
       : {};
   const answers = parsePredictionAnswers(bodyRecord.answers);
+  const displayName = parseDisplayName(bodyRecord.displayName);
 
   if (!isValidPredictionSubmission(answers)) {
     return NextResponse.json(
@@ -112,14 +95,41 @@ export async function POST(request: Request) {
   const admin = createAdminClient();
   const now = new Date().toISOString();
 
-  const { error: profileError } = await admin.from("profiles").upsert(
-    {
-      id: user.id,
-      display_name: getDisplayName(user),
-      avatar_url: getAvatarUrl(user),
-    },
-    { onConflict: "id" },
-  );
+  const { data: profile, error: profileLookupError } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileLookupError) {
+    return NextResponse.json(
+      { error: "Unable to prepare your profile." },
+      { status: 500 },
+    );
+  }
+
+  if (!profile && !displayName) {
+    return NextResponse.json(
+      {
+        error: "Choose a display name between 2 and 24 characters.",
+        requiresDisplayName: true,
+      },
+      { status: 409 },
+    );
+  }
+
+  const { error: profileError } = profile
+    ? displayName
+      ? await admin
+          .from("profiles")
+          .update({ display_name: displayName })
+          .eq("id", user.id)
+      : { error: null }
+    : await admin.from("profiles").insert({
+        id: user.id,
+        display_name: displayName,
+        avatar_url: getAvatarUrl(user),
+      });
 
   if (profileError) {
     return NextResponse.json(
