@@ -157,10 +157,12 @@ const centerX = (minX + maxX) / 2;
 const centerY = (minY + maxY) / 2;
 const scale = 10.25 / Math.max(maxX - minX, maxY - minY);
 
-// Scene space: x to the right, z towards the viewer (SVG y is inverted).
+// Scene space: x to the right, z "down" in the standard top-down view, matching
+// the source drawing. Do NOT negate y here: in the composed 3D camera view
+// world +z reads as screen-down, so negating mirrors the circuit.
 const scenePoints = resampled.map((point) => ({
   x: Number(((point.x - centerX) * scale).toFixed(4)),
-  z: Number((-(point.y - centerY) * scale).toFixed(4)),
+  z: Number(((point.y - centerY) * scale).toFixed(4)),
 }));
 
 const body = scenePoints

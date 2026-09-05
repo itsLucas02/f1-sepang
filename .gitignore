@@ -27,3 +27,6 @@ pnpm-debug.log*
 
 # typescript
 *.tsbuildinfo
+
+# Offline scene previews (dev tool output)
+/.preview

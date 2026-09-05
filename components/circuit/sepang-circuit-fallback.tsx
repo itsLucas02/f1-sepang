@@ -155,19 +155,19 @@ export function SepangCircuitMap({
           </filter>
         </defs>
 
-        {/* run-off + asphalt */}
-        <path d={TRACK_PATH} stroke="#0e1116" strokeWidth="0.46" strokeLinejoin="round" />
+        {/* run-off apron, painted edges, asphalt */}
+        <path d={TRACK_PATH} stroke="#0c0f14" strokeWidth="0.62" strokeLinejoin="round" />
         <path
           d={TRACK_PATH}
           stroke="#e9e7e1"
-          strokeOpacity="0.42"
-          strokeWidth="0.2"
+          strokeOpacity="0.55"
+          strokeWidth="0.38"
           strokeLinejoin="round"
         />
-        <path d={TRACK_PATH} stroke="#191c22" strokeWidth="0.17" strokeLinejoin="round" />
+        <path d={TRACK_PATH} stroke="#242832" strokeWidth="0.33" strokeLinejoin="round" />
 
         {/* speed trace */}
-        <g filter="url(#sepang-trace-glow)" strokeLinecap="round" strokeWidth="0.05">
+        <g filter="url(#sepang-trace-glow)" strokeLinecap="round" strokeWidth="0.055">
           {SPEED_SEGMENTS.map((segment, index) => (
             <path key={index} d={segment.d} stroke={segment.color} strokeOpacity="0.95" />
           ))}
@@ -177,10 +177,10 @@ export function SepangCircuitMap({
         {SECTOR_TICKS.map((tick) => (
           <g key={tick.key} transform={`translate(${tick.x} ${tick.z}) rotate(${tick.angle})`}>
             <rect
-              x="-0.008"
-              y="-0.13"
-              width="0.016"
-              height="0.26"
+              x="-0.012"
+              y="-0.22"
+              width="0.024"
+              height="0.44"
               fill={tick.color}
               opacity="0.85"
             />
@@ -192,10 +192,10 @@ export function SepangCircuitMap({
           {Array.from({ length: 6 }, (_, index) => (
             <rect
               key={index}
-              x="-0.04"
-              y={-0.085 + index * 0.028}
-              width="0.08"
-              height="0.028"
+              x="-0.055"
+              y={-0.165 + index * 0.055}
+              width="0.11"
+              height="0.055"
               fill={index % 2 === 0 ? "#f4f3ef" : "#0c0d10"}
             />
           ))}
@@ -243,9 +243,9 @@ export function SepangCircuitMap({
         {/* hot lap car */}
         {showCar ? (
           <g ref={carRef} transform={`translate(${START_POINT.x} ${START_POINT.z})`}>
-            <circle r="0.16" fill="#E8112D" opacity="0.18" />
-            <rect x="-0.075" y="-0.032" width="0.15" height="0.064" rx="0.02" fill="#E8112D" />
-            <rect x="0.028" y="-0.02" width="0.06" height="0.04" rx="0.014" fill="#f4f3ef" />
+            <circle r="0.2" fill="#E8112D" opacity="0.18" />
+            <rect x="-0.1" y="-0.042" width="0.2" height="0.084" rx="0.026" fill="#E8112D" />
+            <rect x="0.036" y="-0.026" width="0.08" height="0.052" rx="0.018" fill="#f4f3ef" />
           </g>
         ) : null}
       </svg>

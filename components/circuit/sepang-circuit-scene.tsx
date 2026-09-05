@@ -8,21 +8,20 @@ import * as THREE from "three";
 import { HOTSPOT_ORDER, getHotspot, type HotspotId } from "@/content/sepang";
 import { SEPANG_HOTSPOT_PROGRESS } from "@/lib/sepang-geometry";
 import {
+  createApron,
+  createAsphalt,
   createChequeredTexture,
+  createEdgeLine,
   createKerbs,
-  createRibbon,
+  createSlabWall,
+  createSpeedTrace,
   cornerPose as cornerPoseAt,
   directionAtProgress,
   positionAtProgress,
-  RUNOFF_WIDTH,
-  TRACE_WIDTH,
+  SLAB_HEIGHT,
   TRACK_WIDTH,
 } from "@/lib/circuit-geometry";
-import {
-  SEPANG_HOT_LAP,
-  SEPANG_SECTOR_COLORS,
-  speedColor,
-} from "@/lib/sepang-telemetry";
+import { SEPANG_HOT_LAP, SEPANG_SECTOR_COLORS } from "@/lib/sepang-telemetry";
 import { sampleAtTime } from "@/lib/telemetry";
 import type { HotLapCamera } from "@/lib/use-hot-lap";
 
@@ -30,23 +29,20 @@ const TRAIL_SEGMENTS = 44;
 const TRAIL_SPAN = 0.055;
 
 function TrackSurface() {
-  const geometries = useMemo(() => {
-    const minSpeed = SEPANG_HOT_LAP.minSpeed;
-    const maxSpeed = SEPANG_HOT_LAP.topSpeed;
-
-    return {
-      runoff: createRibbon({ width: RUNOFF_WIDTH, y: -0.012 }),
-      outline: createRibbon({ width: TRACK_WIDTH + 0.028, y: -0.002 }),
-      asphalt: createRibbon({ width: TRACK_WIDTH, y: 0 }),
-      kerbs: createKerbs(),
-      trace: createRibbon({
-        width: TRACE_WIDTH,
-        y: 0.014,
-        color: (index) =>
-          speedColor(SEPANG_HOT_LAP.samples[index].speed, minSpeed, maxSpeed),
-      }),
-    };
-  }, []);
+  const geometries = useMemo(
+    () => ({
+      apron: createApron(),
+      asphalt: createAsphalt(),
+      wallLeft: createSlabWall(1),
+      wallRight: createSlabWall(-1),
+      edgeLeft: createEdgeLine(1),
+      edgeRight: createEdgeLine(-1),
+      kerbLeft: createKerbs(1),
+      kerbRight: createKerbs(-1),
+      trace: createSpeedTrace(),
+    }),
+    [],
+  );
 
   useEffect(
     () => () => {
@@ -57,26 +53,43 @@ function TrackSurface() {
 
   return (
     <group>
-      <mesh geometry={geometries.runoff}>
-        <meshBasicMaterial color="#0d1014" />
+      {/* ground apron the slab sits on */}
+      <mesh geometry={geometries.apron}>
+        <meshBasicMaterial color="#0c0f14" />
       </mesh>
-      <mesh geometry={geometries.outline}>
-        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.5} />
+
+      {/* slab sides give the circuit real thickness */}
+      <mesh geometry={geometries.wallLeft}>
+        <meshStandardMaterial color="#0f1218" roughness={1} />
       </mesh>
+      <mesh geometry={geometries.wallRight}>
+        <meshStandardMaterial color="#0f1218" roughness={1} />
+      </mesh>
+
+      {/* asphalt */}
       <mesh geometry={geometries.asphalt}>
-        <meshStandardMaterial color="#191c22" roughness={0.94} metalness={0.04} />
+        <meshStandardMaterial color="#242832" roughness={0.95} metalness={0.05} />
       </mesh>
-      <mesh geometry={geometries.kerbs}>
-        <meshBasicMaterial vertexColors transparent opacity={0.92} />
+
+      {/* painted edges */}
+      <mesh geometry={geometries.edgeLeft}>
+        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.72} />
       </mesh>
+      <mesh geometry={geometries.edgeRight}>
+        <meshBasicMaterial color="#e9e7e1" transparent opacity={0.72} />
+      </mesh>
+
+      {/* kerbing on the corners */}
+      <mesh geometry={geometries.kerbLeft}>
+        <meshBasicMaterial vertexColors />
+      </mesh>
+      <mesh geometry={geometries.kerbRight}>
+        <meshBasicMaterial vertexColors />
+      </mesh>
+
+      {/* speed-coloured racing line */}
       <mesh geometry={geometries.trace}>
-        <meshBasicMaterial
-          vertexColors
-          transparent
-          opacity={0.9}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
+        <meshBasicMaterial vertexColors transparent opacity={0.95} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -88,7 +101,7 @@ function StartLine() {
     const point = positionAtProgress(0);
     const direction = directionAtProgress(0);
     return {
-      position: [point.x, 0.016, point.z] as const,
+      position: [point.x, SLAB_HEIGHT + 0.006, point.z] as const,
       rotation: [-Math.PI / 2, 0, -Math.atan2(direction.z, direction.x)] as const,
     };
   }, []);
@@ -97,7 +110,7 @@ function StartLine() {
 
   return (
     <mesh position={position} rotation={rotation}>
-      <planeGeometry args={[0.075, TRACK_WIDTH]} />
+      <planeGeometry args={[0.14, TRACK_WIDTH]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
     </mesh>
   );
@@ -113,7 +126,7 @@ function SectorMarkers() {
         return {
           key: `sector-${index}`,
           color: SEPANG_SECTOR_COLORS[index],
-          position: [point.x, 0.018, point.z] as const,
+          position: [point.x, SLAB_HEIGHT + 0.008, point.z] as const,
           rotation: [-Math.PI / 2, 0, -Math.atan2(direction.z, direction.x)] as const,
         };
       }),
@@ -124,7 +137,7 @@ function SectorMarkers() {
     <group>
       {markers.map((marker) => (
         <mesh key={marker.key} position={marker.position} rotation={marker.rotation}>
-          <planeGeometry args={[0.016, TRACK_WIDTH + 0.09]} />
+          <planeGeometry args={[0.03, TRACK_WIDTH + 0.16]} />
           <meshBasicMaterial color={marker.color} transparent opacity={0.85} />
         </mesh>
       ))}
@@ -139,8 +152,8 @@ function CornerDots() {
         const point = positionAtProgress(corner.progress);
         return {
           key: `corner-${corner.number}`,
-          position: [point.x, 0.02, point.z] as const,
-          radius: 0.022 + corner.severity * 0.014,
+          position: [point.x, SLAB_HEIGHT + 0.01, point.z] as const,
+          radius: 0.026 + corner.severity * 0.016,
         };
       }),
     [],
@@ -196,7 +209,7 @@ function HotspotMarkers({
         const isSelected = marker.id === selectedHotspot;
 
         return (
-          <group key={marker.id} position={[marker.position.x, 0.03, marker.position.z]}>
+          <group key={marker.id} position={[marker.position.x, SLAB_HEIGHT + 0.014, marker.position.z]}>
             <mesh
               rotation={[-Math.PI / 2, 0, 0]}
               onClick={(event) => {
@@ -210,7 +223,7 @@ function HotspotMarkers({
                 document.body.style.cursor = "";
               }}
             >
-              <circleGeometry args={[0.11, 24]} />
+              <circleGeometry args={[0.075, 24]} />
               <meshBasicMaterial
                 color={isSelected ? "#E8112D" : "#0b0c0f"}
                 transparent
@@ -218,19 +231,19 @@ function HotspotMarkers({
               />
             </mesh>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.002, 0]}>
-              <ringGeometry args={[0.11, 0.135, 28]} />
+              <ringGeometry args={[0.075, 0.095, 28]} />
               <meshBasicMaterial color={isSelected ? "#ffffff" : "#8f97a4"} />
             </mesh>
 
             {isSelected ? (
               <mesh ref={pulse} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.001, 0]}>
-                <ringGeometry args={[0.12, 0.17, 30]} />
+                <ringGeometry args={[0.085, 0.115, 30]} />
                 <meshBasicMaterial color="#E8112D" transparent opacity={0.4} />
               </mesh>
             ) : null}
 
             <Html
-              position={[0, 0.16, 0]}
+              position={[0, 0.2, 0]}
               center
               distanceFactor={9}
               zIndexRange={[24, 0]}
@@ -376,10 +389,10 @@ function SpeedTrail({ progressRef }: { progressRef: React.RefObject<number> }) {
       const offset = index * 6;
 
       array[offset] = point.x + nx;
-      array[offset + 1] = 0.022;
+      array[offset + 1] = SLAB_HEIGHT + 0.012;
       array[offset + 2] = point.z + nz;
       array[offset + 3] = point.x - nx;
-      array[offset + 4] = 0.022;
+      array[offset + 4] = SLAB_HEIGHT + 0.012;
       array[offset + 5] = point.z - nz;
     }
 
@@ -427,7 +440,7 @@ function HotLapRunner({
     positionAtProgress(sample.progress, position.current);
     directionAtProgress(sample.progress, direction.current);
 
-    carRef.current.position.set(position.current.x, 0, position.current.z);
+    carRef.current.position.set(position.current.x, SLAB_HEIGHT, position.current.z);
     carRef.current.rotation.y = Math.atan2(direction.current.x, direction.current.z);
 
     const targetRoll =
@@ -457,8 +470,8 @@ function HotLapRunner({
   );
 }
 
-const OVERVIEW_POSITION = new THREE.Vector3(0, 14.6, 10.6);
-const OVERVIEW_TARGET = new THREE.Vector3(0, 0, 0);
+const OVERVIEW_POSITION = new THREE.Vector3(0, 13, 9.9);
+const OVERVIEW_TARGET = new THREE.Vector3(0, 0, 0.35);
 
 function cornerPose(hotspot: HotspotId) {
   return cornerPoseAt(SEPANG_HOTSPOT_PROGRESS[hotspot]);
@@ -536,11 +549,11 @@ function CameraRig({
       const desired = scratch.current
         .clone()
         .addScaledVector(scratchDirection.current, -0.62)
-        .add(new THREE.Vector3(0, 0.34, 0));
+        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.3, 0));
       const lookAt = scratch.current
         .clone()
         .addScaledVector(scratchDirection.current, 0.5)
-        .add(new THREE.Vector3(0, 0.05, 0));
+        .add(new THREE.Vector3(0, SLAB_HEIGHT + 0.04, 0));
 
       if (!chaseReady.current) {
         chasePosition.current.copy(desired);
@@ -630,7 +643,7 @@ export default function SepangCircuitScene({
     <Canvas
       frameloop={playing || cameraMode === "chase" ? "always" : "demand"}
       dpr={[1, 1.75]}
-      camera={{ position: [0, 14.6, 10.6], fov: 34, near: 0.05, far: 160 }}
+      camera={{ position: [0, 13, 9.9], fov: 34, near: 0.05, far: 160 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       <color attach="background" args={["#07080a"]} />

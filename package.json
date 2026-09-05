@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "optimize:images": "node scripts/prepare-images.mjs",
-    "generate:track": "node scripts/generate-track-points.mjs"
+    "generate:track": "node scripts/generate-track-points.mjs",
+    "preview:scene": "tsx scripts/preview-scene.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.23",
@@ -41,6 +42,7 @@
     "postcss": "8.5.26",
     "sharp": "0.35.4",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.0",
     "vitest": "4.1.11"
   }

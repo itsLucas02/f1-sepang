@@ -32,6 +32,32 @@ describe("circuit geometry", () => {
     expect(SEPANG_TRACK_BOUNDS.maxZ - SEPANG_TRACK_BOUNDS.minZ).toBeLessThan(11);
   });
 
+  it("keeps the circuit the right way round", () => {
+    // Regression guard: mapping the source SVG's y axis to -z mirrors Sepang,
+    // which renders a plausible-looking but wrong circuit. In the corrected
+    // mapping the polygon winds with a positive signed area in the (x, z)
+    // plane, matching the source drawing's orientation.
+    const points = SEPANG_LAP_POINTS;
+    let area = 0;
+
+    for (let index = 0; index < points.length; index += 1) {
+      const next = points[(index + 1) % points.length];
+      area += points[index].x * next.z - next.x * points[index].z;
+    }
+
+    expect(area / 2).toBeGreaterThan(40);
+  });
+
+  it("puts the guided hotspots in lap order around the circuit", () => {
+    // T1 follows the start/finish straight, T15 is the last corner before it.
+    expect(SEPANG_HOTSPOT_PROGRESS["main-straight"]).toBeLessThan(
+      SEPANG_HOTSPOT_PROGRESS.t1,
+    );
+    expect(SEPANG_HOTSPOT_PROGRESS.t1).toBeLessThan(SEPANG_HOTSPOT_PROGRESS.t4);
+    expect(SEPANG_HOTSPOT_PROGRESS.t4).toBeLessThan(SEPANG_HOTSPOT_PROGRESS.t9);
+    expect(SEPANG_HOTSPOT_PROGRESS.t9).toBeLessThan(SEPANG_HOTSPOT_PROGRESS.t15);
+  });
+
   it("produces unit-length track normals", () => {
     for (const normal of TRACK_NORMALS) {
       expect(Math.hypot(normal.x, normal.z)).toBeCloseTo(1, 6);
@@ -70,7 +96,7 @@ describe("circuit geometry", () => {
   });
 
   it("only kerbs the corners, not the straights", () => {
-    const kerbs = createKerbs();
+    const kerbs = createKerbs(1);
     const positions = attribute(kerbs, "position");
 
     expect(hasFiniteValues(positions)).toBe(true);

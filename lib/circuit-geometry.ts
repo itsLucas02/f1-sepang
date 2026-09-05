@@ -1,6 +1,10 @@
 import * as THREE from "three";
 
-import { SEPANG_HOT_LAP, SEPANG_LAP_POINTS } from "@/lib/sepang-telemetry";
+import {
+  SEPANG_HOT_LAP,
+  SEPANG_LAP_POINTS,
+  speedColor,
+} from "@/lib/sepang-telemetry";
 
 /**
  * Mesh construction for the WebGL circuit scene.
@@ -9,9 +13,15 @@ import { SEPANG_HOT_LAP, SEPANG_LAP_POINTS } from "@/lib/sepang-telemetry";
  * browser or a WebGL context.
  */
 
-export const TRACK_WIDTH = 0.17;
-export const RUNOFF_WIDTH = 0.46;
+/** Visual proportions of the circuit model, in scene units. */
+export const TRACK_WIDTH = 0.34;
+export const SLAB_HEIGHT = 0.09;
+export const APRON_WIDTH = 0.62;
+export const EDGE_LINE_WIDTH = 0.022;
+export const KERB_WIDTH = 0.06;
 export const TRACE_WIDTH = 0.05;
+/** Legacy alias kept for the run-off ribbon width. */
+export const RUNOFF_WIDTH = APRON_WIDTH;
 
 const POINTS = SEPANG_LAP_POINTS;
 const COUNT = POINTS.length;
@@ -30,6 +40,12 @@ function normalAt(index: number) {
 }
 
 export const TRACK_NORMALS = POINTS.map((_, index) => normalAt(index));
+
+export const TRACK_CURVATURE = SEPANG_HOT_LAP.samples.map(
+  (sample) => sample.curvature,
+);
+
+const MAX_CURVATURE = Math.max(...TRACK_CURVATURE);
 
 export function positionAtProgress(progress: number, out = new THREE.Vector3()) {
   const wrapped = ((progress % 1) + 1) % 1;
@@ -51,114 +67,68 @@ export function directionAtProgress(progress: number, out = new THREE.Vector3())
   return out.copy(ahead).sub(behind).normalize();
 }
 
-export type RibbonOptions = {
-  width: number | ((index: number) => number);
-  y?: number | ((index: number) => number);
+/** One edge of a strip: how far sideways from the centreline, and how high. */
+export type StripEdge = (index: number) => { lateral: number; y: number };
+
+export type StripOptions = {
+  left: StripEdge;
+  right: StripEdge;
   color?: (index: number) => readonly [number, number, number];
+  /** Restrict the strip to a subset of the lap (used for kerbing). */
+  include?: (index: number) => boolean;
 };
 
-/** Builds a closed ribbon (triangle strip) that follows the circuit. */
-export function createRibbon({ width, y = 0, color }: RibbonOptions) {
-  const vertexCount = (COUNT + 1) * 2;
-  const positions = new Float32Array(vertexCount * 3);
-  const colors = color ? new Float32Array(vertexCount * 3) : null;
-
-  for (let index = 0; index <= COUNT; index += 1) {
-    const source = wrapIndex(index);
-    const point = POINTS[source];
-    const normal = TRACK_NORMALS[source];
-    const halfWidth = (typeof width === "function" ? width(source) : width) / 2;
-    const height = typeof y === "function" ? y(source) : y;
-    const offset = index * 6;
-
-    positions[offset] = point.x + normal.x * halfWidth;
-    positions[offset + 1] = height;
-    positions[offset + 2] = point.z + normal.z * halfWidth;
-    positions[offset + 3] = point.x - normal.x * halfWidth;
-    positions[offset + 4] = height;
-    positions[offset + 5] = point.z - normal.z * halfWidth;
-
-    if (colors && color) {
-      const [r, g, b] = color(source);
-      colors[offset] = r;
-      colors[offset + 1] = g;
-      colors[offset + 2] = b;
-      colors[offset + 3] = r;
-      colors[offset + 4] = g;
-      colors[offset + 5] = b;
-    }
-  }
-
-  const indices = new Uint32Array(COUNT * 6);
-  for (let index = 0; index < COUNT; index += 1) {
-    const base = index * 2;
-    const offset = index * 6;
-    indices[offset] = base;
-    indices[offset + 1] = base + 1;
-    indices[offset + 2] = base + 3;
-    indices[offset + 3] = base;
-    indices[offset + 4] = base + 3;
-    indices[offset + 5] = base + 2;
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  if (colors) {
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-  }
-  geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-  geometry.computeVertexNormals();
-
-  return geometry;
-}
-
-/** Red/white kerbing on the inside and outside of the corners. */
-export function createKerbs() {
+/**
+ * Builds a closed strip that follows the circuit. Both edges are described
+ * independently, so the same routine produces the asphalt top face, the
+ * vertical slab walls, the white edge lines, the kerbs and the racing line.
+ */
+export function createStrip({ left, right, color, include }: StripOptions) {
   const positions: number[] = [];
   const colors: number[] = [];
   const indices: number[] = [];
-  const curvature = SEPANG_HOT_LAP.samples.map((sample) => sample.curvature);
-  const maxCurvature = Math.max(...curvature);
 
-  const white = [0.95, 0.94, 0.92] as const;
-  const red = [0.91, 0.07, 0.18] as const;
-
-  const pushQuad = (
-    points: readonly (readonly [number, number, number])[],
-    tint: readonly [number, number, number],
-  ) => {
-    const base = positions.length / 3;
-    for (const [x, y, z] of points) {
-      positions.push(x, y, z);
-      colors.push(tint[0], tint[1], tint[2]);
-    }
-    indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
+  const vertexFor = (index: number, edge: StripEdge) => {
+    const source = wrapIndex(index);
+    const point = POINTS[source];
+    const normal = TRACK_NORMALS[source];
+    const { lateral, y } = edge(source);
+    return [point.x + normal.x * lateral, y, point.z + normal.z * lateral] as const;
   };
 
-  for (let index = 0; index < COUNT; index += 1) {
-    if (curvature[index] < maxCurvature * 0.22) {
-      continue;
+  const pushPair = (index: number) => {
+    const base = positions.length / 3;
+    const a = vertexFor(index, left);
+    const b = vertexFor(index, right);
+    positions.push(a[0], a[1], a[2], b[0], b[1], b[2]);
+
+    if (color) {
+      const [r, g, bl] = color(wrapIndex(index));
+      colors.push(r, g, bl, r, g, bl);
     }
 
-    const next = wrapIndex(index + 1);
-    const tint = Math.floor(index / 4) % 2 === 0 ? red : white;
-    const inner = TRACK_WIDTH / 2;
-    const outer = inner + 0.035;
-    const p0 = POINTS[index];
-    const p1 = POINTS[next];
-    const n0 = TRACK_NORMALS[index];
-    const n1 = TRACK_NORMALS[next];
+    return base;
+  };
 
-    for (const side of [1, -1]) {
-      pushQuad(
-        [
-          [p0.x + n0.x * inner * side, 0.004, p0.z + n0.z * inner * side],
-          [p0.x + n0.x * outer * side, 0.004, p0.z + n0.z * outer * side],
-          [p1.x + n1.x * outer * side, 0.004, p1.z + n1.z * outer * side],
-          [p1.x + n1.x * inner * side, 0.004, p1.z + n1.z * inner * side],
-        ],
-        tint,
-      );
+  if (include) {
+    // Discontinuous strip: emit an isolated quad per included segment.
+    for (let index = 0; index < COUNT; index += 1) {
+      if (!include(index)) {
+        continue;
+      }
+
+      const base = pushPair(index);
+      pushPair(index + 1);
+      indices.push(base, base + 1, base + 3, base, base + 3, base + 2);
+    }
+  } else {
+    for (let index = 0; index <= COUNT; index += 1) {
+      pushPair(index);
+    }
+
+    for (let index = 0; index < COUNT; index += 1) {
+      const base = index * 2;
+      indices.push(base, base + 1, base + 3, base, base + 3, base + 2);
     }
   }
 
@@ -167,13 +137,101 @@ export function createKerbs() {
     "position",
     new THREE.BufferAttribute(new Float32Array(positions), 3),
   );
-  geometry.setAttribute(
-    "color",
-    new THREE.BufferAttribute(new Float32Array(colors), 3),
-  );
+  if (color) {
+    geometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(new Float32Array(colors), 3),
+    );
+  }
   geometry.setIndex(indices);
+  geometry.computeVertexNormals();
 
   return geometry;
+}
+
+/** Backwards-compatible flat ribbon helper. */
+export function createRibbon({
+  width,
+  y = 0,
+  color,
+}: {
+  width: number | ((index: number) => number);
+  y?: number | ((index: number) => number);
+  color?: (index: number) => readonly [number, number, number];
+}) {
+  const halfWidth = (index: number) =>
+    (typeof width === "function" ? width(index) : width) / 2;
+  const height = (index: number) => (typeof y === "function" ? y(index) : y);
+
+  return createStrip({
+    left: (index) => ({ lateral: halfWidth(index), y: height(index) }),
+    right: (index) => ({ lateral: -halfWidth(index), y: height(index) }),
+    color,
+  });
+}
+
+/** Ground apron the circuit slab sits on. */
+export function createApron() {
+  return createRibbon({ width: APRON_WIDTH, y: 0.002 });
+}
+
+/** Top asphalt surface of the raised circuit slab. */
+export function createAsphalt() {
+  return createRibbon({ width: TRACK_WIDTH, y: SLAB_HEIGHT });
+}
+
+/** The vertical face of the slab on one side of the track. */
+export function createSlabWall(side: 1 | -1) {
+  const lateral = (TRACK_WIDTH / 2) * side;
+
+  return createStrip({
+    left: () => ({ lateral, y: SLAB_HEIGHT }),
+    right: () => ({ lateral, y: 0.004 }),
+  });
+}
+
+/** Painted white line just inside each edge of the asphalt. */
+export function createEdgeLine(side: 1 | -1) {
+  const outer = (TRACK_WIDTH / 2 - 0.008) * side;
+  const inner = (TRACK_WIDTH / 2 - 0.008 - EDGE_LINE_WIDTH) * side;
+
+  return createStrip({
+    left: () => ({ lateral: outer, y: SLAB_HEIGHT + 0.001 }),
+    right: () => ({ lateral: inner, y: SLAB_HEIGHT + 0.001 }),
+  });
+}
+
+/** True where the lap is curved enough to deserve kerbing. */
+export function isCorner(index: number) {
+  return TRACK_CURVATURE[index] > MAX_CURVATURE * 0.16;
+}
+
+/** Red/white kerbing outside the white line, on the corners only. */
+export function createKerbs(side: 1 | -1) {
+  const inner = (TRACK_WIDTH / 2) * side;
+  const outer = (TRACK_WIDTH / 2 + KERB_WIDTH) * side;
+  const white = [0.93, 0.92, 0.9] as const;
+  const red = [0.91, 0.07, 0.18] as const;
+
+  return createStrip({
+    left: () => ({ lateral: inner, y: SLAB_HEIGHT + 0.0005 }),
+    right: () => ({ lateral: outer, y: SLAB_HEIGHT + 0.0005 }),
+    include: isCorner,
+    color: (index) => (Math.floor(index / 3) % 2 === 0 ? red : white),
+  });
+}
+
+/** Speed-coloured racing line laid on the asphalt. */
+export function createSpeedTrace() {
+  const minSpeed = SEPANG_HOT_LAP.minSpeed;
+  const maxSpeed = SEPANG_HOT_LAP.topSpeed;
+
+  return createRibbon({
+    width: TRACE_WIDTH,
+    y: SLAB_HEIGHT + 0.003,
+    color: (index) =>
+      speedColor(SEPANG_HOT_LAP.samples[index].speed, minSpeed, maxSpeed),
+  });
 }
 
 /** Chequered start/finish texture, generated on the client. */
@@ -209,9 +267,9 @@ export function cornerPose(progress: number) {
   const normal = new THREE.Vector3(-direction.z, 0, direction.x);
   const position = target
     .clone()
-    .add(normal.multiplyScalar(0.82))
-    .add(direction.clone().multiplyScalar(-0.34))
-    .add(new THREE.Vector3(0, 1.02, 0.6));
+    .add(normal.multiplyScalar(1.75))
+    .add(direction.clone().multiplyScalar(-0.9))
+    .add(new THREE.Vector3(0, 2.15, 1.15));
 
   return { position, target: target.clone() };
 }
