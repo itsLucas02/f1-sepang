@@ -316,7 +316,7 @@ export function SepangExplorer() {
       </section>
 
       <section className="mt-8 grid overflow-hidden border border-white/14 bg-[#09090b] lg:grid-cols-12">
-        <ScrollReveal className="lg:col-span-8" variant="photo-wipe">
+        <ScrollReveal className="lg:col-span-8" variant="rise">
           <div className="relative min-h-[300px] lg:min-h-[360px]">
             <Image
               src={publicAsset("/media/sepang/overview.webp")}

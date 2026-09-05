@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, Flag, MapPinned, Trophy } from "lucide-react";
 
 import { HotLapPreview } from "@/components/landing/hot-lap-preview";
+import { EditorialSectionHeading } from "@/components/landing/editorial-section-heading";
 import { JourneyStepCard } from "@/components/landing/journey-step-card";
 import { MalaysiaF1Heritage } from "@/components/landing/malaysia-f1-heritage";
 import { StartLightIntro } from "@/components/landing/start-light-intro";
@@ -100,9 +101,10 @@ export default function HomePage() {
           />
           <div aria-hidden="true" className="photo-vignette-mobile absolute inset-0 -z-10 lg:hidden" />
           <div aria-hidden="true" className="race-noise absolute inset-0 -z-10 opacity-16" />
+          <div aria-hidden="true" className="race-grain" />
           <StartLightIntro />
 
-          <SiteContainer className="relative flex min-h-[calc(100svh-4rem)] flex-col py-8 sm:py-10 md:min-h-[calc(100svh-4.25rem)] lg:py-12">
+          <SiteContainer className="relative z-10 flex min-h-[calc(100svh-4rem)] flex-col py-8 sm:py-10 md:min-h-[calc(100svh-4.25rem)] lg:py-12">
             <div className="grid min-h-[560px] flex-1 gap-10 lg:grid-cols-12 lg:items-center">
               <div className="relative z-10 lg:col-span-6 xl:col-span-5">
                 <div className="rise-in flex items-center gap-4">
@@ -189,35 +191,50 @@ export default function HomePage() {
               <div className="motorsport-corner pointer-events-none absolute -right-px -top-px hidden h-3 w-24 sm:block" aria-hidden="true" />
             </dl>
           </SiteContainer>
-          <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-1.5`} aria-hidden="true" />
         </section>
 
-        {/* Ticker band */}
+        {/* Slanted race ticker */}
         <section
           aria-hidden="true"
-          className="relative overflow-hidden border-y border-white/8 bg-[#0b0d11] py-3"
+          className="relative z-10 -my-2 select-none"
         >
-          <div className="marquee marquee-slow">
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex shrink-0 items-center">
-                {TICKER_ITEMS.map((item) => (
-                  <span
-                    key={`${copy}-${item}`}
-                    className="flex items-center whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.2em] text-white/40"
-                  >
-                    {item}
-                    <span className="mx-6 inline-block h-1 w-1 rotate-45 bg-race-red" />
-                  </span>
+          <div className="-rotate-[1.2deg] scale-[1.02]">
+            <div className="overflow-hidden bg-race-red py-2.5 text-[#08090c]">
+              <div className="marquee marquee-slow">
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="flex shrink-0 items-center">
+                    {TICKER_ITEMS.map((item) => (
+                      <span key={`${copy}-${item}`} className="flex items-center whitespace-nowrap font-mono text-[10px] font-semibold uppercase tracking-[0.2em]">
+                        {item}
+                        <span className="mx-6 inline-block h-1 w-1 rotate-45 bg-[#08090c]" />
+                      </span>
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
+            </div>
+            <div className="overflow-hidden bg-[#f3f1ec] py-2 text-[#08090c]">
+              <div className="marquee marquee-slow" style={{ animationDirection: "reverse" }}>
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="flex shrink-0 items-center">
+                    {TICKER_ITEMS.map((item) => (
+                      <span key={`${copy}-${item}`} className="flex items-center whitespace-nowrap font-mono text-[9px] font-semibold uppercase tracking-[0.2em]">
+                        {item}
+                        <span className="mx-6 inline-block h-1 w-1 rotate-45 bg-race-red" />
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Hot lap */}
         <section className="relative overflow-hidden border-b border-white/8 bg-[#08090c]">
           <div className="ambient-wash pointer-events-none absolute inset-0" aria-hidden="true" />
-          <SiteContainer className="relative py-16 sm:py-20 lg:py-24">
+          <div aria-hidden="true" className="race-grain" />
+          <SiteContainer className="relative z-10 py-16 sm:py-20 lg:py-24">
             <ScrollReveal variant="rise">
               <HotLapPreview />
             </ScrollReveal>
@@ -230,17 +247,12 @@ export default function HomePage() {
           <SiteContainer className="relative py-16 sm:py-20 lg:py-24">
             <div className="grid gap-10 lg:grid-cols-[250px_1fr] xl:grid-cols-[280px_1fr]">
               <ScrollReveal variant="slide-left">
-                <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-race-red">Your race weekend</p>
-                  <h2 className="mt-4 font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] text-white sm:text-6xl">
-                    Four steps
-                    <span className="block text-gradient-heat">to race day</span>
-                  </h2>
-                  <div className="mt-6 h-px w-16 bg-race-red" aria-hidden="true" />
-                  <p className="mt-6 max-w-[25ch] text-base leading-7 text-white/55">
-                    Everything you need to go from rookie to race-weekend ready.
-                  </p>
-                </div>
+                <EditorialSectionHeading
+                  number="01"
+                  eyebrow="Your race weekend"
+                  title={<>Four steps <span className="block text-gradient-heat">to race day</span></>}
+                  description="Everything you need to go from rookie to race-weekend ready."
+                />
               </ScrollReveal>
 
               <div aria-label="Your SEPANG 56 journey" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -261,15 +273,11 @@ export default function HomePage() {
           <SiteContainer className="relative py-16 sm:py-20">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
               <ScrollReveal className="lg:col-span-8" variant="slide-left">
-                <div>
-                  <div className="flex items-center gap-4">
-                    <span className={textures.stripeFlag} aria-hidden="true" />
-                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/50">Why SEPANG 56 exists</p>
-                  </div>
-                  <p className="mt-5 max-w-4xl font-display text-4xl font-extrabold uppercase italic leading-[0.94] text-white sm:text-5xl lg:text-6xl">
-                    Watch the race knowing why a corner, tyre call or late-braking move <span className="text-race-red">matters.</span>
-                  </p>
-                </div>
+                <EditorialSectionHeading
+                  number="03"
+                  eyebrow="Why SEPANG 56 exists"
+                  title={<>Watch the race knowing why a corner, tyre call or late-braking move <span className="text-race-red">matters.</span></>}
+                />
               </ScrollReveal>
               <ScrollReveal className="lg:col-span-3 lg:col-start-10" delay={120} variant="slide-right">
                 <Button asChild size="large" className="sheen w-full rounded-none uppercase tracking-[0.05em]">
@@ -281,7 +289,6 @@ export default function HomePage() {
               </ScrollReveal>
             </div>
           </SiteContainer>
-          <div className="kerb-stripe h-2 opacity-90" aria-hidden="true" />
         </section>
       </main>
 

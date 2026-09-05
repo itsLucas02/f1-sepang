@@ -42,13 +42,17 @@ export function StartLightIntro() {
       aria-hidden="true"
       className={`${styles.startLights} ${done ? styles.startLightsDone : ""}`}
     >
-      {Array.from({ length: 5 }, (_, index) => (
-        <span
-          key={index}
-          className={styles.startLight}
-          style={{ "--light-index": index } as CSSProperties}
-        />
-      ))}
+      <p className={styles.startLightsLabel}>Start sequence</p>
+      <div className={styles.startLightsGantry}>
+        {Array.from({ length: 5 }, (_, index) => (
+          <span
+            key={index}
+            className={styles.startLight}
+            style={{ "--light-index": index } as CSSProperties}
+          />
+        ))}
+      </div>
+      <p className={styles.startLightsStatus}>{done ? "Lights out" : "Formation complete"}</p>
     </div>
   );
 }
