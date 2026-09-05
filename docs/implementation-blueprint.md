@@ -75,7 +75,6 @@ Use the smallest route set that covers the MVP:
 /predict
 /predict/summary
 /leaderboard
-/league/[code]
 /auth/callback
 ```
 
@@ -103,7 +102,6 @@ Examples:
 - `RadioGroup` behavior → custom `DriverCard`
 - Tabs/roving-focus behavior → custom `CircuitHotspotTabs`
 - Sheet/Drawer behavior → custom mobile circuit information presentation when needed
-- Dialog/Form behavior → league create/join UI
 
 Do not use stock shadcn visual identity.
 
@@ -122,7 +120,6 @@ app/
     page.tsx
     summary/
   leaderboard/
-  league/[code]/
   auth/callback/
 
 components/
@@ -142,7 +139,6 @@ lib/
   supabase/
   scoring.ts
   predictions.ts
-  leagues.ts
   constants.ts
 
 types/
@@ -184,18 +180,19 @@ Use the minimal model from `docs/auth-persistence-standard.md`:
 ```text
 profiles
 prediction_submissions
-leagues
-league_members
 race_results
 ```
 
 Important constraints:
 
 - one prediction submission per user for this MVP event
-- unique league membership per user/league pair
 - prediction writes rejected at/after the configured deadline
 - normal users cannot write race results
 - use small explicit RLS policies
+
+### Production simplification
+
+The live Supabase project currently contains `leagues` and `league_members` from the superseded product direction. Before production writes begin, remove those empty tables and their policies through one reviewed migration, then reconcile the live schema with the tracked migration history. Do not leave unused league infrastructure in the production database.
 
 Do not add a CMS or generic prediction-question schema.
 
@@ -268,9 +265,6 @@ Do not start with Three.js polish. First establish the correct page composition 
 - deterministic scoring function + unit tests
 - race-result storage
 - global leaderboard
-- create league
-- join by code/link
-- league leaderboard
 - tied rankings
 
 ### Phase 7 — Presentation polish
@@ -298,7 +292,6 @@ At minimum, cover the business rules most likely to break competition:
 - prediction draft survives reload/auth handoff
 - deadline prevents writes
 - exact-match scoring totals to 25
-- league membership uniqueness
 - leaderboard tie ranking (`1, 2, 2, 4`)
 
 Prefer unit tests for deterministic logic and focused integration/E2E tests for the major user flow.
@@ -342,9 +335,7 @@ Keep/edit submitted picks before deadline
   ↓
 See picks locked after deadline
   ↓
-Create or join a private league
-  ↓
-See scored global/private leaderboards after results are entered
+See the scored global leaderboard after results are entered
 ```
 
 The experience must work on desktop and mobile and remain usable without successful 3D rendering.
@@ -361,7 +352,7 @@ Examples:
 - one JSON answer object over generic question tables
 - one race deadline over scheduling infrastructure
 - one scoring function over a rules engine
-- one league membership table over a social platform
+- one global leaderboard over league membership infrastructure
 - local storage over offline-sync architecture
 - Google OAuth only over multi-provider auth
 

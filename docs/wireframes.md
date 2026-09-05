@@ -121,25 +121,24 @@ These are directional wireframes, not final visual design. Final UI must feel un
 +-----------------------------------------------------+
 ```
 
-## League leaderboard
+## Global leaderboard
 
 ```text
 +-------------------------------------------------------------+
-| SEPANG 56                             KRACKEDDEVS LEAGUE     |
+| SEPANG 56                            GLOBAL LEADERBOARD      |
 +-------------------------------------------------------------+
 |                                                             |
-|                       KRACKEDDEVS                           |
-|                  14 racers | KD56-X7KQ                      |
-|                     [ SHARE LEAGUE ]                        |
+|                    SEPANG 56 COMMUNITY                      |
+|                       RACE RESULTS IN                        |
 |                                                             |
 +-------------------------------------------------------------+
 | #       PLAYER                                  SCORE       |
-| 1       Aiman                                   820         |
-| 2       Lucas                                   760         |
-| 3       Faris                                   710         |
-| 4       Daniel                                  660         |
+| 1       Aiman                                    25         |
+| 2       Lucas                                    22         |
+| 3       Faris                                    22         |
+| 4       Daniel                                   19         |
 |                                                             |
-| YOU: #2                                       760 PTS       |
+| YOU: #2                                        22 PTS       |
 +-------------------------------------------------------------+
 ```
 
