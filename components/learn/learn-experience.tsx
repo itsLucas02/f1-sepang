@@ -268,7 +268,7 @@ export function LearnExperience() {
             className="relative mt-5 h-2 overflow-hidden rounded-full bg-white/10"
           >
             <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] shadow-[0_0_12px_rgba(232,17,45,0.6)] transition-[width] duration-500"
+              className="h-full bg-race-red shadow-[0_0_12px_rgba(232,17,45,0.55)] transition-[width] duration-500"
               style={{
                 width: `${(completedRecommendedCount / recommendedLessonIds.length) * 100}%`,
               }}

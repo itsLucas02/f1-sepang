@@ -57,7 +57,7 @@ export function FamiliarityCard({
           <span
             className={cn(
               "font-mono text-[10px] uppercase tracking-[0.16em]",
-              selected ? "text-sunset" : "text-text-muted",
+              selected ? "text-race-red" : "text-text-muted",
             )}
           >
             Route {LEVEL_MARK[level]}
@@ -91,7 +91,7 @@ export function FamiliarityCard({
       <span
         aria-hidden="true"
         className={cn(
-          "absolute inset-x-0 bottom-0 h-[3px] origin-left bg-[linear-gradient(90deg,var(--sepang-race-red),var(--sepang-sunset))] transition-transform duration-300",
+          "absolute inset-x-0 bottom-0 h-[3px] origin-left bg-race-red transition-transform duration-300",
           selected ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
         )}
       />

@@ -19,17 +19,51 @@ export const SEPANG_HOT_LAP: HotLap = buildHotLap(SEPANG_TRACK_POINTS, {
 
 export const SEPANG_LAP_POINTS = SEPANG_HOT_LAP.points;
 
-export const SEPANG_SECTOR_COLORS = ["#FF7A18", "#00E0C6", "#FFB302"] as const;
+/**
+ * Broadcast timing colours: purple for the quickest sector of the lap, green
+ * for the next, yellow for the slowest. Sectors are not tinted decoratively —
+ * the colour states what the data says, exactly as a timing screen does.
+ */
+export const TIMING_PURPLE = "#B026FF";
+export const TIMING_GREEN = "#00D26A";
+export const TIMING_YELLOW = "#FFD800";
 
-/** Colour ramp used by the speed trace: slow (red) to flat-out (near white). */
+function rankSectorColors() {
+  const durations = SEPANG_HOT_LAP.sectorTimes.map((time, index) =>
+    index === 0 ? time : time - SEPANG_HOT_LAP.sectorTimes[index - 1],
+  );
+  const order = durations
+    .map((duration, index) => ({ duration, index }))
+    .sort((a, b) => a.duration - b.duration);
+
+  const colors: string[] = ["", "", ""];
+  const ramp = [TIMING_PURPLE, TIMING_GREEN, TIMING_YELLOW];
+  order.forEach((entry, rank) => {
+    colors[entry.index] = ramp[rank];
+  });
+
+  return colors as [string, string, string];
+}
+
+export const SEPANG_SECTOR_COLORS = rankSectorColors();
+
+/** Per-sector durations, in seconds. */
+export const SEPANG_SECTOR_DURATIONS = SEPANG_HOT_LAP.sectorTimes.map(
+  (time, index) =>
+    index === 0 ? time : time - SEPANG_HOT_LAP.sectorTimes[index - 1],
+) as [number, number, number];
+
+/** Colour ramp for the speed trace: slow (deep red) to flat out (bone). */
 export function speedColor(speedKmh: number, min: number, max: number) {
   const span = Math.max(1, max - min);
   const t = Math.min(1, Math.max(0, (speedKmh - min) / span));
 
+  // Deep red through race red to bone. No orange: the ramp should read as heat
+  // in the sport's own palette, not as a decorative sunset gradient.
   const stops = [
-    { at: 0, rgb: [232, 17, 45] },
-    { at: 0.4, rgb: [255, 122, 24] },
-    { at: 0.72, rgb: [255, 179, 2] },
+    { at: 0, rgb: [124, 10, 26] },
+    { at: 0.45, rgb: [232, 17, 45] },
+    { at: 0.78, rgb: [255, 108, 124] },
     { at: 1, rgb: [246, 246, 240] },
   ];
 

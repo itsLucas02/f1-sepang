@@ -86,6 +86,18 @@ from the Sepang dusk (tropical sunset over the circuit) are now approved:
   confirmations, live indicators. It deliberately contrasts red so success and
   brand emphasis are never confused.
 
+### Theme doctrine (amended)
+
+The palette below still governs surfaces and type. Two amendments apply to
+accent colour, recorded in `docs/visual-language.md`:
+
+1. **Decorative gradients are not used.** Flat fills and hard edges only;
+   ramps are reserved for photo scrims and data heat.
+2. **Sunset and Amber are retired as decorative accents** in favour of the
+   broadcast timing palette — purple `#B026FF`, green `#00D26A`, yellow
+   `#FFD800` — which is applied to data only. Teal now resolves to timing
+   green.
+
 ### Implementation note
 
 `app/globals.css` now carries these exact token values. Race Red is

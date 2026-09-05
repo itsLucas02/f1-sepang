@@ -22,38 +22,42 @@
   background-size: 7px 7px, 11px 11px, 100% 100%;
 }
 
+/* Three-sector mark. Unequal hard-edged bars, not a repeating candy stripe:
+   one loaded red, one bone, one quiet neutral. */
 .stripeFlag {
   width: 92px;
-  height: 10px;
-  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
-  background: repeating-linear-gradient(
+  height: 9px;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+  background: linear-gradient(
     90deg,
-    #e10600 0 16px,
-    #f3f1ec 16px 32px,
-    #111113 32px 40px
+    #e8112d 0 44%,
+    transparent 44% 50%,
+    #e9e7e1 50% 74%,
+    transparent 74% 80%,
+    rgba(255, 255, 255, 0.26) 80% 100%
   );
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 }
 
 .stripeFlagSmall {
-  width: 64px;
-  height: 7px;
-  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
-  background: repeating-linear-gradient(
+  width: 60px;
+  height: 6px;
+  clip-path: polygon(7% 0, 100% 0, 93% 100%, 0 100%);
+  background: linear-gradient(
     90deg,
-    #e10600 0 11px,
-    #f3f1ec 11px 22px,
-    transparent 22px 28px
+    #e8112d 0 46%,
+    transparent 46% 54%,
+    rgba(255, 255, 255, 0.34) 54% 100%
   );
 }
 
+/* Finish-line chequer for photo edges. */
 .stripeBand {
-  background: repeating-linear-gradient(
-    112deg,
-    #e10600 0 34px,
-    #f3f1ec 34px 68px,
-    #0b0b0c 68px 82px
-  );
+  background-color: #0b0d11;
+  background-image:
+    linear-gradient(45deg, #e9e7e1 25%, transparent 25%, transparent 75%, #e9e7e1 75%),
+    linear-gradient(45deg, #e9e7e1 25%, transparent 25%, transparent 75%, #e9e7e1 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
 }
 
 .petronasEdge {

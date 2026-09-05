@@ -95,8 +95,8 @@ export function LapTelemetryChart({
       >
         <defs>
           <linearGradient id="speed-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FF7A18" stopOpacity="0.28" />
-            <stop offset="60%" stopColor="#E8112D" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="#E8112D" stopOpacity="0.22" />
+            <stop offset="70%" stopColor="#E8112D" stopOpacity="0.06" />
             <stop offset="100%" stopColor="#E8112D" stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -110,7 +110,7 @@ export function LapTelemetryChart({
             width={(sector.to - sector.from) * PLOT_WIDTH}
             height={PLOT_HEIGHT}
             fill={SEPANG_SECTOR_COLORS[index]}
-            opacity={0.035}
+            opacity={0.05}
           />
         ))}
 
@@ -152,7 +152,7 @@ export function LapTelemetryChart({
               y={y}
               width={width}
               height={height}
-              fill={braking ? "#E8112D" : "#00E0C6"}
+              fill={braking ? "#E8112D" : "#00D26A"}
               opacity={braking ? 0.85 : 0.2 + sample.throttle * 0.6}
             />
           );
@@ -198,14 +198,14 @@ export function LapTelemetryChart({
               x2={xFor(hoverSample.progress)}
               y1={PADDING.top}
               y2={HEIGHT - PADDING.bottom}
-              stroke="#00E0C6"
+              stroke="#F6F6F0"
               strokeWidth="1"
             />
             <circle
               cx={xFor(hoverSample.progress)}
               cy={yFor(hoverSample.speed)}
               r="4.5"
-              fill="#00E0C6"
+              fill="#F6F6F0"
             />
           </g>
         ) : null}
@@ -221,7 +221,7 @@ export function LapTelemetryChart({
             fontSize="10"
             letterSpacing="1.4"
           >
-            {`SECTOR ${index + 1} · ${formatSectorTime(
+            {`S${index + 1} · ${formatSectorTime(
               index === 0
                 ? SEPANG_HOT_LAP.sectorTimes[0]
                 : SEPANG_HOT_LAP.sectorTimes[index] - SEPANG_HOT_LAP.sectorTimes[index - 1],
@@ -251,12 +251,16 @@ export function LapTelemetryChart({
           Speed
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-2 w-2 bg-teal" aria-hidden="true" />
+          <span className="h-2 w-2 bg-timing-green" aria-hidden="true" />
           Throttle
         </span>
         <span className="flex items-center gap-2">
           <span className="h-2 w-2 bg-race-red" aria-hidden="true" />
           Braking
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="h-2 w-2 bg-timing-purple" aria-hidden="true" />
+          Quickest sector
         </span>
         <span>Derived from circuit geometry — not live timing data</span>
       </figcaption>

@@ -43,11 +43,19 @@
   --sepang-race-red-bright: #ff2d46;
   --sepang-race-red-deep: #9c0a1e;
 
-  /* Sepang dusk accents. Sunset pairs with red; teal is the system accent. */
-  --sepang-sunset: #ff7a18;
-  --sepang-amber: #ffb302;
-  --sepang-teal: #00e0c6;
-  --sepang-teal-deep: #06897b;
+  /* Broadcast timing palette. This is the sport's own colour language:
+     purple = fastest, green = live/best, yellow = slower/caution. Used for
+     data only — never as decoration. */
+  --sepang-purple: #b026ff;
+  --sepang-green: #00d26a;
+  --sepang-yellow: #ffd800;
+
+  /* Legacy accent aliases. Kept so existing utilities resolve; new work should
+     use race red, the timing palette, or neutrals. */
+  --sepang-sunset: #e8112d;
+  --sepang-amber: #ffd800;
+  --sepang-teal: #00d26a;
+  --sepang-teal-deep: #058c48;
 
   --sepang-stripe-dark: #111113;
   --sepang-stripe-light: #56565d;
@@ -101,6 +109,9 @@
   --color-race-red-deep: var(--sepang-race-red-deep);
   --color-sunset: var(--sepang-sunset);
   --color-amber: var(--sepang-amber);
+  --color-timing-purple: var(--sepang-purple);
+  --color-timing-green: var(--sepang-green);
+  --color-timing-yellow: var(--sepang-yellow);
   --color-teal: var(--sepang-teal);
   --color-teal-deep: var(--sepang-teal-deep);
 
@@ -193,56 +204,67 @@ textarea {
   );
 }
 
+/* Finish-line chequer. Replaces the old red/white barber stripe. */
 .kerb-stripe {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--sepang-race-red) 0px,
-    var(--sepang-race-red) 22px,
-    #f3f1ec 22px,
-    #f3f1ec 44px
-  );
+  background-color: #0b0d11;
+  background-image:
+    linear-gradient(45deg, #eceae4 25%, transparent 25%, transparent 75%, #eceae4 75%),
+    linear-gradient(45deg, #eceae4 25%, transparent 25%, transparent 75%, #eceae4 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
 }
 
 .kerb-stripe-thin {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--sepang-race-red) 0px,
-    var(--sepang-race-red) 12px,
-    #f3f1ec 12px,
-    #f3f1ec 24px
-  );
+  background-color: #0b0d11;
+  background-image:
+    linear-gradient(45deg, #d9d7d1 25%, transparent 25%, transparent 75%, #d9d7d1 75%),
+    linear-gradient(45deg, #d9d7d1 25%, transparent 25%, transparent 75%, #d9d7d1 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 4px 4px;
 }
 
+/* Three-sector mark: one loaded red bar, two quiet neutrals. Hard edges, no
+   repeating candy stripe. */
 .motorsport-stripe {
-  width: 72px;
-  height: 6px;
-  transform: skewX(-28deg);
-  background: repeating-linear-gradient(
-    90deg,
-    var(--sepang-race-red) 0 11px,
-    transparent 11px 15px,
-    #f3f1ec 15px 26px,
-    transparent 26px 30px
-  );
+  display: flex;
+  width: 68px;
+  height: 7px;
+  gap: 4px;
+  transform: skewX(-22deg);
 }
 
+.motorsport-stripe::before,
+.motorsport-stripe::after {
+  content: "";
+  height: 100%;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.motorsport-stripe::before {
+  width: 26px;
+  background: var(--sepang-race-red);
+}
+
+.motorsport-stripe::after {
+  width: 16px;
+}
+
+/* Corner marker: a single skewed red blade with a neutral shoulder. */
 .motorsport-corner {
   clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     90deg,
-    #f3f1ec 0 18px,
-    #f3f1ec 18px 28px,
-    var(--sepang-race-red) 28px 46px,
-    var(--sepang-race-red) 46px 56px
+    rgba(255, 255, 255, 0.16) 0 46%,
+    var(--sepang-race-red) 46% 100%
   );
 }
 
 .chequer {
   background-image:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.14) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.14) 75%),
-    linear-gradient(45deg, rgba(255, 255, 255, 0.14) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.14) 75%);
-  background-size: 16px 16px;
-  background-position: 0 0, 8px 8px;
+    linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.12) 75%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.12) 75%);
+  background-size: 14px 14px;
+  background-position: 0 0, 7px 7px;
 }
 
 /* Compatibility class: now a restrained photographic vignette, not a coloured glow. */
@@ -250,17 +272,10 @@ textarea {
   background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 32%, rgba(0,0,0,0.2));
 }
 
-/* Headline heat treatment: race red bleeding into the Sepang sunset. */
+/* Headline accent: one flat race red. No gradient — the sport's graphics are
+   hard-edged, and a colour ramp in type reads as decoration, not identity. */
 .text-gradient-heat {
-  background: linear-gradient(
-    100deg,
-    var(--sepang-race-red) 0%,
-    var(--sepang-race-red-bright) 38%,
-    var(--sepang-sunset) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--sepang-race-red);
 }
 
 .track-topography {
@@ -529,7 +544,7 @@ textarea {
   height: 2px;
   transform: scaleX(0);
   transform-origin: left;
-  background: linear-gradient(90deg, var(--sepang-race-red), var(--sepang-sunset));
+  background: var(--sepang-race-red);
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -539,22 +554,22 @@ textarea {
 }
 
 /* System "live" indicator. Teal, never red — red is reserved for the brand. */
+/* Session indicator. Green means the session is running — the same code the
+   timing screens use. Square, because nothing in F1 graphics is a soft dot. */
 .live-dot {
   position: relative;
   display: inline-block;
   width: 7px;
   height: 7px;
-  border-radius: 999px;
-  background: var(--sepang-teal);
-  box-shadow: 0 0 10px rgba(0, 224, 198, 0.7);
+  background: var(--sepang-green);
+  box-shadow: 0 0 10px rgba(0, 210, 106, 0.55);
 }
 
 .live-dot::after {
   content: "";
   position: absolute;
   inset: -4px;
-  border-radius: 999px;
-  border: 1px solid var(--sepang-teal);
+  border: 1px solid var(--sepang-green);
   animation: live-pulse 2s ease-out infinite;
 }
 
@@ -662,21 +677,45 @@ textarea {
 /* Reading-progress rail under the sticky header. */
 .scroll-rail {
   transform-origin: left center;
-  background: linear-gradient(90deg, var(--sepang-race-red), var(--sepang-sunset) 70%, var(--sepang-amber));
+  background: var(--sepang-race-red);
 }
 
 /* Subtle ambient wash behind hero/section content. */
+/* Ambient depth only: a single low red wash and cool neutral fill. */
 .ambient-wash {
   background:
-    radial-gradient(60% 70% at 12% 0%, rgba(232, 17, 45, 0.12), transparent 62%),
-    radial-gradient(50% 60% at 88% 12%, rgba(255, 122, 24, 0.09), transparent 60%),
-    radial-gradient(70% 60% at 50% 100%, rgba(0, 224, 198, 0.05), transparent 65%);
+    radial-gradient(58% 68% at 14% 0%, rgba(232, 17, 45, 0.1), transparent 62%),
+    radial-gradient(60% 65% at 86% 8%, rgba(120, 140, 170, 0.05), transparent 62%);
 }
 
 /* Thin instrument divider with a bright centre. */
 .rule-glow {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+}
+
+/* Timing-screen rule: hairline with a loaded red cap, like a sector bar. */
+.timing-rule {
+  position: relative;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.timing-rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 34px;
+  height: 3px;
+  background: var(--sepang-race-red);
+}
+
+/* Data plate: the flat, boxed field used on timing graphics. */
+.data-plate {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0b0d11;
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {

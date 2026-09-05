@@ -30,7 +30,9 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
             SEPANG
           </span>
-          <span className="text-race-red">56</span>
+          <span className="inline-flex items-center bg-race-red px-1.5 pb-[3px] pt-[1px] leading-none text-white">
+            56
+          </span>
         </Link>
 
         <nav aria-label="Primary navigation" className="hidden h-full items-stretch md:flex">
@@ -62,12 +64,19 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
           })}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <span className="live-dot" aria-hidden="true" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
-            Sepang / MY
+        <div className="hidden items-center gap-4 md:flex">
+          <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-white/55">
+            <span className="live-dot" aria-hidden="true" />
+            Sepang
           </span>
-          <span className="motorsport-stripe block origin-right scale-75" aria-hidden="true" />
+          <span className="h-3.5 w-px bg-white/15" aria-hidden="true" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/40 tabular-nums">
+            5.543 km · 15T · 56 laps
+          </span>
+          <span
+            className="kerb-stripe-thin h-3.5 w-9 opacity-70"
+            aria-hidden="true"
+          />
         </div>
 
         <div className="md:hidden">

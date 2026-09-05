@@ -8,7 +8,7 @@ export function RaceReadyMoment({ fan = false }: { fan?: boolean }) {
     <section className="relative overflow-hidden rounded-lg border border-teal/25 bg-surface-02 p-6 sm:p-8">
       <div
         aria-hidden="true"
-        className="absolute inset-y-0 left-0 w-1 bg-[linear-gradient(180deg,var(--sepang-teal),var(--sepang-teal-deep))]"
+        className="absolute inset-y-0 left-0 w-1 bg-timing-green"
       />
       <div
         aria-hidden="true"

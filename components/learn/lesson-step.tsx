@@ -83,7 +83,7 @@ export function LessonStep({
 
           <div className="relative mt-4 overflow-hidden rounded-lg border border-race-red/25 bg-surface-02 p-6 text-white sm:p-7">
             <span aria-hidden="true" className="absolute -right-20 -top-20 size-52 rounded-full bg-race-red/20 blur-3xl" />
-            <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-[linear-gradient(180deg,var(--sepang-race-red),var(--sepang-sunset))]" />
+            <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-race-red" />
             <p className="relative font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-race-red">
               Remember this
             </p>
