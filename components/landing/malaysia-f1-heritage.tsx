@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 
+import { EditorialSectionHeading } from "@/components/landing/editorial-section-heading";
 import { ScrollReveal } from "@/components/shared/scroll-reveal";
 import { SiteContainer } from "@/components/shared/site-container";
 import motion from "@/components/shared/motorsport-motion.module.css";
@@ -19,22 +20,17 @@ export function MalaysiaF1Heritage() {
     <section className="relative overflow-hidden border-y border-white/10 bg-[#070708]">
       <div className={`${textures.carbonFade} pointer-events-none absolute inset-y-0 left-0 w-[62%] opacity-75`} aria-hidden="true" />
       <div className="race-noise pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
+      <div className="race-grain" aria-hidden="true" />
 
-      <SiteContainer className="relative py-16 sm:py-20 lg:py-24">
+      <SiteContainer className="relative z-10 py-16 sm:py-20 lg:py-24">
         <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
           <div className="lg:col-span-5">
             <ScrollReveal variant="slide-left">
-              <div className="flex items-center gap-4">
-                <span className={textures.stripeFlag} aria-hidden="true" />
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/48">
-                  Malaysia in Formula 1
-                </p>
-              </div>
-
-              <h2 className="mt-6 max-w-2xl font-display text-5xl font-extrabold uppercase italic leading-[0.82] tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
-                Malaysia has
-                <span className="block text-race-red">skin in the game.</span>
-              </h2>
+              <EditorialSectionHeading
+                number="02"
+                eyebrow="Malaysia in Formula 1"
+                title={<>Malaysia has <span className="block text-race-red">skin in the game.</span></>}
+              />
             </ScrollReveal>
 
             <ScrollReveal delay={120} variant="rise">
