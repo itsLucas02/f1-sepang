@@ -30,3 +30,7 @@ pnpm-debug.log*
 
 # Offline scene previews (dev tool output)
 /.preview
+
+# Local code-discovery cache and working brief
+/.codebase-memory
+/docs/bounty-brief.md
