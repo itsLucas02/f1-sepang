@@ -60,7 +60,7 @@
   bottom: 0;
   width: 35%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #fff, #e10600);
+  background: var(--sepang-race-red);
   animation: progress-streak 540ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -85,7 +85,7 @@
   height: 100%;
   transform: scaleY(0);
   transform-origin: top;
-  background: linear-gradient(#00a19c, #e10600);
+  background: var(--sepang-race-red);
   animation: timeline-draw 1050ms cubic-bezier(0.22, 1, 0.36, 1) 180ms forwards;
 }
 

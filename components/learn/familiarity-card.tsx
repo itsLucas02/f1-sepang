@@ -29,7 +29,7 @@ export function FamiliarityCard({
       className={cn(
         "group relative isolate block min-h-64 cursor-pointer overflow-hidden rounded-lg border p-6 transition-[transform,border-color,background-color,box-shadow] duration-200 sm:p-7",
         selected
-          ? "race-select-pop border-race-red bg-[linear-gradient(150deg,#1b0e12_0%,#140f14_55%,#0e1116_100%)] shadow-[0_0_0_1px_rgba(232,17,45,0.35),0_18px_40px_-18px_rgba(232,17,45,0.55)]"
+          ? "race-select-pop border-race-red bg-[#12151b] shadow-[inset_0_0_0_1px_rgba(232,17,45,0.28),0_18px_40px_-20px_rgba(0,0,0,0.9)]"
           : "border-white/10 bg-surface-02 hover:-translate-y-1 hover:border-white/25 hover:bg-surface-03 hover:shadow-[0_18px_36px_-20px_rgba(0,0,0,0.9)]",
       )}
     >

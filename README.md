@@ -44,6 +44,19 @@ geometry:
 Everything is deterministic and unit tested — it is explicitly labelled as
 simulated and is never presented as live timing.
 
+### Brand fonts
+
+The type system follows Formula 1's own: **Formula1** for display and numerals,
+**Titillium Web** for body copy, IBM Plex Mono for data. The Formula1 faces are
+licensed and are not committed here — install your own copies with:
+
+```bash
+F1_FONT_SOURCE=/path/to/fonts npm run fonts:install
+```
+
+Without them the display face falls back to Barlow Condensed automatically; the
+build never depends on the proprietary files. See `public/fonts/README.md`.
+
 Regenerate the track polyline after changing the source geometry:
 
 ```bash

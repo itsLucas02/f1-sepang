@@ -14,7 +14,8 @@
     "test": "vitest run --passWithNoTests",
     "optimize:images": "node scripts/prepare-images.mjs",
     "generate:track": "node scripts/generate-track-points.mjs",
-    "preview:scene": "tsx scripts/preview-scene.mjs"
+    "preview:scene": "tsx scripts/preview-scene.mjs",
+    "fonts:install": "node scripts/install-brand-fonts.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.23",

@@ -47,7 +47,7 @@ export default function LeaderboardPage() {
           <div className="chequer absolute inset-0 opacity-[0.06]" aria-hidden="true" />
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--sepang-race-red),transparent)]"
+            className="absolute inset-x-0 top-0 h-px bg-race-red/60"
           />
 
           <div className="relative flex items-center gap-2.5">
@@ -63,7 +63,7 @@ export default function LeaderboardPage() {
                 <div className="mb-3 size-10 rounded-full border border-white/10 bg-surface-03" />
                 <div className="mb-2 h-2.5 w-16 rounded-full bg-white/8" />
                 <div
-                  className={`flex ${step.h} w-full items-start justify-center rounded-t-md border border-b-0 ${step.border} bg-[linear-gradient(180deg,rgba(255,255,255,0.05),transparent)] pt-4`}
+                  className={`flex ${step.h} w-full items-start justify-center rounded-t-md border border-b-0 ${step.border} bg-white/[0.04] pt-4`}
                 >
                   <span
                     className={`font-display text-2xl font-extrabold uppercase ${step.accent}`}
