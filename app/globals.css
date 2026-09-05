@@ -1,5 +1,54 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Brand typefaces
+   Formula 1's own type system is Formula1 Display for headings and numerals,
+   with Titillium Web for body copy. The Formula1 faces are licensed and are
+   not redistributed in this repository — run `npm run fonts:install` to place
+   them in public/fonts. Every rule below degrades to Barlow Condensed
+   automatically if the files are absent, so the build never depends on them.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Formula1";
+  src:
+    url("/fonts/Formula1-Regular.woff2") format("woff2"),
+    url("/fonts/Formula1-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Formula1";
+  src:
+    url("/fonts/Formula1-Bold.woff2") format("woff2"),
+    url("/fonts/Formula1-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Formula1";
+  src:
+    url("/fonts/Formula1-Black.woff2") format("woff2"),
+    url("/fonts/Formula1-Black.woff") format("woff");
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Formula1 Wide";
+  src:
+    url("/fonts/Formula1-Wide.woff2") format("woff2"),
+    url("/fonts/Formula1-Wide.woff") format("woff");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -69,9 +118,13 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-body-source);
-  --font-display: var(--font-display-source);
-  --font-mono: var(--font-mono-source);
+  /* Titillium Web is F1's own body face and stays the base sans. */
+  --font-sans: var(--font-body-source), "Titillium Web", system-ui, sans-serif;
+  /* Formula1 first; Barlow Condensed remains the fallback when the licensed
+     files are not installed. */
+  --font-display: "Formula1", var(--font-display-source), "Arial Narrow", sans-serif;
+  --font-mono: var(--font-mono-source), ui-monospace, monospace;
+  --font-wide: "Formula1 Wide", "Formula1", var(--font-display-source), sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -249,14 +302,10 @@ textarea {
   width: 16px;
 }
 
-/* Corner marker: a single skewed red blade with a neutral shoulder. */
+/* Corner marker: one skewed red blade. */
 .motorsport-corner {
   clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.16) 0 46%,
-    var(--sepang-race-red) 46% 100%
-  );
+  background: var(--sepang-race-red);
 }
 
 .chequer {
@@ -268,8 +317,9 @@ textarea {
 }
 
 /* Compatibility class: now a restrained photographic vignette, not a coloured glow. */
+/* Page top wash. Neutral only — no coloured glow. */
 .sepang-glow {
-  background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 32%, rgba(0,0,0,0.2));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.022), transparent 30%);
 }
 
 /* Headline accent: one flat race red. No gradient — the sport's graphics are
@@ -293,16 +343,9 @@ textarea {
   background: linear-gradient(180deg, rgba(7,7,8,0.2) 0%, rgba(7,7,8,0.72) 52%, #070708 100%);
 }
 
+/* Retired: a travelling light sweep is decoration, not motorsport graphics. */
 .race-scanline {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.02) 46%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.02) 54%,
-    transparent 100%
-  );
-  animation: race-scan 4.5s ease-in-out infinite;
+  background: none;
 }
 
 .sepang-marker-pulse {
@@ -374,20 +417,15 @@ textarea {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(
-    100deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.28) 42%,
-    transparent 62%
-  );
-  transform: translateX(-120%);
-  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateX(-101%);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 
 .sheen:hover::after,
 .sheen:focus-visible::after {
-  transform: translateX(120%);
+  transform: translateX(0);
 }
 
 @keyframes hero-kenburns {
@@ -402,7 +440,7 @@ textarea {
 
 @keyframes hero-light-on {
   0%, 5% { background: #2b0807; box-shadow: none; }
-  9%, 42% { background: #e10600; box-shadow: 0 0 18px rgba(225, 6, 0, 0.52); }
+  9%, 42% { background: var(--sepang-race-red); box-shadow: 0 0 18px rgba(232, 17, 45, 0.52); }
   47%, 100% { background: #210808; box-shadow: none; }
 }
 
@@ -681,11 +719,10 @@ textarea {
 }
 
 /* Subtle ambient wash behind hero/section content. */
-/* Ambient depth only: a single low red wash and cool neutral fill. */
+/* Ambient depth: a flat neutral lift at the top of a section. Coloured glow
+   blobs are not part of the language. */
 .ambient-wash {
-  background:
-    radial-gradient(58% 68% at 14% 0%, rgba(232, 17, 45, 0.1), transparent 62%),
-    radial-gradient(60% 65% at 86% 8%, rgba(120, 140, 170, 0.05), transparent 62%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent 46%);
 }
 
 /* Thin instrument divider with a bright centre. */
