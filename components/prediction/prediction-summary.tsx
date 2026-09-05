@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Check, LockKeyhole, Pencil } from "lucide-react";
 
+import { PredictionCard } from "@/components/prediction/prediction-card";
 import { RaceFlowHeader } from "@/components/shared/race-flow-header";
 import { Button } from "@/components/ui/button";
 import { getDriver, isDriverId } from "@/content/drivers";
@@ -198,6 +199,10 @@ export function PredictionSummary() {
                 </p>
               </div>
             </div>
+          </div>
+
+          <div className="mt-8">
+            <PredictionCard answers={draft.answers} />
           </div>
 
           <section
