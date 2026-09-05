@@ -75,7 +75,25 @@ car number, a hover wash. Never a large flat fill.
 
 ---
 
-## 5. Accessibility guardrails
+## 5. The circuit model
+
+The 3D circuit is a raised slab, not a line. Proportions live in
+`lib/circuit-geometry.ts` and the 2D map mirrors them:
+
+| Layer | Width (scene units) | Colour |
+| --- | --- | --- |
+| Ground apron | 0.62 | `#0C0F14` |
+| Slab side walls | — (0.09 tall) | `#0F1218` |
+| Asphalt top face | 0.34 | `#242832` |
+| Painted edge lines | 0.022 each side | `#E9E7E1` at 72% |
+| Kerbing (corners only) | 0.06 each side | red / bone, alternating |
+| Racing line | 0.05 | speed ramp |
+
+Orientation rule: the source SVG's **y axis maps to scene +z**. Negating it
+mirrors Sepang — the layout still looks plausible but is wrong, and it is
+guarded by a signed-area test in `lib/circuit-geometry.test.ts`.
+
+## 6. Accessibility guardrails
 
 - The 3D scene is decorative: it carries `role="img"` plus a text description,
   and every hotspot it exposes is also reachable from `CircuitHotspotTabs`.
