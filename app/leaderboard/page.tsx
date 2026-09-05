@@ -42,7 +42,7 @@ export default function LeaderboardPage() {
         {/* Locked podium visual */}
         <section
           aria-label="Leaderboard preview"
-          className="relative overflow-hidden rounded-lg border border-white/10 bg-surface-01 p-6 sm:p-8 lg:col-span-7"
+          className="surface-card relative overflow-hidden rounded-lg p-6 sm:p-8 lg:col-span-7"
         >
           <div className="chequer absolute inset-0 opacity-[0.06]" aria-hidden="true" />
           <div
@@ -123,7 +123,7 @@ export default function LeaderboardPage() {
         </h2>
         <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10 sm:grid-cols-3">
           {UPCOMING.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="bg-surface-01 p-6">
+            <div key={title} className="group bg-surface-01 p-6 transition-colors hover:bg-surface-02">
               <Icon aria-hidden="true" className="size-5 text-teal" />
               <h3 className="mt-5 font-display text-xl font-bold uppercase text-white">
                 {title}
