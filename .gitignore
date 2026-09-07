@@ -39,4 +39,7 @@ pnpm-debug.log*
 /docs/bounty-brief.md
 /.playwright-cli
 
+# Supabase CLI local state
+/supabase/.temp/
+
 .vercel
