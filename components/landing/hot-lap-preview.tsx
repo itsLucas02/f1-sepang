@@ -5,6 +5,7 @@ import { ArrowRight, Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { SepangCircuitMap } from "@/components/circuit/sepang-circuit-fallback";
+import textures from "@/components/shared/motorsport-textures.module.css";
 import { Button } from "@/components/ui/button";
 import { SEPANG_HOT_LAP, SEPANG_LAP_STATS } from "@/lib/sepang-telemetry";
 import { formatLapTime, sampleAtTime } from "@/lib/telemetry";
@@ -186,7 +187,7 @@ export function HotLapPreview() {
           </div>
 
           <div
-            className="kerb-stripe-thin pointer-events-none absolute inset-x-0 bottom-0 h-[3px] opacity-80"
+            className={`${textures.stripeBand} pointer-events-none absolute inset-x-0 bottom-0 h-2 opacity-80`}
             aria-hidden="true"
           />
         </div>

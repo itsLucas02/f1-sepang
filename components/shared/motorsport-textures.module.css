@@ -61,15 +61,12 @@
 }
 
 .brandFlag {
-  width: 1.45rem;
+  width: 1.6rem;
   height: 1.15rem;
-  background-color: #f3f1ec;
-  background-image:
-    linear-gradient(45deg, #08090c 25%, transparent 25%, transparent 75%, #08090c 75%),
-    linear-gradient(45deg, #08090c 25%, transparent 25%, transparent 75%, #08090c 75%);
-  background-position: 0 0, 0.275rem 0.275rem;
-  background-size: 0.55rem 0.55rem;
-  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  background-image: conic-gradient(#08090c 25%, #f3f1ec 0 50%, #08090c 0 75%, #f3f1ec 0);
+  background-position: 0.14rem 0;
+  background-size: 0.46rem 0.46rem;
+  clip-path: polygon(24% 0, 100% 0, 76% 100%, 0 100%);
 }
 
 .petronasEdge {
