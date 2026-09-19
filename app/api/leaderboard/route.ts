@@ -29,5 +29,8 @@ export async function GET() {
     score: submission.score,
   }));
 
-  return NextResponse.json({ participants });
+  return NextResponse.json(
+    { participants },
+    { headers: { "Cache-Control": "public, s-maxage=15, stale-while-revalidate=60" } },
+  );
 }

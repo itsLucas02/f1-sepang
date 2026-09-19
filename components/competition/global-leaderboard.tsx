@@ -7,6 +7,7 @@ import { rankParticipants, type LeaderboardParticipant } from "@/lib/leaderboard
 export function GlobalLeaderboard() {
   const [participants, setParticipants] = useState<LeaderboardParticipant[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     void fetch("/api/leaderboard")
@@ -15,7 +16,8 @@ export function GlobalLeaderboard() {
         if (!response.ok) throw new Error(payload.error ?? "Unable to load participants.");
         setParticipants(payload.participants ?? []);
       })
-      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Unable to load participants."));
+      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Unable to load participants."))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const hasScores = participants.some((participant) => participant.score !== null);
@@ -28,13 +30,29 @@ export function GlobalLeaderboard() {
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-race-red">Global grid</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold uppercase leading-none text-white sm:text-5xl">Who&apos;s racing?</h1>
-          <p className="mt-3 text-text-secondary">{participants.length} {participants.length === 1 ? "racer has" : "racers have"} saved picks.</p>
+          <p className="mt-3 text-text-secondary">
+            {isLoading ? "Grid forming…" : `${participants.length} ${participants.length === 1 ? "racer has" : "racers have"} saved picks.`}
+          </p>
         </div>
         <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-md border border-race-red/40 bg-race-red/10 text-race-red"><Users aria-hidden="true" className="size-5" /></span>
       </div>
       {error ? <p className="relative mt-8 text-race-red">{error}</p> : null}
-      {!error && participants.length === 0 ? <div className="relative mt-10 border border-dashed border-white/15 p-6 text-text-secondary">Be the first racer to save a full grid.</div> : null}
-      {!error && participants.length > 0 ? (
+      {!error && isLoading ? (
+        <div role="status" aria-live="polite" className="relative mt-10 overflow-hidden border border-white/15 bg-black/30 p-6 sm:p-7">
+          <div className="race-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden="true" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex gap-1.5" aria-hidden="true">
+              {[0, 1, 2, 3, 4].map((light) => <span key={light} className="size-3 rounded-full bg-race-red shadow-[0_0_16px_rgba(225,6,0,0.8)] animate-pulse" style={{ animationDelay: `${light * 110}ms` }} />)}
+            </div>
+            <div>
+              <p className="font-display text-lg font-extrabold uppercase italic text-white">Grid forming</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">Synchronising the timing tower</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {!error && !isLoading && participants.length === 0 ? <div className="relative mt-10 border border-dashed border-white/15 p-6 text-text-secondary">Be the first racer to save a full grid.</div> : null}
+      {!error && !isLoading && participants.length > 0 ? (
         <ol className="relative mt-8 divide-y divide-white/10 border-y border-white/10">
           {ranked.map((participant, index) => (
             <li key={`${participant.displayName}-${index}`} className="flex items-center justify-between gap-4 py-4">
