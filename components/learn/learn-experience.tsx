@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { ArrowRight, Check } from "lucide-react";
 
 import { FamiliarityCard } from "@/components/learn/familiarity-card";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { LESSONS, getLesson, type LessonId } from "@/content/lessons";
 import {
   LEARN_STORAGE_KEY,
+  clearCompletedRecommendedLessons,
   getNextRecommendedLessonId,
   getRecommendedLessonIds,
   isRaceReady,
@@ -48,6 +50,7 @@ export function LearnExperience() {
   const [completedLessonIds, setCompletedLessonIds] = useState<LessonId[]>([]);
   const [activeLessonId, setActiveLessonId] = useState<LessonId | null>(null);
   const [showFamiliarity, setShowFamiliarity] = useState(true);
+  const [restartPromptOpen, setRestartPromptOpen] = useState(false);
 
   useEffect(() => {
     const stored = parsePersistedLearnState(
@@ -89,6 +92,43 @@ export function LearnExperience() {
   const completedRecommendedCount = recommendedLessonIds.filter((lessonId) =>
     completedLessonIds.includes(lessonId),
   ).length;
+
+  const restartRecommendedPath = () => {
+    if (!knowledgeLevel || recommendedLessonIds.length === 0) {
+      return;
+    }
+
+    const nextCompleted = clearCompletedRecommendedLessons(
+      knowledgeLevel,
+      completedLessonIds,
+    );
+
+    setCompletedLessonIds(nextCompleted);
+    setRestartPromptOpen(false);
+    setActiveLessonId(recommendedLessonIds[0]);
+  };
+
+  const applyFamiliarity = () => {
+    if (!draftKnowledgeLevel) {
+      return;
+    }
+
+    const nextLessonId = getNextRecommendedLessonId(
+      draftKnowledgeLevel,
+      completedLessonIds,
+    );
+
+    setKnowledgeLevel(draftKnowledgeLevel);
+    setShowFamiliarity(false);
+    setActiveLessonId(nextLessonId);
+
+    if (
+      !nextLessonId &&
+      getRecommendedLessonIds(draftKnowledgeLevel).length > 0
+    ) {
+      setRestartPromptOpen(true);
+    }
+  };
 
   if (!hydrated) {
     return (
@@ -149,20 +189,7 @@ export function LearnExperience() {
           <Button
             type="button"
             disabled={!draftKnowledgeLevel}
-            onClick={() => {
-              if (!draftKnowledgeLevel) {
-                return;
-              }
-
-              setKnowledgeLevel(draftKnowledgeLevel);
-              setShowFamiliarity(false);
-              setActiveLessonId(
-                getNextRecommendedLessonId(
-                  draftKnowledgeLevel,
-                  completedLessonIds,
-                ),
-              );
-            }}
+            onClick={applyFamiliarity}
           >
             Continue
           </Button>
@@ -180,6 +207,7 @@ export function LearnExperience() {
 
     return (
       <LessonStep
+        key={activeLessonId}
         lesson={lesson}
         recommended={recommendedSet.has(activeLessonId)}
         completed={completedLessonIds.includes(activeLessonId)}
@@ -208,7 +236,7 @@ export function LearnExperience() {
   );
 
   return (
-    <div>
+          <div>
       <section className="flex flex-col gap-6 border-b border-white/10 pb-8 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
@@ -239,7 +267,10 @@ export function LearnExperience() {
 
       {ready ? (
         <div className="mt-8">
-          <RaceReadyMoment fan={knowledgeLevel === "fan"} />
+          <RaceReadyMoment
+            fan={knowledgeLevel === "fan"}
+            onRestartPath={() => setRestartPromptOpen(true)}
+          />
         </div>
       ) : (
         <section className="relative mt-8 overflow-hidden rounded-lg border border-white/10 bg-surface-02 p-6 text-white sm:p-8">
@@ -344,6 +375,30 @@ export function LearnExperience() {
           })}
         </div>
       </section>
+
+      <Dialog.Root open={restartPromptOpen} onOpenChange={setRestartPromptOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-[80] bg-black/72" />
+          <Dialog.Content className="fixed left-1/2 top-1/2 z-[90] w-[calc(100%-2.5rem)] max-w-md -translate-x-1/2 -translate-y-1/2 border border-white/18 bg-surface-01 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.65)] focus:outline-none sm:p-8">
+            <Dialog.Title className="font-display text-3xl font-extrabold uppercase leading-none text-white">
+              Restart your learning path?
+            </Dialog.Title>
+            <Dialog.Description className="mt-4 text-base leading-6 text-text-secondary">
+              This clears completed lessons for your current recommendation. You can complete them again at your own pace.
+            </Dialog.Description>
+            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <Dialog.Close asChild>
+                <Button type="button" variant="secondary">
+                  Keep completed lessons
+                </Button>
+              </Dialog.Close>
+              <Button type="button" onClick={restartRecommendedPath}>
+                Restart path
+              </Button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }
