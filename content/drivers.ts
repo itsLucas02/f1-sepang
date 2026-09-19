@@ -270,6 +270,20 @@ export type DriverId = Driver["id"];
 
 export const DRIVER_IDS = DRIVERS.map((driver) => driver.id) as DriverId[];
 
+const DRIVER_IMAGE_REVISIONS: Partial<Record<DriverId, string>> = {
+  alonso: "20260919",
+  hamilton: "20260919",
+  hulkenberg: "20260919",
+  ocon: "20260919",
+  russell: "20260919",
+  verstappen: "20260919",
+};
+
+export function driverImagePath(driverId: DriverId) {
+  const revision = DRIVER_IMAGE_REVISIONS[driverId];
+  return `/media/drivers/${driverId}.webp${revision ? `?v=${revision}` : ""}`;
+}
+
 export function getDriver(driverId: DriverId) {
   const driver = DRIVERS.find((candidate) => candidate.id === driverId);
 

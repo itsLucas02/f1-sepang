@@ -11,8 +11,14 @@ export function HeroAudioToggle() {
   useEffect(() => {
     const stored = window.localStorage.getItem(HERO_AUDIO_PREFERENCE);
     const nextEnabled = stored !== "false";
-    setEnabled(nextEnabled);
-    window.dispatchEvent(new CustomEvent("sepang-hero-audio-state", { detail: nextEnabled }));
+    const timer = window.setTimeout(() => {
+      setEnabled(nextEnabled);
+      window.dispatchEvent(
+        new CustomEvent("sepang-hero-audio-state", { detail: nextEnabled }),
+      );
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   const toggle = () => {

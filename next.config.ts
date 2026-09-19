@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
     "localhost",
     "127.0.0.1",
   ],
+  images: {
+    localPatterns: [
+      { pathname: "/media/**", search: "" },
+      { pathname: "/media/drivers/**", search: "?v=20260919" },
+    ],
+  },
 };
 
 export default nextConfig;

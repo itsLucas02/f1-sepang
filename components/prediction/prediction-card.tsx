@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
-import { getDriver, isDriverId, teamColor } from "@/content/drivers";
+import { driverImagePath, getDriver, isDriverId, teamColor } from "@/content/drivers";
 import { PREDICTION_QUESTIONS } from "@/content/predictions";
 import { publicAsset } from "@/lib/assets";
 import type { PredictionAnswers } from "@/lib/predictions";
@@ -119,7 +119,7 @@ export function PredictionCard({ answers }: { answers: PredictionAnswers }) {
                   >
                     {driver ? (
                       <Image
-                        src={publicAsset(`/media/drivers/${driver.id}.webp`)}
+                        src={publicAsset(driverImagePath(driver.id))}
                         alt={`${driver.firstName} ${driver.surname}`}
                         fill
                         sizes="200px"
