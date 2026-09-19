@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Check } from "lucide-react";
 
-import { teamColor, type Driver } from "@/content/drivers";
+import { driverImagePath, teamColor, type Driver } from "@/content/drivers";
 import { publicAsset } from "@/lib/assets";
 import { cn } from "@/lib/utils";
 
@@ -77,7 +77,7 @@ export function DriverCard({
 
         <div className="absolute inset-x-0 top-0 h-[72%] overflow-hidden bg-[#12151a]">
           <Image
-            src={publicAsset(`/media/drivers/${driver.id}.webp`)}
+            src={publicAsset(driverImagePath(driver.id))}
             alt={`${driver.firstName} ${driver.surname}`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 17vw"
@@ -104,26 +104,26 @@ export function DriverCard({
             />
             {driver.team}
           </p>
-          <div className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] items-end gap-2.5">
-            <span
-              className="font-display text-3xl font-extrabold italic leading-none sm:text-4xl"
-              style={{ color: accent }}
-            >
-              {driver.number}
-            </span>
+          <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2.5">
             <div className="min-w-0 pb-0.5 pr-1.5">
               <span className="block text-[10px] font-semibold leading-none text-white/55 sm:text-xs">
                 {driver.firstName}
               </span>
               <span
                 className={cn(
-                  "mt-1 block whitespace-nowrap pr-1 font-display font-extrabold uppercase italic leading-[0.92] tracking-[-0.01em] text-white",
+                  "block whitespace-nowrap pr-1 font-display font-extrabold uppercase italic leading-[0.92] tracking-[-0.01em] text-white",
                   surnameSize,
                 )}
               >
                 {driver.surname}
               </span>
             </div>
+            <span
+              className="font-display text-3xl font-extrabold italic leading-none sm:text-4xl"
+              style={{ color: accent }}
+            >
+              {driver.number}
+            </span>
           </div>
         </div>
 
