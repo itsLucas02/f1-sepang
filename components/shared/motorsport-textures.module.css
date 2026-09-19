@@ -61,12 +61,21 @@
 }
 
 .brandFlag {
+  position: relative;
   width: 1.6rem;
   height: 1.15rem;
+  overflow: hidden;
+  clip-path: polygon(24% 0, 100% 0, 76% 100%, 0 100%);
+}
+
+.brandFlag::before {
+  content: "";
+  position: absolute;
+  inset: -0.2rem;
   background-image: conic-gradient(#08090c 25%, #f3f1ec 0 50%, #08090c 0 75%, #f3f1ec 0);
   background-position: 0.14rem 0;
   background-size: 0.46rem 0.46rem;
-  clip-path: polygon(24% 0, 100% 0, 76% 100%, 0 100%);
+  transform: skewX(-14deg);
 }
 
 .petronasEdge {

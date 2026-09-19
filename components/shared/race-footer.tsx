@@ -51,9 +51,9 @@ export function RaceFooter() {
         </div>
 
         <div className="grid gap-8 py-9 md:grid-cols-[1fr_auto] md:items-center">
-          <div className="flex items-center gap-3 font-display text-2xl font-extrabold uppercase italic leading-none text-[#f3f1ec]">
+          <div className="flex items-center gap-0 font-display text-2xl font-extrabold uppercase italic leading-none text-[#f3f1ec]">
             <span>Sepang</span>
-            <span className={textures.brandFlag} aria-hidden="true" />
+            <span className={`${textures.brandFlag} mx-1`} aria-hidden="true" />
             <span>56</span>
           </div>
           <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-8 gap-y-3 md:justify-end">

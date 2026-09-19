@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Menu } from "lucide-react";
 
 import { ScrollProgress } from "@/components/shared/scroll-progress";
+import { HeroAudioToggle } from "@/components/landing/hero-audio-toggle";
 import { SiteContainer } from "@/components/shared/site-container";
 import textures from "@/components/shared/motorsport-textures.module.css";
 import {
@@ -17,21 +17,22 @@ import { cn } from "@/lib/utils";
 
 type RaceHeaderProps = {
   activeHref?: (typeof NAV_ITEMS)[number]["href"];
+  showHeroAudio?: boolean;
 };
 
-export function RaceHeader({ activeHref }: RaceHeaderProps) {
+export function RaceHeader({ activeHref, showHeroAudio = false }: RaceHeaderProps) {
   return (
     <header className="sticky top-0 z-50 overflow-hidden border-b border-race-red/70 bg-[#0a0c11]/96">
       <SiteContainer className="flex h-16 items-center justify-between gap-5 md:h-[68px]">
         <Link
           href="/"
           aria-label={`${SITE_NAME} home`}
-          className="group inline-flex items-baseline gap-2 font-display text-2xl font-extrabold uppercase italic leading-none tracking-[-0.02em] text-white sm:text-[1.7rem]"
+          className="group inline-flex items-baseline gap-0 font-display text-2xl font-extrabold uppercase italic leading-none tracking-[-0.02em] text-white sm:text-[1.7rem]"
         >
           <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
             SEPANG
           </span>
-          <span className={textures.brandFlag} aria-hidden="true" />
+          <span className={`${textures.brandFlag} mx-1`} aria-hidden="true" />
           <span>56</span>
         </Link>
 
@@ -77,9 +78,10 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
             className="kerb-stripe-thin h-3.5 w-9 opacity-70"
             aria-hidden="true"
           />
+          {showHeroAudio ? <HeroAudioToggle /> : null}
         </div>
 
-        <div className="md:hidden">
+        <div className="flex items-center gap-1 md:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <button
@@ -87,10 +89,14 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                 aria-label="Open navigation"
                 className="inline-flex min-h-11 min-w-11 items-center justify-center border border-white/15 bg-[#0d0d0f] text-white transition-colors hover:border-white/35 hover:bg-[#171719] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
               >
-                <Menu aria-hidden="true" className="size-5" />
+                <span className="race-menu-icon" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </span>
               </button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="race-menu-panel">
               <SheetTitle>{SITE_NAME}</SheetTitle>
               <SheetDescription className="sr-only">
                 Primary navigation
@@ -102,7 +108,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
                       href={item.href}
                       aria-current={item.href === activeHref ? "page" : undefined}
                       className={cn(
-                        "flex min-h-14 items-center gap-4 border-b border-border px-1 py-4 font-display text-lg font-bold uppercase tracking-[0.08em] transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none",
+                        "race-menu-link flex min-h-14 items-center gap-4 border-b border-border px-1 py-4 font-display text-lg font-bold uppercase tracking-[0.08em] transition-colors hover:text-white focus-visible:text-white focus-visible:outline-none",
                         item.href === activeHref
                           ? "border-l-2 border-l-race-red pl-3 text-white"
                           : "text-text-secondary",
@@ -118,6 +124,7 @@ export function RaceHeader({ activeHref }: RaceHeaderProps) {
               </nav>
             </SheetContent>
           </Sheet>
+          {showHeroAudio ? <HeroAudioToggle /> : null}
         </div>
       </SiteContainer>
 
