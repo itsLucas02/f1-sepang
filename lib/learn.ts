@@ -60,6 +60,14 @@ export function getNextRecommendedLessonId(
   return recommended.find((lessonId) => !completed.has(lessonId)) ?? null;
 }
 
+export function clearCompletedRecommendedLessons(
+  level: KnowledgeLevel,
+  completedLessonIds: readonly LessonId[],
+) {
+  const recommended = new Set(RECOMMENDED_LESSONS[level]);
+  return completedLessonIds.filter((lessonId) => !recommended.has(lessonId));
+}
+
 export function parsePersistedLearnState(raw: string | null): PersistedLearnState {
   const fallback: PersistedLearnState = {
     knowledgeLevel: null,

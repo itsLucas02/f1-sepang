@@ -14,9 +14,9 @@ import {
  */
 
 /** Visual proportions of the circuit model, in scene units. */
-export const TRACK_WIDTH = 0.34;
-export const SLAB_HEIGHT = 0.09;
-export const APRON_WIDTH = 0.62;
+export const TRACK_WIDTH = 0.4;
+export const SLAB_HEIGHT = 0.12;
+export const APRON_WIDTH = 0.52;
 export const EDGE_LINE_WIDTH = 0.022;
 export const KERB_WIDTH = 0.06;
 export const TRACE_WIDTH = 0.05;
@@ -119,7 +119,7 @@ export function createStrip({ left, right, color, include }: StripOptions) {
 
       const base = pushPair(index);
       pushPair(index + 1);
-      indices.push(base, base + 1, base + 3, base, base + 3, base + 2);
+      indices.push(base, base + 3, base + 1, base, base + 2, base + 3);
     }
   } else {
     for (let index = 0; index <= COUNT; index += 1) {
@@ -128,7 +128,7 @@ export function createStrip({ left, right, color, include }: StripOptions) {
 
     for (let index = 0; index < COUNT; index += 1) {
       const base = index * 2;
-      indices.push(base, base + 1, base + 3, base, base + 3, base + 2);
+      indices.push(base, base + 3, base + 1, base, base + 2, base + 3);
     }
   }
 
@@ -268,7 +268,7 @@ export function createTracksidePosts() {
   return posts;
 }
 
-/** Radial ground wash so the circuit sits on terrain instead of a void. */
+/** Restrained turf wash that supports the circuit without competing with it. */
 export function createGroundTexture() {
   const size = 512;
   const canvas = document.createElement("canvas");
@@ -277,7 +277,7 @@ export function createGroundTexture() {
   const context = canvas.getContext("2d");
 
   if (context) {
-    context.fillStyle = "#08090c";
+    context.fillStyle = "#0d110f";
     context.fillRect(0, 0, size, size);
 
     const gradient = context.createRadialGradient(
@@ -288,17 +288,26 @@ export function createGroundTexture() {
       size / 2,
       size * 0.52,
     );
-    gradient.addColorStop(0, "#161b23");
-    gradient.addColorStop(0.55, "#0f131a");
-    gradient.addColorStop(1, "#08090c");
+    gradient.addColorStop(0, "#1b231b");
+    gradient.addColorStop(0.55, "#121814");
+    gradient.addColorStop(1, "#0d110f");
     context.fillStyle = gradient;
     context.fillRect(0, 0, size, size);
 
-    // Faint speckle so the ground is not a flat wash.
-    context.globalAlpha = 0.045;
-    for (let index = 0; index < 2600; index += 1) {
-      context.fillStyle = index % 3 === 0 ? "#5c6675" : "#4d5766";
-      context.fillRect(Math.random() * size, Math.random() * size, 1.5, 1.5);
+    // Low-contrast flecks retain turf texture without stealing focus from the road.
+    for (let index = 0; index < 2200; index += 1) {
+      const seed = Math.sin(index * 12.9898) * 43758.5453;
+      const random = seed - Math.floor(seed);
+      const sizeSeed = Math.sin((index + 31) * 78.233) * 43758.5453;
+      const fleckSize = 1 + (sizeSeed - Math.floor(sizeSeed)) * 1.8;
+      context.globalAlpha = 0.02 + random * 0.035;
+      context.fillStyle = index % 5 === 0 ? "#3a3e31" : index % 2 === 0 ? "#2b3629" : "#202b20";
+      context.fillRect(
+        random * size,
+        ((Math.sin((index + 7) * 34.17) * 43758.5453) % 1 + 1) % 1 * size,
+        fleckSize,
+        fleckSize,
+      );
     }
     context.globalAlpha = 1;
   }

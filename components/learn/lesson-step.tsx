@@ -20,7 +20,7 @@ export function LessonStep({
   onContinue,
 }: LessonStepProps) {
   return (
-    <section aria-labelledby={`lesson-${lesson.id}-title`} className="panel-enter">
+    <section aria-labelledby={`lesson-${lesson.id}-title`} className="lesson-step-forward">
       <button
         type="button"
         onClick={onBack}
@@ -95,7 +95,12 @@ export function LessonStep({
       </div>
 
       <div className="mt-10 flex justify-end border-t border-white/10 pt-6">
-        <Button type="button" size="large" onClick={onContinue} className="w-full sm:w-auto sm:min-w-48">
+        <Button
+          type="button"
+          size="large"
+          onClick={onContinue}
+          className="w-full active:scale-[0.96] sm:w-auto sm:min-w-48"
+        >
           {completed ? "Continue" : "Got It"}
           <ArrowRight aria-hidden="true" className="size-4" />
         </Button>

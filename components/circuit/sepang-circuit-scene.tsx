@@ -57,42 +57,42 @@ function TrackSurface() {
     <group>
       {/* run-off apron: the paved shoulder the slab sits on */}
       <mesh geometry={geometries.apron}>
-        <meshBasicMaterial color="#1a1f27" />
+        <meshBasicMaterial color="#1d242c" toneMapped={false} />
       </mesh>
 
       {/* slab sides give the circuit real thickness */}
       <mesh geometry={geometries.wallLeft}>
-        <meshBasicMaterial color="#0e1218" />
+        <meshBasicMaterial color="#1a2029" side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
       <mesh geometry={geometries.wallRight}>
-        <meshBasicMaterial color="#0e1218" />
+        <meshBasicMaterial color="#1a2029" side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
 
       {/* asphalt. Unlit on purpose: tone mapping crushes dark lit surfaces to
           black, which left the circuit invisible against the background. */}
       <mesh geometry={geometries.asphalt}>
-        <meshBasicMaterial color="#363c47" />
+        <meshBasicMaterial color="#9aa3ab" toneMapped={false} />
       </mesh>
 
       {/* painted edges */}
       <mesh geometry={geometries.edgeLeft}>
-        <meshBasicMaterial color="#eceae4" transparent opacity={0.8} />
+        <meshBasicMaterial color="#eceae4" transparent opacity={0.42} toneMapped={false} />
       </mesh>
       <mesh geometry={geometries.edgeRight}>
-        <meshBasicMaterial color="#eceae4" transparent opacity={0.8} />
+        <meshBasicMaterial color="#eceae4" transparent opacity={0.42} toneMapped={false} />
       </mesh>
 
       {/* kerbing on the corners */}
       <mesh geometry={geometries.kerbLeft}>
-        <meshBasicMaterial vertexColors />
+        <meshBasicMaterial vertexColors toneMapped={false} />
       </mesh>
       <mesh geometry={geometries.kerbRight}>
-        <meshBasicMaterial vertexColors />
+        <meshBasicMaterial vertexColors toneMapped={false} />
       </mesh>
 
       {/* speed-coloured racing line */}
       <mesh geometry={geometries.trace}>
-        <meshBasicMaterial vertexColors transparent opacity={0.92} depthWrite={false} />
+        <meshBasicMaterial vertexColors transparent opacity={0.72} depthWrite={false} toneMapped={false} />
       </mesh>
     </group>
   );
@@ -108,9 +108,141 @@ function Ground() {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
         <planeGeometry args={[38, 38]} />
-        <meshBasicMaterial map={texture} />
+        <meshBasicMaterial map={texture} toneMapped={false} />
       </mesh>
-      <gridHelper args={[38, 38, "#20262f", "#141920"]} position={[0, -0.015, 0]} />
+    </group>
+  );
+}
+
+type RunoffSurface = {
+  color: string;
+  length: number;
+  progress: number;
+  side: 1 | -1;
+  width: number;
+};
+
+function RunoffSurfaces() {
+  const surfaces = useMemo<RunoffSurface[]>(
+    () => [
+      { color: "#756d5d", length: 1.35, progress: SEPANG_HOTSPOT_PROGRESS.t1, side: -1, width: 0.5 },
+      { color: "#756d5d", length: 1.2, progress: SEPANG_HOTSPOT_PROGRESS.t15, side: 1, width: 0.46 },
+      { color: "#423c34", length: 0.95, progress: SEPANG_HOTSPOT_PROGRESS.t4, side: 1, width: 0.34 },
+      { color: "#423c34", length: 0.88, progress: SEPANG_HOTSPOT_PROGRESS.t9, side: -1, width: 0.3 },
+    ],
+    [],
+  );
+
+  return (
+    <group>
+      {surfaces.map((surface) => {
+        const point = positionAtProgress(surface.progress);
+        const direction = directionAtProgress(surface.progress);
+        const normal = new THREE.Vector3(-direction.z, 0, direction.x);
+        const position = point
+          .clone()
+          .addScaledVector(normal, surface.side * (0.45 + surface.width * 0.65));
+        const rotation = Math.atan2(-direction.z, direction.x);
+
+        return (
+          <group
+            key={`${surface.progress}-${surface.side}`}
+            position={[position.x, -0.012, position.z]}
+            rotation={[0, rotation, 0]}
+          >
+            <mesh rotation={[-Math.PI / 2, 0, 0]} scale={[surface.length, surface.width, 1]}>
+              <circleGeometry args={[1, 20]} />
+              <meshBasicMaterial color={surface.color} toneMapped={false} />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+function Grandstand({
+  columns,
+  progress,
+  rows,
+  side,
+  width,
+}: {
+  columns: number;
+  progress: number;
+  rows: number;
+  side: 1 | -1;
+  width: number;
+}) {
+  const crowd = useRef<THREE.InstancedMesh>(null);
+  const { position, rotation } = useMemo(() => {
+    const point = positionAtProgress(progress);
+    const direction = directionAtProgress(progress);
+    const normal = new THREE.Vector3(-direction.z, 0, direction.x);
+
+    return {
+      position: point.clone().addScaledVector(normal, side * 1.22),
+      rotation: Math.atan2(-direction.z, direction.x),
+    };
+  }, [progress, side]);
+  const crowdMatrices = useMemo(() => {
+    const dummy = new THREE.Object3D();
+
+    return Array.from({ length: rows * columns }, (_, index) => {
+      const row = Math.floor(index / columns);
+      const column = index % columns;
+      dummy.position.set(
+        ((column + 0.5) / columns - 0.5) * (width - 0.22),
+        0.25 + row * 0.11,
+        -0.22 + row * 0.075,
+      );
+      dummy.updateMatrix();
+      return dummy.matrix.clone();
+    });
+  }, [columns, rows, width]);
+
+  useEffect(() => {
+    if (!crowd.current) {
+      return;
+    }
+
+    crowdMatrices.forEach((matrix, index) => crowd.current?.setMatrixAt(index, matrix));
+    crowd.current.instanceMatrix.needsUpdate = true;
+  }, [crowdMatrices]);
+
+  return (
+    <group position={[position.x, 0, position.z]} rotation={[0, rotation, 0]}>
+      <mesh position={[0, 0.08, 0]}>
+        <boxGeometry args={[width, 0.16, 0.68]} />
+        <meshBasicMaterial color="#1a2225" toneMapped={false} />
+      </mesh>
+      {Array.from({ length: rows }, (_, row) => (
+        <mesh key={row} position={[0, 0.14 + row * 0.1, -0.22 + row * 0.075]}>
+          <boxGeometry args={[width, 0.1, 0.15]} />
+          <meshBasicMaterial color={row % 2 === 0 ? "#65717a" : "#4e5a64"} toneMapped={false} />
+        </mesh>
+      ))}
+      <instancedMesh ref={crowd} args={[undefined, undefined, crowdMatrices.length]}>
+        <boxGeometry args={[0.055, 0.12, 0.055]} />
+        <meshBasicMaterial color="#c8c5b9" toneMapped={false} />
+      </instancedMesh>
+      <mesh position={[0, 0.63, 0.06]}>
+        <boxGeometry args={[width + 0.2, 0.07, 0.86]} />
+        <meshBasicMaterial color="#11181d" toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 0.59, -0.36]}>
+        <boxGeometry args={[width + 0.2, 0.025, 0.035]} />
+        <meshBasicMaterial color="#e8112d" toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function Grandstands() {
+  return (
+    <group>
+      <Grandstand columns={20} progress={0.045} rows={5} side={1} width={2.75} />
+      <Grandstand columns={14} progress={0.145} rows={4} side={-1} width={2.05} />
     </group>
   );
 }
@@ -528,7 +660,7 @@ function applyFov(camera: THREE.Camera, fov: number, immediate: boolean) {
   perspective.updateProjectionMatrix();
 }
 
-const OVERVIEW_POSITION = new THREE.Vector3(0, 13, 9.9);
+const OVERVIEW_POSITION = new THREE.Vector3(0, 11.5, 11.8);
 const OVERVIEW_TARGET = new THREE.Vector3(0, 0, 0.35);
 
 function cornerPose(hotspot: HotspotId) {
@@ -720,8 +852,10 @@ export default function SepangCircuitScene({
       <directionalLight position={[-6, 4, -4]} intensity={0.6} color="#5d80aa" />
 
       <Ground />
+      <RunoffSurfaces />
       <TrackSurface />
       <TracksidePosts />
+      <Grandstands />
       <StartLine />
       <SectorMarkers />
       <CornerDots />

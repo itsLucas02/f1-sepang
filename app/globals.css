@@ -365,6 +365,84 @@ textarea {
   background: linear-gradient(180deg, rgba(7,7,8,0.2) 0%, rgba(7,7,8,0.72) 52%, #070708 100%);
 }
 
+/* Mobile navigation enters like a compact starting grid: the panel arrives,
+   then each route releases in race order. */
+.sheet-overlay[data-state="open"] {
+  animation: sheet-overlay-in 180ms ease-out both;
+}
+
+.sheet-overlay[data-state="closed"] {
+  animation: sheet-overlay-out 160ms ease-in both;
+}
+
+.race-menu-panel[data-state="open"] {
+  animation: race-menu-panel-in 180ms ease-out both;
+}
+
+.race-menu-panel[data-state="closed"] {
+  animation: race-menu-panel-out 160ms ease-in both;
+}
+
+.race-menu-panel[data-state="open"] .race-menu-link {
+  animation: race-menu-link-in 180ms ease-out both;
+}
+
+.race-menu-panel[data-state="open"] .race-menu-link:nth-child(1) { animation-delay: 45ms; }
+.race-menu-panel[data-state="open"] .race-menu-link:nth-child(2) { animation-delay: 75ms; }
+.race-menu-panel[data-state="open"] .race-menu-link:nth-child(3) { animation-delay: 105ms; }
+.race-menu-panel[data-state="open"] .race-menu-link:nth-child(4) { animation-delay: 135ms; }
+
+.race-menu-icon {
+  display: grid;
+  width: 20px;
+  gap: 4px;
+}
+
+.race-menu-icon > span {
+  display: block;
+  height: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transition: transform 180ms ease-out, opacity 180ms ease-out;
+}
+
+[data-state="open"] > .race-menu-icon > span:first-child {
+  transform: translateY(6px) rotate(45deg);
+}
+
+[data-state="open"] > .race-menu-icon > span:nth-child(2) {
+  opacity: 0;
+}
+
+[data-state="open"] > .race-menu-icon > span:last-child {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@keyframes sheet-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sheet-overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes race-menu-panel-in {
+  from { transform: translate3d(100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes race-menu-panel-out {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(100%, 0, 0); }
+}
+
+@keyframes race-menu-link-in {
+  from { opacity: 0; transform: translate3d(20px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
 /* Retired: a travelling light sweep is decoration, not motorsport graphics. */
 .race-scanline {
   background: none;
@@ -559,7 +637,10 @@ textarea {
   .hero-stage,
   .hero-release,
   .hero-kenburns,
-  .race-grain {
+  .race-grain,
+  .sheet-overlay,
+  .race-menu-panel,
+  .race-menu-link {
     animation: none !important;
   }
 
@@ -567,6 +648,7 @@ textarea {
   .hero-stage { opacity: 1; transform: none; }
   .hero-release { transform: none; }
   .sheen::after { transition: none; }
+  .race-menu-icon > span { transition: none; }
   .hero-track-draw { stroke-dashoffset: 0; opacity: 0.78; }
   .hero-track-accent { stroke-dashoffset: 0.15; opacity: 0.9; }
   .hero-car-pass { transform: translate3d(44%, 0, 0) scale(0.94); opacity: 0.42; }

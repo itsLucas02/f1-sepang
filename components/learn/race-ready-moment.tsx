@@ -3,7 +3,15 @@ import { ArrowRight, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export function RaceReadyMoment({ fan = false }: { fan?: boolean }) {
+type RaceReadyMomentProps = {
+  fan?: boolean;
+  onRestartPath: () => void;
+};
+
+export function RaceReadyMoment({
+  fan = false,
+  onRestartPath,
+}: RaceReadyMomentProps) {
   return (
     <section className="relative overflow-hidden rounded-lg border border-teal/25 bg-surface-02 p-6 sm:p-8">
       <div
@@ -32,13 +40,24 @@ export function RaceReadyMoment({ fan = false }: { fan?: boolean }) {
             ? "You already follow F1, so the beginner lessons are optional. Meet the circuit and see where the race can come alive."
             : "The basics are covered. Next, see where those ideas matter around Sepang."}
         </p>
-        <div className="mt-7">
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="large" className="w-full sm:w-auto">
             <Link href="/sepang">
               Meet Sepang
               <ArrowRight aria-hidden="true" className="size-4" />
             </Link>
           </Button>
+          {!fan ? (
+            <Button
+              type="button"
+              size="large"
+              variant="secondary"
+              onClick={onRestartPath}
+              className="w-full sm:w-auto"
+            >
+              Restart recommended path
+            </Button>
+          ) : null}
         </div>
       </div>
     </section>

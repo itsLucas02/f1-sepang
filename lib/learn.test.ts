@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  clearCompletedRecommendedLessons,
   getNextRecommendedLessonId,
   getRecommendedLessonIds,
   isRaceReady,
@@ -37,6 +38,12 @@ describe("race ready", () => {
 
   it("ignores optional lesson completion when finding the next recommendation", () => {
     expect(getNextRecommendedLessonId("basics", ["01", "03"], "03")).toBe("04");
+  });
+
+  it("clears only the current recommended path when restarting", () => {
+    expect(
+      clearCompletedRecommendedLessons("basics", ["01", "02", "03", "04"]),
+    ).toEqual(["01", "02"]);
   });
 });
 
