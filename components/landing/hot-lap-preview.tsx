@@ -132,7 +132,7 @@ export function HotLapPreview() {
           ))}
         </dl>
 
-        <div className="mt-7 flex flex-wrap items-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center gap-3 lg:mt-16">
           <Button asChild size="large" className="rounded-none uppercase tracking-[0.05em]">
             <Link href="/sepang">
               Explore the Circuit
@@ -164,32 +164,31 @@ export function HotLapPreview() {
             compact
           />
 
-          <div className="glass-panel pointer-events-none absolute left-4 top-4 flex items-center gap-4 px-3.5 py-2.5">
-            <div>
-              <span
-                ref={speedRef}
-                className="font-display text-2xl font-extrabold italic leading-none text-white tabular-nums"
-              >
-                0
-              </span>
-              <span className="ml-1 font-mono text-[9px] text-white/45">km/h</span>
-            </div>
-            <span className="h-6 w-px bg-white/15" aria-hidden="true" />
-            <span
-              ref={timeDisplayRef}
-              className="font-mono text-sm text-white/80 tabular-nums"
-            >
-              0:00.000
-            </span>
-            <span className="rounded-[2px] bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-white/70">
-              <span ref={sectorRef}>S1</span>
-            </span>
-          </div>
-
           <div
             className={`${textures.stripeBand} pointer-events-none absolute inset-x-0 bottom-0 h-2 opacity-80`}
             aria-hidden="true"
           />
+        </div>
+        <div className="mt-3 flex items-center gap-4 border border-white/12 bg-[#0b0d11] px-3.5 py-2.5">
+          <div>
+            <span
+              ref={speedRef}
+              className="font-display text-2xl font-extrabold italic leading-none text-white tabular-nums"
+            >
+              0
+            </span>
+            <span className="ml-1 font-mono text-[9px] text-white/45">km/h</span>
+          </div>
+          <span className="h-6 w-px bg-white/15" aria-hidden="true" />
+          <span
+            ref={timeDisplayRef}
+            className="font-mono text-sm text-white/80 tabular-nums"
+          >
+            0:00.000
+          </span>
+          <span className="rounded-[2px] bg-white/10 px-1.5 py-0.5 font-mono text-[10px] text-white/70">
+            <span ref={sectorRef}>S1</span>
+          </span>
         </div>
       </div>
     </div>

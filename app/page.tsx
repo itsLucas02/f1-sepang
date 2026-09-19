@@ -80,7 +80,7 @@ const HERO_IMAGE = publicAsset("/media/hero/f1-cgpt-image.webp");
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <RaceHeader />
+      <RaceHeader showHeroAudio />
 
       <main id="main-content" className="flex-1">
         <section className="relative isolate min-h-[calc(100svh-4rem)] overflow-hidden border-b border-white/10 bg-[#050506] md:min-h-[calc(100svh-4.25rem)]">
@@ -91,7 +91,7 @@ export default function HomePage() {
               fill
               priority
               sizes="100vw"
-              className="hero-kenburns object-cover object-center"
+              className="hero-kenburns object-cover object-[92%_center] sm:object-center"
             />
           </div>
 

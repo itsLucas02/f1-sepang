@@ -13,14 +13,14 @@ const CLIPS = [
   {
     src: "/media/trackside/flat-out.mp4",
     poster: "/media/trackside/flat-out.webp",
-    label: "Flat out",
-    detail: "720p / 30fps motion study",
+    label: "Race day",
+    detail: "Motion study",
   },
   {
     src: "/media/trackside/garage-detail.mp4",
     poster: "/media/trackside/garage-detail.webp",
     label: "Garage detail",
-    detail: "720p / 30fps motion study",
+    detail: "Motion study",
   },
 ] as const;
 
