@@ -65,7 +65,7 @@ export function PredictionStep({
             </p>
           </div>
         </div>
-        <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-1 opacity-90`} aria-hidden="true" />
+        <div className={`${textures.stripeBand} absolute inset-x-0 bottom-0 h-3 opacity-90`} aria-hidden="true" />
       </section>
 
       <section className="relative mx-auto max-w-[1440px] px-5 py-8 sm:px-8 sm:py-10">
