@@ -131,19 +131,26 @@ The 3D circuit is a raised slab, not a line. Proportions live in
 
 | Layer | Width (scene units) | Colour |
 | --- | --- | --- |
-| Ground plane | 38 x 38 | radial wash `#161B23` → `#08090C` |
-| Run-off apron | 0.62 | `#1A1F27` |
-| Slab side walls | — (0.09 tall) | `#0E1218` |
-| Asphalt top face | 0.34 | `#363C47` |
-| Painted edge lines | 0.022 each side | `#ECEAE4` at 80% |
+| Ground plane | 38 x 38 | restrained turf `#1B231B` → `#0D110F` |
+| Run-off apron | 0.96 | `#1D242C` |
+| Slab side walls | — (0.12 tall) | `#1A2029` |
+| Asphalt top face | 0.72 | clear medium asphalt `#9AA3AB` |
+| Painted edge lines | 0.022 each side | `#ECEAE4` at 42% |
 | Kerbing (corners only) | 0.06 each side | red / bone, alternating |
 | Racing line | 0.05 | speed ramp |
 | Trackside posts | every ~70 m | `#8B95A4`, red on corners |
 
-**Everything in the circuit model is unlit** (`meshBasicMaterial`). Lit dark
-surfaces are crushed to black by the renderer's tone mapping, which previously
-left the asphalt invisible while the unlit kerbs stayed vivid — the track read
-as stripes floating in a void. Lights in the scene exist only for the car.
+The venue layer stays deliberately stylised: the clear asphalt is the
+primary read, while restrained turf, small gravel traps, two low grandstands
+and instanced crowd silhouettes establish race-day scale. It is not a surveyed,
+photoreal recreation of Sepang and must not add third-party logos or individual
+spectator models.
+
+**Everything in the circuit model is unlit and not tone-mapped**
+(`meshBasicMaterial`, `toneMapped={false}`). Lit dark surfaces are crushed to
+black by the renderer's tone mapping, which previously left the asphalt
+invisible while the unlit kerbs stayed vivid — the track read as stripes
+floating in a void. Lights in the scene exist only for the car.
 
 Camera field of view carries the mode: 34° overview, 38° corner, 62° onboard.
 
