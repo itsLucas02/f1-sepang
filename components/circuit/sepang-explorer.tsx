@@ -259,7 +259,7 @@ export function SepangExplorer() {
 
       <section
         aria-labelledby="lap-analysis-title"
-        className="mt-8 overflow-hidden border border-white/12 bg-[#0b0d11]"
+        className="group/lap mt-8 overflow-hidden border border-white/12 bg-[#0b0d11]"
       >
         <div className="flex flex-wrap items-end justify-between gap-5 border-b border-white/10 p-5 sm:p-7">
           <div>
@@ -310,8 +310,12 @@ export function SepangExplorer() {
           </dl>
         </div>
 
-        <div className="p-4 sm:p-6">
-          <LapTelemetryChart />
+        <div className="grid grid-rows-[1fr] transition-[grid-template-rows] duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:grid-rows-[0fr] lg:group-hover/lap:grid-rows-[1fr]">
+          <div className="min-h-0 overflow-hidden">
+            <div className="translate-y-0 p-4 opacity-100 transition-[opacity,transform] duration-200 delay-75 ease-out motion-reduce:transition-none sm:p-6 lg:-translate-y-2 lg:opacity-0 lg:group-hover/lap:translate-y-0 lg:group-hover/lap:opacity-100">
+              <LapTelemetryChart />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -326,7 +330,8 @@ export function SepangExplorer() {
               sizes="(max-width: 1024px) 100vw, 66vw"
               className="hero-kenburns object-cover object-center grayscale-[0.1] contrast-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-transparent to-transparent" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/74 via-black/30 to-transparent" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/42 via-black/12 to-transparent" aria-hidden="true" />
             <div className="absolute bottom-6 left-6">
               <span className="motorsport-stripe block scale-75 origin-left" aria-hidden="true" />
               <p className="mt-3 font-display text-3xl font-extrabold uppercase italic text-white sm:text-4xl">Built for battles.</p>
