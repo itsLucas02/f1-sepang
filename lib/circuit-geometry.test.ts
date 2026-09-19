@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  APRON_WIDTH,
   cornerPose,
   createAsphalt,
   createKerbs,
   createRibbon,
   directionAtProgress,
+  KERB_WIDTH,
   positionAtProgress,
   TRACK_NORMALS,
   TRACK_WIDTH,
@@ -31,6 +33,33 @@ describe("circuit geometry", () => {
     expect(SEPANG_LAP_POINTS.length).toBeGreaterThan(600);
     expect(SEPANG_TRACK_BOUNDS.maxX - SEPANG_TRACK_BOUNDS.minX).toBeLessThan(11);
     expect(SEPANG_TRACK_BOUNDS.maxZ - SEPANG_TRACK_BOUNDS.minZ).toBeLessThan(11);
+  });
+
+  it("keeps separate sections of Sepang from merging into one road", () => {
+    const points = SEPANG_LAP_POINTS;
+    const localSpan = 50;
+    let minimumClearance = Number.POSITIVE_INFINITY;
+
+    for (let index = 0; index < points.length; index += 1) {
+      for (let other = index + localSpan; other < points.length; other += 1) {
+        // The path closes at the start/finish line, so those neighbouring
+        // samples are intentionally excluded from this non-adjacent check.
+        if (index < localSpan && other > points.length - localSpan) {
+          continue;
+        }
+
+        minimumClearance = Math.min(
+          minimumClearance,
+          Math.hypot(
+            points[index].x - points[other].x,
+            points[index].z - points[other].z,
+          ),
+        );
+      }
+    }
+
+    expect(APRON_WIDTH).toBeLessThan(minimumClearance);
+    expect(TRACK_WIDTH + 2 * KERB_WIDTH).toBeLessThan(minimumClearance);
   });
 
   it("keeps the circuit the right way round", () => {

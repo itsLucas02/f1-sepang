@@ -14,9 +14,9 @@ import {
  */
 
 /** Visual proportions of the circuit model, in scene units. */
-export const TRACK_WIDTH = 0.72;
+export const TRACK_WIDTH = 0.4;
 export const SLAB_HEIGHT = 0.12;
-export const APRON_WIDTH = 0.96;
+export const APRON_WIDTH = 0.52;
 export const EDGE_LINE_WIDTH = 0.022;
 export const KERB_WIDTH = 0.06;
 export const TRACE_WIDTH = 0.05;

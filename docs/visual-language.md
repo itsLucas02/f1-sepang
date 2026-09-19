@@ -132,9 +132,9 @@ The 3D circuit is a raised slab, not a line. Proportions live in
 | Layer | Width (scene units) | Colour |
 | --- | --- | --- |
 | Ground plane | 38 x 38 | restrained turf `#1B231B` → `#0D110F` |
-| Run-off apron | 0.96 | `#1D242C` |
+| Run-off apron | 0.52 | `#1D242C` |
 | Slab side walls | — (0.12 tall) | `#1A2029` |
-| Asphalt top face | 0.72 | clear medium asphalt `#9AA3AB` |
+| Asphalt top face | 0.40 | clear medium asphalt `#9AA3AB` |
 | Painted edge lines | 0.022 each side | `#ECEAE4` at 42% |
 | Kerbing (corners only) | 0.06 each side | red / bone, alternating |
 | Racing line | 0.05 | speed ramp |
