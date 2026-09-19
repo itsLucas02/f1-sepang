@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   cornerPose,
+  createAsphalt,
   createKerbs,
   createRibbon,
   directionAtProgress,
@@ -79,6 +80,14 @@ describe("circuit geometry", () => {
     expect(positions[last + 2]).toBeCloseTo(positions[2], 6);
 
     ribbon.dispose();
+  });
+
+  it("faces the asphalt toward the overview camera", () => {
+    const asphalt = createAsphalt();
+    const normals = attribute(asphalt, "normal");
+
+    expect(normals[1]).toBeGreaterThan(0.9);
+    asphalt.dispose();
   });
 
   it("colours the speed trace ribbon per vertex", () => {
